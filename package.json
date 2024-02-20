@@ -3,7 +3,7 @@
   "productName": "ygomaster-modding-tool",
   "version": "0.0.0",
   "description": "YgoMaster LE mod modding tool",
-  "main": ".vite/build/main/index.js",
+  "main": ".vite/main/index.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",

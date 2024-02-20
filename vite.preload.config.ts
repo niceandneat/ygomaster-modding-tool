@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite';
 
 // https://vitejs.dev/config
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   build: {
-    outDir: '.vite/build/preload',
-    sourcemap: true,
+    outDir: '.vite/preload',
+    sourcemap: command === 'serve',
+    minify: command === 'serve' ? false : 'esbuild',
   },
-});
+}));
