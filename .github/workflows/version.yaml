@@ -1,0 +1,35 @@
+name: version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version you want to bump.'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+permissions:
+  contents: write # Allows this job to push commits
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+
+      - name: Version and push
+        run: |
+          git config --global user.name 'niceandneat'
+          git config --global user.email 'niceandneat@users.noreply.github.com'
+          npm version ${{ inputs.version }}
+          git push --tags
