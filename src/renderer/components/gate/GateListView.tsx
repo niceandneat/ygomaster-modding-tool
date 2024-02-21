@@ -32,6 +32,12 @@ const useStyles = makeStyles({
     alignItems: 'flex-start',
     justifyContent: 'space-between',
   },
+  headerButtons: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-end',
+    columnGap: tokens.spacingVerticalS,
+  },
   title: {
     marginBottom: tokens.spacingVerticalL,
   },
@@ -46,6 +52,7 @@ interface GateListViewProps {
   onClickCreate: () => void;
   onClickEdit: (gate: GateSummary) => void;
   onClickDelete: (gate: GateSummary) => void;
+  onClickReload: () => void;
 }
 
 const defaultSortState: Parameters<
@@ -69,6 +76,7 @@ export const GateListView = ({
   onClickCreate,
   onClickEdit,
   onClickDelete,
+  onClickReload,
 }: GateListViewProps) => {
   const classes = useStyles();
   const { gatePath } = useAppStore((s) => s.settings);
@@ -144,10 +152,13 @@ export const GateListView = ({
   return (
     <div className={classes.container}>
       <div className={classes.header}>
-        <Title1 className={classes.title}>Gates</Title1>
-        <Button type="submit" appearance="primary" onClick={onClickCreate}>
-          Create
-        </Button>
+        <Title1 className={classes.title}>Solos</Title1>
+        <div className={classes.headerButtons}>
+          <Button onClick={onClickReload}>Reload</Button>
+          <Button appearance="primary" onClick={onClickCreate}>
+            Create
+          </Button>
+        </div>
       </div>
       <DataGrid
         items={gates}

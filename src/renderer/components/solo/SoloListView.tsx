@@ -32,6 +32,12 @@ const useStyles = makeStyles({
     alignItems: 'flex-start',
     justifyContent: 'space-between',
   },
+  headerButtons: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-end',
+    columnGap: tokens.spacingVerticalS,
+  },
   title: {
     marginBottom: tokens.spacingVerticalL,
   },
@@ -46,6 +52,7 @@ interface SoloListViewProps {
   onClickCreate: () => void;
   onClickEdit: (solo: SoloSummary) => void;
   onClickDelete: (solo: SoloSummary) => void;
+  onClickReload: () => void;
 }
 
 const defaultSortState: Parameters<
@@ -69,6 +76,7 @@ export const SoloListView = ({
   onClickCreate,
   onClickEdit,
   onClickDelete,
+  onClickReload,
 }: SoloListViewProps) => {
   const classes = useStyles();
   const { soloPath } = useAppStore((s) => s.settings);
@@ -147,9 +155,12 @@ export const SoloListView = ({
     <div className={classes.container}>
       <div className={classes.header}>
         <Title1 className={classes.title}>Solos</Title1>
-        <Button type="submit" appearance="primary" onClick={onClickCreate}>
-          Create
-        </Button>
+        <div className={classes.headerButtons}>
+          <Button onClick={onClickReload}>Reload</Button>
+          <Button appearance="primary" onClick={onClickCreate}>
+            Create
+          </Button>
+        </div>
       </div>
       <DataGrid
         items={solos}

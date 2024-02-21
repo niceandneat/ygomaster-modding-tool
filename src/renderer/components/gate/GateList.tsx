@@ -61,6 +61,7 @@ export const GateList = () => {
             onClickCreate={handleCreate}
             onClickEdit={handleEdit}
             onClickDelete={handleDelete}
+            onClickReload={loadGates}
           />
         </div>
         <Outlet />

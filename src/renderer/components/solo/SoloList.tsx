@@ -61,6 +61,7 @@ export const SoloList = () => {
             onClickCreate={handleCreate}
             onClickEdit={handleEdit}
             onClickDelete={handleDelete}
+            onClickReload={loadSolos}
           />
         </div>
         <Outlet />
