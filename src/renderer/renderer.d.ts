@@ -27,6 +27,8 @@ export interface ElectronAPI {
   showMessageBox: (request: ShowMessageBoxRequest) => Promise<number>;
   saveSettings: (settings: Settings) => Promise<void>;
   loadSettings: () => Promise<Settings | undefined>;
+  openSettingsFile: () => Promise<string>;
+  openLogFile: () => Promise<string>;
   importData: (request: ImportDataRequest) => Promise<void>;
   exportData: (request: ExportDataRequest) => Promise<void>;
   readGates: (request: ReadGatesRequest) => Promise<ReadGatesResponse>;

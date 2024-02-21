@@ -35,6 +35,12 @@ const useStyles = makeStyles({
     alignItems: 'flex-start',
     justifyContent: 'space-between',
   },
+  headerButtons: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-end',
+    columnGap: tokens.spacingVerticalS,
+  },
   title: {
     marginBottom: tokens.spacingVerticalL,
   },
@@ -46,11 +52,15 @@ const useStyles = makeStyles({
 interface SettingsDetailViewProps {
   settings?: Settings;
   onSubmit: SubmitHandler<Settings>;
+  onClickOpenSettingsFile: () => void;
+  onClickOpenLogFile: () => void;
 }
 
 export const SettingsDetailView = ({
   settings,
   onSubmit,
+  onClickOpenSettingsFile,
+  onClickOpenLogFile,
 }: SettingsDetailViewProps) => {
   const classes = useStyles();
   const methods = useForm<Settings>({
@@ -66,9 +76,15 @@ export const SettingsDetailView = ({
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <div className={classes.header}>
             <Title1 className={classes.title}>Settings</Title1>
-            <Button type="submit" appearance="primary">
-              Save
-            </Button>
+            <div className={classes.headerButtons}>
+              <Button onClick={onClickOpenLogFile}>Open Log File</Button>
+              <Button onClick={onClickOpenSettingsFile}>
+                Open Settings File
+              </Button>
+              <Button type="submit" appearance="primary">
+                Save
+              </Button>
+            </div>
           </div>
           <FileNameInput name="dataPath" />
           <FileNameInput name="gatePath" />

@@ -4,6 +4,7 @@ import {
   IpcMainInvokeEvent,
   dialog,
   ipcMain,
+  shell,
 } from 'electron';
 import log from 'electron-log';
 import { glob } from 'glob';
@@ -16,14 +17,16 @@ import {
   DELETE_SOLO,
   EXPORT_DATA,
   IMPORT_DATA,
-  LOAD_CONFIG,
+  LOAD_SETTINGS,
   OPEN_DIRECTORY,
   OPEN_FILE,
+  OPEN_LOG_FILE,
+  OPEN_SETTINGS_FILE,
   READ_GATE,
   READ_GATES,
   READ_SOLO,
   READ_SOLOS,
-  SAVE_CONFIG,
+  SAVE_SETTINGS,
   SHOW_MESSAGE_BOX,
   UPDATE_GATE,
   UPDATE_SOLO,
@@ -132,6 +135,18 @@ const handleLoadSettings =
       path.resolve(app.getPath('userData'), 'settings.json'),
     ).catch(() => undefined);
   };
+
+const handleOpenSettingsFile = (app: App) => async (): Promise<string> => {
+  return await shell.openPath(
+    path.resolve(app.getPath('userData'), 'settings.json'),
+  );
+};
+
+const handleOpenLogFile = (app: App) => async (): Promise<string> => {
+  return await shell.openPath(
+    path.resolve(app.getPath('userData'), 'main.log'),
+  );
+};
 
 const handleImportData = async (
   _event: IpcMainInvokeEvent,
@@ -265,8 +280,10 @@ export const handleIpc = (app: App) => {
   handleWithLog(OPEN_FILE, handleOpenFile);
   handleWithLog(SHOW_MESSAGE_BOX, handleShowMessageBox);
 
-  handleWithLog(SAVE_CONFIG, handleSaveSettings(app));
-  handleWithLog(LOAD_CONFIG, handleLoadSettings(app));
+  handleWithLog(SAVE_SETTINGS, handleSaveSettings(app));
+  handleWithLog(LOAD_SETTINGS, handleLoadSettings(app));
+  handleWithLog(OPEN_SETTINGS_FILE, handleOpenSettingsFile(app));
+  handleWithLog(OPEN_LOG_FILE, handleOpenLogFile(app));
 
   handleWithLog(IMPORT_DATA, handleImportData);
   handleWithLog(EXPORT_DATA, handleExportData);

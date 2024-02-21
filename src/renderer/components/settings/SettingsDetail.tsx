@@ -32,10 +32,25 @@ export const SettingsDetail = () => {
     [loadGates, loadSolos, setSettings, withToast],
   );
 
+  const handleClickOpenSettingsFile = useCallback(
+    () => window.electron.openSettingsFile(),
+    [],
+  );
+
+  const handleClickOpenLogFile = useCallback(
+    () => window.electron.openLogFile(),
+    [],
+  );
+
   return (
     <>
       <div className={classes.container}>
-        <SettingsDetailView settings={settings} onSubmit={handleSubmit} />
+        <SettingsDetailView
+          settings={settings}
+          onSubmit={handleSubmit}
+          onClickOpenSettingsFile={handleClickOpenSettingsFile}
+          onClickOpenLogFile={handleClickOpenLogFile}
+        />
       </div>
       <Toaster toasterId={toasterId} />
     </>
