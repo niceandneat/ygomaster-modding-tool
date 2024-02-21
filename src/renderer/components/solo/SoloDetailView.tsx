@@ -11,7 +11,11 @@ import {
   shorthands,
   tokens,
 } from '@fluentui/react-components';
-import { Add16Regular, Subtract16Regular } from '@fluentui/react-icons';
+import {
+  Add16Regular,
+  SaveRegular,
+  Subtract16Regular,
+} from '@fluentui/react-icons';
 import { useEffect } from 'react';
 import {
   Controller,
@@ -103,7 +107,7 @@ export const SoloDetailView = ({
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className={classes.header}>
             <Title1 className={classes.title}>{title}</Title1>
-            <Button type="submit" appearance="primary">
+            <Button icon={<SaveRegular />} type="submit" appearance="primary">
               Save
             </Button>
           </div>

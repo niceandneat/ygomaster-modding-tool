@@ -6,6 +6,7 @@ import {
   shorthands,
   tokens,
 } from '@fluentui/react-components';
+import { OpenRegular, SaveRegular } from '@fluentui/react-icons';
 import {
   Controller,
   FormProvider,
@@ -77,11 +78,13 @@ export const SettingsDetailView = ({
           <div className={classes.header}>
             <Title1 className={classes.title}>Settings</Title1>
             <div className={classes.headerButtons}>
-              <Button onClick={onClickOpenLogFile}>Open Log File</Button>
-              <Button onClick={onClickOpenSettingsFile}>
+              <Button icon={<OpenRegular />} onClick={onClickOpenLogFile}>
+                Open Log File
+              </Button>
+              <Button icon={<OpenRegular />} onClick={onClickOpenSettingsFile}>
                 Open Settings File
               </Button>
-              <Button type="submit" appearance="primary">
+              <Button icon={<SaveRegular />} type="submit" appearance="primary">
                 Save
               </Button>
             </div>

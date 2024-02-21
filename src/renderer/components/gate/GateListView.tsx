@@ -16,7 +16,12 @@ import {
   shorthands,
   tokens,
 } from '@fluentui/react-components';
-import { DeleteRegular, EditRegular } from '@fluentui/react-icons';
+import {
+  AddCircleRegular,
+  ArrowClockwiseRegular,
+  DeleteRegular,
+  EditRegular,
+} from '@fluentui/react-icons';
 import { useMemo } from 'react';
 
 import { GateSummary } from '../../../common/type';
@@ -154,8 +159,14 @@ export const GateListView = ({
       <div className={classes.header}>
         <Title1 className={classes.title}>Solos</Title1>
         <div className={classes.headerButtons}>
-          <Button onClick={onClickReload}>Reload</Button>
-          <Button appearance="primary" onClick={onClickCreate}>
+          <Button icon={<ArrowClockwiseRegular />} onClick={onClickReload}>
+            Reload
+          </Button>
+          <Button
+            icon={<AddCircleRegular />}
+            appearance="primary"
+            onClick={onClickCreate}
+          >
             Create
           </Button>
         </div>

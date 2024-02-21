@@ -16,7 +16,13 @@ import {
   shorthands,
   tokens,
 } from '@fluentui/react-components';
-import { DeleteRegular, EditRegular } from '@fluentui/react-icons';
+import {
+  AddCircleRegular,
+  AddSquareRegular,
+  ArrowClockwiseRegular,
+  DeleteRegular,
+  EditRegular,
+} from '@fluentui/react-icons';
 import { useMemo } from 'react';
 
 import { SoloSummary } from '../../../common/type';
@@ -156,8 +162,14 @@ export const SoloListView = ({
       <div className={classes.header}>
         <Title1 className={classes.title}>Solos</Title1>
         <div className={classes.headerButtons}>
-          <Button onClick={onClickReload}>Reload</Button>
-          <Button appearance="primary" onClick={onClickCreate}>
+          <Button icon={<ArrowClockwiseRegular />} onClick={onClickReload}>
+            Reload
+          </Button>
+          <Button
+            icon={<AddCircleRegular />}
+            appearance="primary"
+            onClick={onClickCreate}
+          >
             Create
           </Button>
         </div>
