@@ -4,7 +4,6 @@ import { useCallback } from 'react';
 import { Solo } from '../../../common/type';
 import { useToast } from '../../hooks/useToast';
 import { useAppStore } from '../../store';
-import { withMessageBox } from '../../utils/withMessageBox';
 import { SoloDetailView } from './SoloDetailView';
 
 const useStyles = makeStyles({
@@ -16,18 +15,22 @@ const useStyles = makeStyles({
 
 export const SoloCreate = () => {
   const classes = useStyles();
+  const { soloPath, deckPath } = useAppStore((s) => s.settings);
   const loadSolos = useAppStore((s) => s.loadSolos);
   const { toasterId, withToast } = useToast('Success Save', 'Fail Save');
 
   const handleSubmit = useCallback(
     (solo: Solo) =>
-      withToast(() =>
-        withMessageBox(async () => {
-          await window.electron.createSolo({ solo });
-          await loadSolos();
-        }),
-      ),
-    [withToast, loadSolos],
+      withToast(async () => {
+        const { filePath } = await window.electron.createSolo({
+          solo,
+          path: soloPath,
+        });
+
+        if (!filePath) return true; // skip toast
+        return await loadSolos();
+      }),
+    [withToast, loadSolos, soloPath],
   );
 
   const title = 'Create Solo';
@@ -35,7 +38,11 @@ export const SoloCreate = () => {
   return (
     <>
       <div className={classes.container}>
-        <SoloDetailView title={title} onSubmit={handleSubmit} />
+        <SoloDetailView
+          title={title}
+          onSubmit={handleSubmit}
+          deckPath={deckPath}
+        />
       </div>
       <Toaster toasterId={toasterId} />
     </>

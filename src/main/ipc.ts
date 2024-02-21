@@ -66,7 +66,7 @@ const handleOpenDirectory = async (
   if (!win) return;
 
   const { canceled, filePaths } = await dialog.showOpenDialog(win, {
-    defaultPath: path,
+    defaultPath: path || undefined,
     properties: ['openDirectory'],
   });
   if (canceled) return;
@@ -79,7 +79,7 @@ const handleOpenFile = async (event: IpcMainInvokeEvent, path?: string) => {
   if (!win) return;
 
   const { canceled, filePaths } = await dialog.showOpenDialog(win, {
-    defaultPath: path,
+    defaultPath: path || undefined,
     filters: [{ name: 'JSON', extensions: ['json'] }],
     properties: ['openFile'],
   });
@@ -93,7 +93,7 @@ const handleSaveFile = async (event: IpcMainInvokeEvent, path?: string) => {
   if (!win) return;
 
   const { canceled, filePath } = await dialog.showSaveDialog(win, {
-    defaultPath: path,
+    defaultPath: path || undefined,
     filters: [{ name: 'JSON', extensions: ['json'] }],
   });
   if (canceled) return;
@@ -176,9 +176,9 @@ const handleReadGate = async (
 
 const handleCreateGate = async (
   event: IpcMainInvokeEvent,
-  { gate }: CreateGateRequest,
+  { gate, path }: CreateGateRequest,
 ): Promise<CreateGateResponse> => {
-  const filePath = await handleSaveFile(event);
+  const filePath = await handleSaveFile(event, path);
   if (!filePath) return {};
 
   await saveJson(filePath, gate);
@@ -228,9 +228,9 @@ const handleReadSolo = async (
 
 const handleCreateSolo = async (
   event: IpcMainInvokeEvent,
-  { solo }: CreateSoloRequest,
+  { solo, path }: CreateSoloRequest,
 ): Promise<CreateSoloResponse> => {
-  const filePath = await handleSaveFile(event);
+  const filePath = await handleSaveFile(event, path);
   if (!filePath) return {};
 
   await saveJson(filePath, solo);

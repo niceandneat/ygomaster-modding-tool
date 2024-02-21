@@ -76,12 +76,14 @@ const useStyles = makeStyles({
 interface SoloDetailViewProps {
   title: string;
   solo?: Solo;
+  deckPath?: string;
   onSubmit: SubmitHandler<Solo>;
 }
 
 export const SoloDetailView = ({
   title,
   solo,
+  deckPath,
   onSubmit,
 }: SoloDetailViewProps) => {
   const classes = useStyles();
@@ -108,8 +110,8 @@ export const SoloDetailView = ({
           <div className={classes.stack}>
             <PlainInput<Solo> name="id" number />
             <PlainInput<Solo> name="description" multiline />
-            <FileNameInput name="cpu_deck" />
-            <FileNameInput name="rental_deck" optional />
+            <FileNameInput name="cpu_deck" path={deckPath} />
+            <FileNameInput name="rental_deck" path={deckPath} optional />
             <MydeckRewardInput />
             <RentalRewardInput />
             <PlainInput<Solo> name="cpu_hand" number />
@@ -126,10 +128,11 @@ export const SoloDetailView = ({
 
 interface FileInputProps {
   name: Path<Solo>;
+  path?: string;
   optional?: boolean;
 }
 
-const FileNameInput = ({ name, optional }: FileInputProps) => {
+const FileNameInput = ({ name, path, optional }: FileInputProps) => {
   const { control } = useFormContext<Solo>();
 
   const label = name.replaceAll('_', ' ');
@@ -143,6 +146,7 @@ const FileNameInput = ({ name, optional }: FileInputProps) => {
           <FileInput
             onChange={(filePath) => field.onChange(filePath.split('/').at(-1))}
             value={field.value?.toString()}
+            path={path}
             placeholder="Select deck file"
           />
         </Field>

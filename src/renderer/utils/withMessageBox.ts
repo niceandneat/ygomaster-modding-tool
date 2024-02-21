@@ -20,6 +20,5 @@ export const withMessageBox = async <T extends () => Promise<unknown>>(
 
   if (response !== 0) return true; // skip toast
 
-  await fn();
-  return false; // show toast
+  return await fn();
 };

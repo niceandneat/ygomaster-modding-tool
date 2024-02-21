@@ -28,7 +28,7 @@ export const FileInput = ({
             const filePath = await window.electron.openFile(path);
             if (filePath) onChange?.(filePath);
           },
-    [directory, path],
+    [directory, onChange, path],
   );
 
   return (

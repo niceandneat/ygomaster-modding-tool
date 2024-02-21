@@ -8,7 +8,7 @@ import { useCallback, useId } from 'react';
 
 interface UseToastResults {
   toasterId: string;
-  withToast: <T extends () => Promise<boolean | void>>(fn: T) => Promise<void>;
+  withToast: <T extends () => Promise<unknown>>(fn: T) => Promise<void>;
 }
 
 export const useToast = (success: string, fail: string): UseToastResults => {
@@ -16,7 +16,7 @@ export const useToast = (success: string, fail: string): UseToastResults => {
   const { dispatchToast } = useToastController(toasterId);
 
   const withToast = useCallback(
-    async <T extends () => Promise<boolean | void>>(fn: T) => {
+    async <T extends () => Promise<unknown>>(fn: T) => {
       try {
         if (!(await fn())) {
           dispatchToast(

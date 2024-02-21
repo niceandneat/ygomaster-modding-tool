@@ -40,8 +40,8 @@ import {
 
 // prettier-ignore
 contextBridge.exposeInMainWorld('electron', {
-  openDirectory: () => ipcRenderer.invoke(OPEN_DIRECTORY),
-  openFile: () => ipcRenderer.invoke(OPEN_FILE),
+  openDirectory: (path?: string) => ipcRenderer.invoke(OPEN_DIRECTORY, path),
+  openFile: (path?: string) => ipcRenderer.invoke(OPEN_FILE, path),
   showMessageBox: (request: ShowMessageBoxRequest) => ipcRenderer.invoke(SHOW_MESSAGE_BOX, request),
   saveSettings: (settings: Settings) => ipcRenderer.invoke(SAVE_CONFIG, settings),
   loadSettings: () => ipcRenderer.invoke(LOAD_CONFIG),

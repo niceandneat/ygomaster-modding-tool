@@ -113,6 +113,7 @@ export interface ReadGateResponse {
 
 export interface CreateGateRequest {
   gate: Gate;
+  path?: string;
 }
 
 export interface CreateGateResponse {
@@ -146,6 +147,7 @@ export interface ReadSoloResponse {
 
 export interface CreateSoloRequest {
   solo: Solo;
+  path?: string;
 }
 
 export interface CreateSoloResponse {
