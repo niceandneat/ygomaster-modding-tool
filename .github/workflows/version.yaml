@@ -32,4 +32,4 @@ jobs:
           git config --global user.name 'niceandneat'
           git config --global user.email 'niceandneat@users.noreply.github.com'
           npm version ${{ inputs.version }}
-          git push --tags
+          git push --follow-tags
