@@ -18,7 +18,6 @@ import {
 } from '@fluentui/react-components';
 import {
   AddCircleRegular,
-  AddSquareRegular,
   ArrowClockwiseRegular,
   DeleteRegular,
   EditRegular,
