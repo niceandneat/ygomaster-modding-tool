@@ -8,7 +8,7 @@ export const readJson = async <T>(filePath: string): Promise<T> => {
 
 export const readLines = async (filePath: string): Promise<string[]> => {
   const data = await readFile(filePath, 'utf-8');
-  return data.split(/\r?\n/).filter((line) => !!line.trim());
+  return data.split(/\r?\n/);
 };
 
 export const saveJson = async (
