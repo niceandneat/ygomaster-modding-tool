@@ -189,9 +189,10 @@ const handleReadGate = async (
 
 const handleCreateGate = async (
   event: IpcMainInvokeEvent,
-  { gate, path }: CreateGateRequest,
+  { gate, path: basePath }: CreateGateRequest,
 ): Promise<CreateGateResponse> => {
-  const filePath = await handleSaveFile(event, path);
+  const defaultPath = basePath && path.resolve(basePath, `${gate.id}.json`);
+  const filePath = await handleSaveFile(event, defaultPath);
   if (!filePath) return {};
 
   await saveJson(filePath, gate);
@@ -239,9 +240,10 @@ const handleReadSolo = async (
 
 const handleCreateSolo = async (
   event: IpcMainInvokeEvent,
-  { solo, path }: CreateSoloRequest,
+  { solo, path: basePath }: CreateSoloRequest,
 ): Promise<CreateSoloResponse> => {
-  const filePath = await handleSaveFile(event, path);
+  const defaultPath = basePath && path.resolve(basePath, `${solo.id}.json`);
+  const filePath = await handleSaveFile(event, defaultPath);
   if (!filePath) return {};
 
   await saveJson(filePath, solo);
