@@ -30,7 +30,13 @@ export const backupFiles = async (
   baseDir: string,
   backupDirPostfix = '_backup',
 ) => {
-  const backupDir = `${baseDir}${backupDirPostfix}`;
+  const timePostfix = new Date()
+    .toISOString()
+    .replaceAll(/[-:]/g, '')
+    .replace('T', '_')
+    .slice(0, 15);
+
+  const backupDir = `${baseDir}${backupDirPostfix}_${timePostfix}`;
 
   await rm(backupDir, { recursive: true, force: true });
   await mkdir(backupDir, { recursive: true });
