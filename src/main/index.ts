@@ -63,6 +63,7 @@ log.errorHandler.startCatching();
 log.transports.file.resolvePathFn = (variables) => {
   return path.join(app.getPath('userData'), variables.fileName || 'main.log');
 };
+log.transports.file.inspectOptions.maxArrayLength = 3;
 console.error = log.error;
 
 handleIpc(app);
