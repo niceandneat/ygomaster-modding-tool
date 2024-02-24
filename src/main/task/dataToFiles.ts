@@ -340,18 +340,9 @@ const saveFiles = async (data: {
   const { gatePath, soloPath, deckPath, gates, solos, decks } = data;
   log.info('Start save files');
 
-  await backupFiles(
-    await glob(toPosix(path.resolve(gatePath, '**/*.json'))),
-    gatePath,
-  );
-  await backupFiles(
-    await glob(toPosix(path.resolve(soloPath, '**/*.json'))),
-    soloPath,
-  );
-  await backupFiles(
-    await glob(toPosix(path.resolve(deckPath, '**/*.json'))),
-    deckPath,
-  );
+  await backupFiles(gatePath);
+  await backupFiles(soloPath);
+  await backupFiles(deckPath);
   log.info('Copied original files to backup folder');
 
   await batchPromiseAll(gates, (gate) =>

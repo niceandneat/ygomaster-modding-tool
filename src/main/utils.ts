@@ -1,4 +1,4 @@
-import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 export const readJson = async <T>(filePath: string): Promise<T> => {
@@ -31,8 +31,8 @@ export const deleteFile = async (filePath: string) => {
 };
 
 export const backupFiles = async (
-  filePaths: string[],
   baseDir: string,
+  filePaths?: string[],
   backupDirPostfix = '_backup',
 ) => {
   const timePostfix = new Date()
@@ -41,16 +41,22 @@ export const backupFiles = async (
     .replace('T', '_')
     .slice(0, 15);
 
+  const backupTargets = filePaths || [''];
   const backupDir = `${baseDir}${backupDirPostfix}_${timePostfix}`;
 
   await rm(backupDir, { recursive: true, force: true });
   await mkdir(backupDir, { recursive: true });
-  return await batchPromiseAll(filePaths, async (filePath) => {
-    const newPath = path.resolve(backupDir, path.relative(baseDir, filePath));
+  return await batchPromiseAll(backupTargets, async (filePath) => {
+    const abosoluteFilePath = path.resolve(baseDir, filePath);
+    const newPath = path.resolve(backupDir, filePath);
+
+    if (path.extname(filePath) === '') {
+      return await cp(abosoluteFilePath, newPath, { recursive: true });
+    }
 
     await mkdir(path.dirname(newPath), { recursive: true });
     try {
-      await rename(filePath, newPath);
+      await rename(abosoluteFilePath, newPath);
     } catch {
       // ignore file missing error.
     }

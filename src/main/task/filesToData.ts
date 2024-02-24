@@ -273,15 +273,12 @@ const saveData = async (data: {
   log.info('Start save data');
 
   // Backup original files
-  await backupFiles(
-    [
-      ...(await glob(toPosix(path.resolve(dataPath, 'SoloDuels/*.json')))), // solo duels
-      path.resolve(dataPath, 'Solo.json'),
-      path.resolve(dataPath, 'ClientData/SoloGateCards.txt'),
-      path.resolve(dataPath, 'ClientData/IDS/IDS_SOLO.txt'),
-    ],
-    dataPath,
-  );
+  await backupFiles(dataPath, [
+    'SoloDuels',
+    'Solo.json',
+    'ClientData/SoloGateCards.txt',
+    'ClientData/IDS/IDS_SOLO.txt',
+  ]);
   log.info('Copied original files to backup folder');
 
   // Create duel files
