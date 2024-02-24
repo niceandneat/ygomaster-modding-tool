@@ -20,6 +20,7 @@ import {
   readJson,
   readLines,
   saveJson,
+  toPosix,
 } from '../utils';
 
 export const dataToFiles = async (paths: {
@@ -61,7 +62,9 @@ const loadGateData = async (dataPath: string): Promise<GateData> => {
 };
 
 const loadDuelDataList = async (dataPath: string): Promise<DuelData[]> => {
-  const soloPaths = await glob(path.resolve(dataPath, 'SoloDuels/*.json'));
+  const soloPaths = await glob(
+    toPosix(path.resolve(dataPath, 'SoloDuels/*.json')),
+  );
   const rawData = await batchPromiseAll(soloPaths, readJson<DuelDataFile>);
 
   return rawData.map((data) => data.Duel);
@@ -337,9 +340,18 @@ const saveFiles = async (data: {
   const { gatePath, soloPath, deckPath, gates, solos, decks } = data;
   log.info('Start save files');
 
-  await backupFiles(await glob(path.resolve(gatePath, '**/*.json')), gatePath);
-  await backupFiles(await glob(path.resolve(soloPath, '**/*.json')), soloPath);
-  await backupFiles(await glob(path.resolve(deckPath, '**/*.json')), deckPath);
+  await backupFiles(
+    await glob(toPosix(path.resolve(gatePath, '**/*.json'))),
+    gatePath,
+  );
+  await backupFiles(
+    await glob(toPosix(path.resolve(soloPath, '**/*.json'))),
+    soloPath,
+  );
+  await backupFiles(
+    await glob(toPosix(path.resolve(deckPath, '**/*.json'))),
+    deckPath,
+  );
   log.info('Copied original files to backup folder');
 
   await batchPromiseAll(gates, (gate) =>

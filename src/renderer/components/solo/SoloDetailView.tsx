@@ -135,6 +135,7 @@ interface FileInputProps {
   path?: string;
   optional?: boolean;
 }
+const getFileName = (path: string) => path.split('\\').pop()?.split('/').pop();
 
 const FileNameInput = ({ name, path, optional }: FileInputProps) => {
   const { control } = useFormContext<Solo>();
@@ -148,7 +149,7 @@ const FileNameInput = ({ name, path, optional }: FileInputProps) => {
       render={({ field }) => (
         <Field label={label} required={!optional}>
           <FileInput
-            onChange={(filePath) => field.onChange(filePath.split('/').at(-1))}
+            onChange={(filePath) => field.onChange(getFileName(filePath))}
             value={field.value?.toString()}
             path={path}
             placeholder="Select deck file"

@@ -1,37 +1,37 @@
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
-import { dirname, relative, resolve } from 'node:path';
+import path from 'node:path';
 
-export const readJson = async <T>(path: string): Promise<T> => {
-  const data = await readFile(path, 'utf-8');
+export const readJson = async <T>(filePath: string): Promise<T> => {
+  const data = await readFile(filePath, 'utf-8');
   return JSON.parse(data);
 };
 
-export const readLines = async (path: string): Promise<string[]> => {
-  const data = await readFile(path, 'utf-8');
+export const readLines = async (filePath: string): Promise<string[]> => {
+  const data = await readFile(filePath, 'utf-8');
   return data.split(/\r?\n/).filter((line) => !!line.trim());
 };
 
 export const saveJson = async (
-  path: string,
+  filePath: string,
   json: unknown,
   { pretty = false }: { pretty?: boolean } = {},
 ) => {
-  await mkdir(dirname(path), { recursive: true });
+  await mkdir(path.dirname(filePath), { recursive: true });
   const data = pretty ? JSON.stringify(json, null, 2) : JSON.stringify(json);
-  return await writeFile(path, data);
+  return await writeFile(filePath, data);
 };
 
-export const saveText = async (path: string, text: string) => {
-  await mkdir(dirname(path), { recursive: true });
-  return await writeFile(path, text);
+export const saveText = async (filePath: string, text: string) => {
+  await mkdir(path.dirname(filePath), { recursive: true });
+  return await writeFile(filePath, text);
 };
 
-export const deleteFile = async (path: string) => {
-  return await rm(path, { force: true });
+export const deleteFile = async (filePath: string) => {
+  return await rm(filePath, { force: true });
 };
 
 export const backupFiles = async (
-  paths: string[],
+  filePaths: string[],
   baseDir: string,
   backupDirPostfix = '_backup',
 ) => {
@@ -45,12 +45,12 @@ export const backupFiles = async (
 
   await rm(backupDir, { recursive: true, force: true });
   await mkdir(backupDir, { recursive: true });
-  return await batchPromiseAll(paths, async (path) => {
-    const newPath = resolve(backupDir, relative(baseDir, path));
+  return await batchPromiseAll(filePaths, async (filePath) => {
+    const newPath = path.resolve(backupDir, path.relative(baseDir, filePath));
 
-    await mkdir(dirname(newPath), { recursive: true });
+    await mkdir(path.dirname(newPath), { recursive: true });
     try {
-      await rename(path, newPath);
+      await rename(filePath, newPath);
     } catch {
       // ignore file missing error.
     }
@@ -72,3 +72,6 @@ export const batchPromiseAll = async <T, R>(
 
   return results;
 };
+
+export const toPosix = (filePath: string) =>
+  filePath.split(path.sep).join(path.posix.sep);

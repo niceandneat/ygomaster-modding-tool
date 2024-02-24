@@ -19,6 +19,7 @@ import {
   readJson,
   saveJson,
   saveText,
+  toPosix,
 } from '../utils';
 
 interface Ids {
@@ -47,13 +48,13 @@ export const filesToData = async (paths: {
 };
 
 const loadGates = async (gatePath: string): Promise<Gate[]> => {
-  const gatePaths = await glob(path.resolve(gatePath, '**/*.json'));
+  const gatePaths = await glob(toPosix(path.resolve(gatePath, '**/*.json')));
   const gates = await batchPromiseAll(gatePaths, readJson<Gate>);
   return gates.sort((a, b) => a.id - b.id);
 };
 
 const loadSolos = async (soloPath: string): Promise<Solo[]> => {
-  const soloPaths = await glob(path.resolve(soloPath, '**/*.json'));
+  const soloPaths = await glob(toPosix(path.resolve(soloPath, '**/*.json')));
   const solos = await batchPromiseAll(soloPaths, readJson<Solo>);
   return solos.sort((a, b) => a.id - b.id);
 };
@@ -61,7 +62,7 @@ const loadSolos = async (soloPath: string): Promise<Solo[]> => {
 const loadDeckPathMap = async (
   deckPath: string,
 ): Promise<Record<string, string>> => {
-  const deckPaths = await glob(path.resolve(deckPath, '**/*.json'));
+  const deckPaths = await glob(toPosix(path.resolve(deckPath, '**/*.json')));
 
   return Object.fromEntries(
     deckPaths.map((deckPath) => [path.basename(deckPath), deckPath]),
@@ -274,7 +275,7 @@ const saveData = async (data: {
   // Backup original files
   await backupFiles(
     [
-      ...(await glob(path.resolve(dataPath, 'SoloDuels/*.json'))), // solo duels
+      ...(await glob(toPosix(path.resolve(dataPath, 'SoloDuels/*.json')))), // solo duels
       path.resolve(dataPath, 'Solo.json'),
       path.resolve(dataPath, 'ClientData/SoloGateCards.txt'),
       path.resolve(dataPath, 'ClientData/IDS/IDS_SOLO.txt'),

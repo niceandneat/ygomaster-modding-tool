@@ -59,7 +59,13 @@ import {
 } from '../common/type';
 import { dataToFiles } from './task/dataToFiles';
 import { filesToData } from './task/filesToData';
-import { batchPromiseAll, deleteFile, readJson, saveJson } from './utils';
+import {
+  batchPromiseAll,
+  deleteFile,
+  readJson,
+  saveJson,
+  toPosix,
+} from './utils';
 
 const handleOpenDirectory = async (
   event: IpcMainInvokeEvent,
@@ -167,7 +173,7 @@ const handleReadGates = async (
   _event: IpcMainInvokeEvent,
   { gatePath }: ReadGatesRequest,
 ): Promise<ReadGatesResponse> => {
-  const gatePaths = await glob(path.resolve(gatePath, '**/*.json'));
+  const gatePaths = await glob(toPosix(path.resolve(gatePath, '**/*.json')));
   const gates = await batchPromiseAll(gatePaths, (gatePath) =>
     readJson<Gate>(gatePath).then(
       (gate): GateSummary => ({
@@ -218,7 +224,7 @@ const handleReadSolos = async (
   _event: IpcMainInvokeEvent,
   { soloPath }: ReadSolosRequest,
 ): Promise<ReadSolosResponse> => {
-  const soloPaths = await glob(path.resolve(soloPath, '**/*.json'));
+  const soloPaths = await glob(toPosix(path.resolve(soloPath, '**/*.json')));
   const solos = await batchPromiseAll(soloPaths, (soloPath) =>
     readJson<Solo>(soloPath).then(
       (solo): SoloSummary => ({
