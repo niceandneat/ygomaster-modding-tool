@@ -34,29 +34,28 @@ export const backupFiles = async (
 
   await rm(backupDir, { recursive: true, force: true });
   await mkdir(backupDir, { recursive: true });
-  return await batchPromiseAll(
-    paths.map(async (path) => {
-      const newPath = resolve(backupDir, relative(baseDir, path));
+  return await batchPromiseAll(paths, async (path) => {
+    const newPath = resolve(backupDir, relative(baseDir, path));
 
-      await mkdir(dirname(newPath), { recursive: true });
-      try {
-        await rename(path, newPath);
-      } catch {
-        // ignore file missing error.
-      }
-    }),
-  );
+    await mkdir(dirname(newPath), { recursive: true });
+    try {
+      await rename(path, newPath);
+    } catch {
+      // ignore file missing error.
+    }
+  });
 };
 
-export const batchPromiseAll = async <T>(
+export const batchPromiseAll = async <T, R>(
   values: T[],
+  callback: (value: T) => Promise<R>,
   batchSize = 10,
-): Promise<Awaited<T>[]> => {
-  const results: Awaited<T>[] = [];
+): Promise<R[]> => {
+  const results: R[] = [];
 
   for (let i = 0; i < values.length; i += batchSize) {
     const batch = values.slice(i, i + batchSize);
-    const result = await Promise.all(batch);
+    const result = await Promise.all(batch.map(callback));
     results.push(...result);
   }
 

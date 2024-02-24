@@ -167,15 +167,13 @@ const handleReadGates = async (
   { gatePath }: ReadGatesRequest,
 ): Promise<ReadGatesResponse> => {
   const gatePaths = await glob(path.resolve(gatePath, '**/*.json'));
-  const gates = await batchPromiseAll(
-    gatePaths.map((gatePath) =>
-      readJson<Gate>(gatePath).then(
-        (gate): GateSummary => ({
-          id: gate.id,
-          path: gatePath,
-          name: gate.name,
-        }),
-      ),
+  const gates = await batchPromiseAll(gatePaths, (gatePath) =>
+    readJson<Gate>(gatePath).then(
+      (gate): GateSummary => ({
+        id: gate.id,
+        path: gatePath,
+        name: gate.name,
+      }),
     ),
   );
 
@@ -219,15 +217,13 @@ const handleReadSolos = async (
   { soloPath }: ReadSolosRequest,
 ): Promise<ReadSolosResponse> => {
   const soloPaths = await glob(path.resolve(soloPath, '**/*.json'));
-  const solos = await batchPromiseAll(
-    soloPaths.map((soloPath) =>
-      readJson<Solo>(soloPath).then(
-        (solo): SoloSummary => ({
-          id: solo.id,
-          path: soloPath,
-          deck: solo.cpu_deck,
-        }),
-      ),
+  const solos = await batchPromiseAll(soloPaths, (soloPath) =>
+    readJson<Solo>(soloPath).then(
+      (solo): SoloSummary => ({
+        id: solo.id,
+        path: soloPath,
+        deck: solo.cpu_deck,
+      }),
     ),
   );
 

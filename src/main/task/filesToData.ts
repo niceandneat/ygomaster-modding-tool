@@ -39,8 +39,8 @@ export const filesToData = async (paths: {
   const deckPathMap = await loadDeckPathMap(deckPath);
 
   const gateData = createGateData(gates, solos);
-  const duelDataList = await batchPromiseAll(
-    solos.map((solo) => createDuelData(solo, deckPathMap)),
+  const duelDataList = await batchPromiseAll(solos, (solo) =>
+    createDuelData(solo, deckPathMap),
   );
 
   await saveData({ gates, solos, gateData, duelDataList, dataPath });
@@ -48,13 +48,13 @@ export const filesToData = async (paths: {
 
 const loadGates = async (gatePath: string): Promise<Gate[]> => {
   const gatePaths = await glob(path.resolve(gatePath, '**/*.json'));
-  const gates = await batchPromiseAll(gatePaths.map(readJson<Gate>));
+  const gates = await batchPromiseAll(gatePaths, readJson<Gate>);
   return gates.sort((a, b) => a.id - b.id);
 };
 
 const loadSolos = async (soloPath: string): Promise<Solo[]> => {
   const soloPaths = await glob(path.resolve(soloPath, '**/*.json'));
-  const solos = await batchPromiseAll(soloPaths.map(readJson<Solo>));
+  const solos = await batchPromiseAll(soloPaths, readJson<Solo>);
   return solos.sort((a, b) => a.id - b.id);
 };
 
@@ -284,13 +284,10 @@ const saveData = async (data: {
   log.info('Copied original files to backup folder');
 
   // Create duel files
-  await batchPromiseAll(
-    duelDataList.map((duelData) =>
-      saveJson(
-        path.resolve(dataPath, 'SoloDuels', `${duelData.chapter}.json`),
-        { Duel: duelData },
-      ),
-    ),
+  await batchPromiseAll(duelDataList, (duelData) =>
+    saveJson(path.resolve(dataPath, 'SoloDuels', `${duelData.chapter}.json`), {
+      Duel: duelData,
+    }),
   );
   log.info('Created duel files');
 
