@@ -21,7 +21,7 @@ export const SoloDetail = () => {
   const activeSolo = useAppStore((s) => s.activeSolo);
   const loadActiveSolo = useAppStore((s) => s.loadActiveSolo);
   const loadSolos = useAppStore((s) => s.loadSolos);
-  const { soloPath } = useAppStore((s) => s.settings);
+  const { soloPath, deckPath } = useAppStore((s) => s.settings);
   const { toasterId, withToast } = useToast('Success Save', 'Fail Save');
   const params = useParams();
 
@@ -50,6 +50,7 @@ export const SoloDetail = () => {
           title={fileName}
           solo={activeSolo}
           onSubmit={handleSubmit}
+          deckPath={deckPath}
         />
       </div>
       <Toaster toasterId={toasterId} />
