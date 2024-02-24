@@ -11,9 +11,14 @@ export const readLines = async (path: string): Promise<string[]> => {
   return data.split(/\r?\n/).filter((line) => !!line.trim());
 };
 
-export const saveJson = async (path: string, json: unknown) => {
+export const saveJson = async (
+  path: string,
+  json: unknown,
+  { pretty = false }: { pretty?: boolean } = {},
+) => {
   await mkdir(dirname(path), { recursive: true });
-  return await writeFile(path, JSON.stringify(json));
+  const data = pretty ? JSON.stringify(json, null, 2) : JSON.stringify(json);
+  return await writeFile(path, data);
 };
 
 export const saveText = async (path: string, text: string) => {

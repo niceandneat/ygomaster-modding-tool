@@ -126,6 +126,7 @@ const handleSaveSettings =
     await saveJson(
       path.resolve(app.getPath('userData'), 'settings.json'),
       settings,
+      { pretty: true },
     );
   };
 
