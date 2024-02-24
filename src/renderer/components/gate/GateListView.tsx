@@ -106,7 +106,7 @@ export const GateListView = ({
           return a.name.localeCompare(b.name);
         },
         renderHeaderCell: () => {
-          return 'Deck';
+          return 'Name';
         },
         renderCell: (gate) => {
           return <TableCellLayout truncate>{gate.name}</TableCellLayout>;
@@ -157,7 +157,7 @@ export const GateListView = ({
   return (
     <div className={classes.container}>
       <div className={classes.header}>
-        <Title1 className={classes.title}>Solos</Title1>
+        <Title1 className={classes.title}>Gates</Title1>
         <div className={classes.headerButtons}>
           <Button icon={<ArrowClockwiseRegular />} onClick={onClickReload}>
             Reload
