@@ -6,7 +6,9 @@ import {
   DeleteGateRequest,
   DeleteSoloRequest,
   ExportDataRequest,
+  ExportDeckRequest,
   ImportDataRequest,
+  ImportDeckRequest,
   ReadGateRequest,
   ReadGateResponse,
   ReadGatesRequest,
@@ -41,6 +43,8 @@ export interface ElectronAPI {
   createSolo: (request: CreateSoloRequest) => Promise<CreateSoloResponse>;
   updateSolo: (request: UpdateSoloRequest) => Promise<void>;
   deleteSolo: (request: DeleteSoloRequest) => Promise<void>;
+  importDeck: (request: ImportDeckRequest) => Promise<void>;
+  exportDeck: (request: ExportDeckRequest) => Promise<void>;
 }
 
 declare global {

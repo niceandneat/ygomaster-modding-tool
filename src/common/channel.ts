@@ -21,3 +21,6 @@ export const READ_SOLO = 'READ_SOLO';
 export const CREATE_SOLO = 'CREATE_SOLO';
 export const UPDATE_SOLO = 'UPDATE_SOLO';
 export const DELETE_SOLO = 'DELETE_SOLO';
+
+export const IMPORT_DECK = 'IMPORT_DECK';
+export const EXPORT_DECK = 'EXPORT_DECK';

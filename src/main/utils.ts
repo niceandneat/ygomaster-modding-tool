@@ -30,6 +30,12 @@ export const deleteFile = async (filePath: string) => {
   return await rm(filePath, { force: true });
 };
 
+export const copyDirectory = async (fromPath: string, toPath: string) => {
+  await backupFiles(toPath);
+  await rm(toPath, { recursive: true, force: true });
+  return await cp(fromPath, toPath, { recursive: true });
+};
+
 export const backupFiles = async (
   baseDir: string,
   filePaths?: string[],
@@ -50,13 +56,13 @@ export const backupFiles = async (
     const abosoluteFilePath = path.resolve(baseDir, filePath);
     const newPath = path.resolve(backupDir, filePath);
 
-    if (path.extname(filePath) === '') {
-      return await cp(abosoluteFilePath, newPath, { recursive: true });
-    }
-
-    await mkdir(path.dirname(newPath), { recursive: true });
     try {
-      await rename(abosoluteFilePath, newPath);
+      if (path.extname(filePath) === '') {
+        await cp(abosoluteFilePath, newPath, { recursive: true });
+      } else {
+        await mkdir(path.dirname(newPath), { recursive: true });
+        await rename(abosoluteFilePath, newPath);
+      }
     } catch {
       // ignore file missing error.
     }

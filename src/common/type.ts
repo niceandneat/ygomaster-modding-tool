@@ -162,3 +162,13 @@ export interface UpdateSoloRequest {
 export interface DeleteSoloRequest {
   filePath: string;
 }
+
+export interface ImportDeckRequest {
+  deckPath: string;
+  dataPath: string;
+}
+
+export interface ExportDeckRequest {
+  deckPath: string;
+  dataPath: string;
+}

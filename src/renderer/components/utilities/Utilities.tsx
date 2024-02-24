@@ -12,7 +12,7 @@ import {
   shorthands,
   tokens,
 } from '@fluentui/react-components';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 
 import { useToast } from '../../hooks/useToast';
 import { useAppStore } from '../../store';
@@ -48,58 +48,23 @@ export const Utilities = () => {
       <div className={classes.header}>
         <Title1 className={classes.title}>Utilities</Title1>
       </div>
-      <ImportUtility />
-      <ExportUtility />
+      <DataSyncUtility />
+      <DeckSyncUtility />
     </div>
   );
 };
 
-interface UtilityItemProps {
-  title: string;
-  description: string;
-  buttonText: string;
-  loading?: boolean;
-  onClick: () => void;
-  children?: ReactNode;
-}
-
-const UtilityItem = ({
-  title,
-  description,
-  buttonText,
-  loading,
-  onClick,
-  children,
-}: UtilityItemProps) => {
-  const classes = useStyles();
-
-  return (
-    <Card className={classes.card}>
-      <CardHeader
-        header={<Body1 className={classes.cardTitle}>{title}</Body1>}
-        description={<Caption1>{description}</Caption1>}
-      />
-      {children}
-      <CardFooter>
-        <Button appearance="primary" onClick={onClick} disabled={loading}>
-          {buttonText}
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-};
-
-interface UtilityFileInputProps {
+interface UtilityDirectoryInputProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
 }
 
-const UtilityFileInput = ({
+const UtilityDirectoryInput = ({
   label,
   value,
   onChange,
-}: UtilityFileInputProps) => {
+}: UtilityDirectoryInputProps) => {
   return (
     <Field label={label}>
       <FileInput
@@ -112,9 +77,15 @@ const UtilityFileInput = ({
   );
 };
 
-const ImportUtility = () => {
+const DataSyncUtility = () => {
+  const classes = useStyles();
   const settings = useAppStore((s) => s.settings);
-  const { toasterId, withToast } = useToast('Success Import', 'Fail Import');
+  const loadGates = useAppStore((s) => s.loadGates);
+  const loadSolos = useAppStore((s) => s.loadSolos);
+  const { toasterId, withToast } = useToast(
+    'Success Data Sync',
+    'Fail Data Sync',
+  );
 
   const [loading, setLoading] = useState(false);
   const [dataPath, setDataPath] = useState(settings.dataPath);
@@ -123,99 +94,145 @@ const ImportUtility = () => {
   const [deckPath, setDeckPath] = useState(settings.deckPath);
 
   return (
-    <UtilityItem
-      title="Data to Files"
-      description="Import gate & solo files from YgoMaster data"
-      buttonText="Import"
-      loading={loading}
-      onClick={async () => {
-        setLoading(true);
-        await withToast(() =>
-          window.electron.importData({
-            gatePath,
-            soloPath,
-            deckPath,
-            dataPath,
-          }),
-        );
-        setLoading(false);
-      }}
-    >
-      <UtilityFileInput
+    <Card className={classes.card}>
+      <CardHeader
+        header={<Body1 className={classes.cardTitle}>Data Sync</Body1>}
+        description={
+          <Caption1>
+            Sync between YgoMaster Data and Gate/Solo/Deck files
+          </Caption1>
+        }
+      />
+      <UtilityDirectoryInput
         label="Data Path"
         value={dataPath}
         onChange={setDataPath}
       />
-      <UtilityFileInput
+      <UtilityDirectoryInput
         label="Gate Path"
         value={gatePath}
         onChange={setGatePath}
       />
-      <UtilityFileInput
+      <UtilityDirectoryInput
         label="Solo Path"
         value={soloPath}
         onChange={setSoloPath}
       />
-      <UtilityFileInput
+      <UtilityDirectoryInput
         label="Deck Path"
         value={deckPath}
         onChange={setDeckPath}
       />
       <Toaster toasterId={toasterId} />
-    </UtilityItem>
+      <CardFooter>
+        <Button
+          appearance="primary"
+          onClick={async () => {
+            setLoading(true);
+            await withToast(() =>
+              window.electron.importData({
+                gatePath,
+                soloPath,
+                deckPath,
+                dataPath,
+              }),
+            );
+            await loadGates();
+            await loadSolos();
+            setLoading(false);
+          }}
+          disabled={loading}
+        >
+          {'Data -> Gate/Solo/Deck'}
+        </Button>
+        <Button
+          appearance="primary"
+          onClick={async () => {
+            setLoading(true);
+            await withToast(() =>
+              window.electron.exportData({
+                gatePath,
+                soloPath,
+                deckPath,
+                dataPath,
+              }),
+            );
+            setLoading(false);
+          }}
+          disabled={loading}
+        >
+          {'Gate/Solo/Deck -> Data'}
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 
-const ExportUtility = () => {
+const DeckSyncUtility = () => {
+  const classes = useStyles();
   const settings = useAppStore((s) => s.settings);
-  const { toasterId, withToast } = useToast('Success Export', 'Fail Export');
+  const { toasterId, withToast } = useToast(
+    'Success Deck Sync',
+    'Fail Deck Sync',
+  );
 
   const [loading, setLoading] = useState(false);
   const [dataPath, setDataPath] = useState(settings.dataPath);
-  const [gatePath, setGatePath] = useState(settings.gatePath);
-  const [soloPath, setSoloPath] = useState(settings.soloPath);
   const [deckPath, setDeckPath] = useState(settings.deckPath);
 
   return (
-    <UtilityItem
-      title="Files to Data"
-      description="Export gate & solo files to YgoMaster data"
-      buttonText="Export"
-      loading={loading}
-      onClick={async () => {
-        setLoading(true);
-        await withToast(() =>
-          window.electron.exportData({
-            gatePath,
-            soloPath,
-            deckPath,
-            dataPath,
-          }),
-        );
-        setLoading(false);
-      }}
-    >
-      <UtilityFileInput
+    <Card className={classes.card}>
+      <CardHeader
+        header={<Body1 className={classes.cardTitle}>Deck Sync</Body1>}
+        description={
+          <Caption1>Sync between YgoMaster Data and Deck files</Caption1>
+        }
+      />
+      <UtilityDirectoryInput
         label="Data Path"
         value={dataPath}
         onChange={setDataPath}
       />
-      <UtilityFileInput
-        label="Gate Path"
-        value={gatePath}
-        onChange={setGatePath}
-      />
-      <UtilityFileInput
-        label="Solo Path"
-        value={soloPath}
-        onChange={setSoloPath}
-      />
-      <UtilityFileInput
+      <UtilityDirectoryInput
         label="Deck Path"
         value={deckPath}
         onChange={setDeckPath}
       />
       <Toaster toasterId={toasterId} />
-    </UtilityItem>
+      <CardFooter>
+        <Button
+          appearance="primary"
+          onClick={async () => {
+            setLoading(true);
+            await withToast(() =>
+              window.electron.importDeck({
+                deckPath,
+                dataPath,
+              }),
+            );
+            setLoading(false);
+          }}
+          disabled={loading}
+        >
+          {'Data -> Deck'}
+        </Button>
+        <Button
+          appearance="primary"
+          onClick={async () => {
+            setLoading(true);
+            await withToast(() =>
+              window.electron.exportDeck({
+                deckPath,
+                dataPath,
+              }),
+            );
+            setLoading(false);
+          }}
+          disabled={loading}
+        >
+          {'Deck -> Data'}
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };

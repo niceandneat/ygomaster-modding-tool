@@ -16,7 +16,9 @@ import {
   DELETE_GATE,
   DELETE_SOLO,
   EXPORT_DATA,
+  EXPORT_DECK,
   IMPORT_DATA,
+  IMPORT_DECK,
   LOAD_SETTINGS,
   OPEN_DIRECTORY,
   OPEN_FILE,
@@ -42,6 +44,7 @@ import {
   Gate,
   GateSummary,
   ImportDataRequest,
+  ImportDeckRequest,
   ReadGateRequest,
   ReadGateResponse,
   ReadGatesRequest,
@@ -61,6 +64,7 @@ import { dataToFiles } from './task/dataToFiles';
 import { filesToData } from './task/filesToData';
 import {
   batchPromiseAll,
+  copyDirectory,
   deleteFile,
   readJson,
   saveJson,
@@ -271,6 +275,22 @@ const handleDeleteSolo = async (
   await deleteFile(filePath);
 };
 
+const handleImportDeck = async (
+  _event: IpcMainInvokeEvent,
+  { deckPath, dataPath }: ImportDeckRequest,
+) => {
+  const deckDataPath = path.resolve(dataPath, 'Players', 'Local', 'Decks');
+  await copyDirectory(deckDataPath, deckPath);
+};
+
+const handleExportDeck = async (
+  _event: IpcMainInvokeEvent,
+  { deckPath, dataPath }: ImportDeckRequest,
+) => {
+  const deckDataPath = path.resolve(dataPath, 'Players', 'Local', 'Decks');
+  await copyDirectory(deckPath, deckDataPath);
+};
+
 const handleWithLog: typeof ipcMain.handle = (chanel, handler) => {
   return ipcMain.handle(chanel, async (event, ...args) => {
     log.info('[REQUEST]', chanel, ...args);
@@ -304,4 +324,7 @@ export const handleIpc = (app: App) => {
   handleWithLog(CREATE_SOLO, handleCreateSolo);
   handleWithLog(UPDATE_SOLO, handleUpdateSolo);
   handleWithLog(DELETE_SOLO, handleDeleteSolo);
+
+  handleWithLog(IMPORT_DECK, handleImportDeck);
+  handleWithLog(EXPORT_DECK, handleExportDeck);
 };
