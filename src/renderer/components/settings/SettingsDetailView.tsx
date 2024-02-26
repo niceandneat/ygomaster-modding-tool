@@ -22,7 +22,6 @@ import { FileInput } from '../input/FileInput';
 
 const defaultSettings: Partial<Settings> = {
   gatePath: '',
-  soloPath: '',
   deckPath: '',
   dataPath: '',
 };
@@ -91,7 +90,6 @@ export const SettingsDetailView = ({
           </div>
           <FileNameInput name="dataPath" />
           <FileNameInput name="gatePath" />
-          <FileNameInput name="soloPath" />
           <FileNameInput name="deckPath" />
         </form>
       </FormProvider>

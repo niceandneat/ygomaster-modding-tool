@@ -1,35 +1,35 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { SoloDetailView } from './SoloDetailView';
+import { ItemCategory } from '../../../common/type';
+import { ChapterDetailView } from './ChapterDetailView';
 
 const meta = {
-  title: 'Components/SoloDetailView',
-  component: SoloDetailView,
+  title: 'Components/ChapterDetailView',
+  component: ChapterDetailView,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta<typeof SoloDetailView>;
+} satisfies Meta<typeof ChapterDetailView>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Create: Story = {
-  args: {
-    title: 'Title',
-  },
+  args: {},
 };
 
 export const Edit: Story = {
   args: {
-    title: 'Title',
-    solo: {
+    chapter: {
       id: 1,
+      parent_id: 0,
       description: 'description',
+      type: 'Duel',
       cpu_deck: 'cpu_deck.json',
       rental_deck: 'rental_deck.json',
-      mydeck_reward: [{ category: 'GEM', value: 100 }],
-      rental_reward: [{ category: 'DARK_ORB', value: 200 }],
+      mydeck_reward: [{ category: ItemCategory.CONSUME, id: '1', counts: 100 }],
+      rental_reward: [{ category: ItemCategory.CONSUME, id: '1', counts: 200 }],
       cpu_hand: 6,
       player_hand: 5,
       cpu_name: 'name',

@@ -81,7 +81,6 @@ const DataSyncUtility = () => {
   const classes = useStyles();
   const settings = useAppStore((s) => s.settings);
   const loadGates = useAppStore((s) => s.loadGates);
-  const loadSolos = useAppStore((s) => s.loadSolos);
   const { toasterId, withToast } = useToast(
     'Success Data Sync',
     'Fail Data Sync',
@@ -90,7 +89,6 @@ const DataSyncUtility = () => {
   const [loading, setLoading] = useState(false);
   const [dataPath, setDataPath] = useState(settings.dataPath);
   const [gatePath, setGatePath] = useState(settings.gatePath);
-  const [soloPath, setSoloPath] = useState(settings.soloPath);
   const [deckPath, setDeckPath] = useState(settings.deckPath);
 
   return (
@@ -114,11 +112,6 @@ const DataSyncUtility = () => {
         onChange={setGatePath}
       />
       <UtilityDirectoryInput
-        label="Solo Path"
-        value={soloPath}
-        onChange={setSoloPath}
-      />
-      <UtilityDirectoryInput
         label="Deck Path"
         value={deckPath}
         onChange={setDeckPath}
@@ -132,13 +125,11 @@ const DataSyncUtility = () => {
             await withToast(() =>
               window.electron.importData({
                 gatePath,
-                soloPath,
                 deckPath,
                 dataPath,
               }),
             );
             await loadGates();
-            await loadSolos();
             setLoading(false);
           }}
           disabled={loading}
@@ -152,7 +143,6 @@ const DataSyncUtility = () => {
             await withToast(() =>
               window.electron.exportData({
                 gatePath,
-                soloPath,
                 deckPath,
                 dataPath,
               }),

@@ -1,7 +1,6 @@
 import { Tab, TabList, Tooltip, makeStyles } from '@fluentui/react-components';
 import {
   ConferenceRoomRegular,
-  DocumentPageBreakRegular,
   SettingsRegular,
   WrenchScrewdriverRegular,
 } from '@fluentui/react-icons';
@@ -42,14 +41,6 @@ export const MenuBar = () => {
           icon={<ConferenceRoomRegular />}
           value="gates"
           aria-label="Gates"
-        />
-      </Tooltip>
-      <Tooltip content="Solos" relationship="label" positioning="after">
-        <Tab
-          className={classes.item}
-          icon={<DocumentPageBreakRegular />}
-          value="solos"
-          aria-label="Solos"
         />
       </Tooltip>
       <Tooltip content="Utilities" relationship="label" positioning="after">

@@ -10,7 +10,7 @@ import {
   ItemCategory,
   Reward,
   Unlock,
-} from '../../common/new-type';
+} from '../../common/type';
 import {
   DataUnlockType,
   DeckData,

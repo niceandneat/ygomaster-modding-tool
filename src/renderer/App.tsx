@@ -9,6 +9,9 @@ import { InitGuard } from './components/guard/InitGuard';
 import { router } from './router';
 
 const useStaticStyles = makeStaticStyles({
+  html: {
+    overflowY: 'hidden',
+  },
   body: {
     margin: '0',
   },

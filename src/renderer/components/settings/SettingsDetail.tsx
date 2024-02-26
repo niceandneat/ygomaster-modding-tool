@@ -18,7 +18,6 @@ export const SettingsDetail = () => {
   const settings = useAppStore((s) => s.settings);
   const setSettings = useAppStore((s) => s.setSettings);
   const loadGates = useAppStore((s) => s.loadGates);
-  const loadSolos = useAppStore((s) => s.loadSolos);
   const { toasterId, withToast } = useToast('Success Save', 'Fail Save');
 
   const handleSubmit = useCallback(
@@ -27,9 +26,8 @@ export const SettingsDetail = () => {
       await withToast(() => window.electron.saveSettings(settings));
       // TODO needs global loading(status) indicator?
       await loadGates();
-      await loadSolos();
     },
-    [loadGates, loadSolos, setSettings, withToast],
+    [loadGates, setSettings, withToast],
   );
 
   const handleClickOpenSettingsFile = useCallback(

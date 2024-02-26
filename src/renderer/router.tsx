@@ -6,9 +6,6 @@ import { GateDetail } from './components/gate/GateDetail';
 import { GateList } from './components/gate/GateList';
 import { Layout } from './components/layout/Layout';
 import { SettingsDetail } from './components/settings/SettingsDetail';
-import { SoloCreate } from './components/solo/SoloCreate';
-import { SoloDetail } from './components/solo/SoloDetail';
-import { SoloList } from './components/solo/SoloList';
 import { Utilities } from './components/utilities/Utilities';
 
 export const router = createHashRouter([
@@ -24,18 +21,14 @@ export const router = createHashRouter([
       {
         path: 'gates',
         element: <GateList />,
-        children: [
-          { index: true, element: <GateCreate /> },
-          { path: '*', element: <GateDetail /> },
-        ],
       },
       {
-        path: 'solos',
-        element: <SoloList />,
-        children: [
-          { index: true, element: <SoloCreate /> },
-          { path: '*', element: <SoloDetail /> },
-        ],
+        path: 'gates/create',
+        element: <GateCreate />,
+      },
+      {
+        path: 'gates/*',
+        element: <GateDetail />,
       },
       {
         path: 'utilities',

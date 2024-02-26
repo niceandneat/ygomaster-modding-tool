@@ -32,25 +32,7 @@ export const Edit: Story = {
       illust_x: 0.03,
       illust_y: 0,
       priority: 123,
-      solos: [
-        {
-          id: 1,
-          parent_id: 0,
-        },
-        {
-          id: 2,
-          parent_id: 1,
-          unlock: [{ category: 'DARK_ORB', value: 100 }],
-        },
-        {
-          id: 3,
-          parent_id: 2,
-          unlock: [
-            { category: 'FIRE_ORB', value: 100 },
-            { category: 'WARTER_ORB', value: 200 },
-          ],
-        },
-      ],
+      chapters: [],
     },
   },
 };

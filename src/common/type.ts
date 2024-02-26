@@ -7,24 +7,32 @@ export interface Gate {
   illust_x: number; // 일러스트 x offset
   illust_y: number; // 일러스트 y offset
   priority: number; // 노출 우선순위
-  solos: SoloInGate[];
+  chapters: Chapter[];
 }
 
 export interface GateSummary {
   id: number;
   path: string;
   name: string;
+  priority: number;
 }
 
-export interface SoloInGate {
-  id: number; // 솔로 id, 솔로 파일의 id 와 매칭되는 json 을 사용함
-  parent_id: number; // 0 이면 시작 솔로 / 0 이외이면 완료해야할 솔로 id
-  unlock?: Unlock[]; // 이 object 가 존재할경우 듀얼하는 솔로가 아니며 아래 아이템을 필요로 함.
-}
+export type Chapter = DuelChapter | GateChapter;
+export type ChapterType = 'Duel' | 'Gate';
 
-export interface Solo {
+export interface BaseChapter {
   id: number; // 솔로 id
+  parent_id: number; // 0 이면 시작 솔로 / 0 이외이면 완료해야할 솔로 id
   description: string; // 솔로 description
+}
+
+export interface GateChapter extends BaseChapter {
+  type: 'Gate';
+  unlock: Unlock[]; // 이 필드가 존재할경우 듀얼하는 솔로가 아니며 아래 아이템을 필요로 함.
+}
+
+export interface DuelChapter extends BaseChapter {
+  type: 'Duel';
   cpu_deck: string; // 상대방 덱. /data/solo 내의 모든 폴더에서 이름이 일치하는 덱을 찾기
   rental_deck?: string; // 렌탈 덱, 이 키값이 존재하지 않는 경우 렌탈덱 듀얼이 불가
   mydeck_reward: Reward[];
@@ -37,38 +45,44 @@ export interface Solo {
   // TODO 장식 요소 추가
 }
 
-export interface SoloSummary {
-  id: number;
-  path: string;
-  deck: string;
+export type Unlock = Item<ItemCategory.CONSUME>;
+export type Reward = Item<ItemCategory>;
+
+export interface Item<T extends ItemCategory = ItemCategory> {
+  category: T;
+  id: string;
+  counts: number;
 }
 
-export interface Unlock {
-  category: OrbItemCategory;
-  value: number;
+export enum ItemCategory {
+  NONE = '0',
+  CONSUME = '1',
+  CARD = '2',
+  AVATAR = '3',
+  ICON = '4',
+  PROFILE_TAG = '5',
+  ICON_FRAME = '6',
+  PROTECTOR = '7',
+  DECK_CASE = '8',
+  FIELD = '9',
+  FIELD_OBJ = '10',
+  AVATAR_HOME = '11',
+  STRUCTURE = '12',
+  WALLPAPER = '13',
+  PACK_TICKET = '14',
+  DECK_LIMIT = '15',
 }
-
-export interface Reward {
-  category: ItemCategory;
-  value: number;
-}
-
-export type OrbItemCategory =
-  | 'DARK_ORB'
-  | 'LIGHT_ORB'
-  | 'EARTH_ORB'
-  | 'WARTER_ORB'
-  | 'FIRE_ORB'
-  | 'WIND_ORB';
-
-export type ItemCategory = 'GEM' | 'CARD' | 'STRUCTURE' | OrbItemCategory;
 
 export interface Settings {
   gatePath: string;
-  soloPath: string;
   deckPath: string;
   dataPath: string;
 }
+
+export const isGateChapter = (chapter: BaseChapter): chapter is GateChapter =>
+  Boolean((chapter as GateChapter).type === 'Gate');
+export const isDuelChapter = (chapter: BaseChapter): chapter is DuelChapter =>
+  Boolean((chapter as DuelChapter).type === 'Duel');
 
 /**
  * DTOs
@@ -83,14 +97,12 @@ export interface ShowMessageBoxRequest {
 
 export interface ImportDataRequest {
   gatePath: string;
-  soloPath: string;
   deckPath: string;
   dataPath: string;
 }
 
 export interface ExportDataRequest {
   gatePath: string;
-  soloPath: string;
   deckPath: string;
   dataPath: string;
 }
@@ -126,40 +138,6 @@ export interface UpdateGateRequest {
 }
 
 export interface DeleteGateRequest {
-  filePath: string;
-}
-
-export interface ReadSolosRequest {
-  soloPath: string;
-}
-
-export interface ReadSolosResponse {
-  solos: SoloSummary[];
-}
-
-export interface ReadSoloRequest {
-  filePath: string;
-}
-
-export interface ReadSoloResponse {
-  solo: Solo;
-}
-
-export interface CreateSoloRequest {
-  solo: Solo;
-  path?: string;
-}
-
-export interface CreateSoloResponse {
-  filePath?: string;
-}
-
-export interface UpdateSoloRequest {
-  filePath: string;
-  solo: Solo;
-}
-
-export interface DeleteSoloRequest {
   filePath: string;
 }
 

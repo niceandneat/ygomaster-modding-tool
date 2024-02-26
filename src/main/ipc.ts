@@ -169,6 +169,7 @@ const handleReadGates = async (
         id: gate.id,
         path: gatePath,
         name: gate.name,
+        priority: gate.priority,
       }),
     ),
   );

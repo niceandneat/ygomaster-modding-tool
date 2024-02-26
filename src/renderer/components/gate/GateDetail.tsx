@@ -1,4 +1,9 @@
-import { Toaster, makeStyles } from '@fluentui/react-components';
+import {
+  Toaster,
+  makeStyles,
+  shorthands,
+  tokens,
+} from '@fluentui/react-components';
 import { useCallback, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -13,6 +18,7 @@ const useStyles = makeStyles({
   container: {
     height: '100vh',
     overflowY: 'auto',
+    ...shorthands.padding(tokens.spacingHorizontalL),
   },
 });
 
@@ -42,6 +48,8 @@ export const GateDetail = () => {
   useEffect(() => {
     loadActiveGate(filePath);
   }, [loadActiveGate, filePath]);
+
+  if (!activeGate) return null;
 
   return (
     <>

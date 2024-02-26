@@ -9,7 +9,7 @@ import {
   Unlock,
   isDuelChapter,
   isGateChapter,
-} from '../../common/new-type';
+} from '../../common/type';
 import { ygoItems } from '../../common/ygoItems';
 import { DataUnlockType, DeckData, DuelData, GateData } from '../type';
 import {

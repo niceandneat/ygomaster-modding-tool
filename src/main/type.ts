@@ -1,4 +1,4 @@
-import { ItemCategory } from '../common/new-type';
+import { ItemCategory } from '../common/type';
 
 export interface DeckData {
   name: string;

@@ -5,7 +5,7 @@ import {
   tokens,
 } from '@fluentui/react-components';
 import { useCallback } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { GateSummary } from '../../../common/type';
 import { useToast } from '../../hooks/useToast';
@@ -16,13 +16,9 @@ import { GateListView } from './GateListView';
 
 const useStyles = makeStyles({
   container: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-  },
-  contents: {
     height: '100vh',
     overflowY: 'auto',
-    ...shorthands.borderRight('0.5px', 'solid', tokens.colorNeutralStroke1),
+    ...shorthands.padding(tokens.spacingHorizontalL),
   },
 });
 
@@ -34,7 +30,7 @@ export const GateList = () => {
   const navigate = useNavigate();
   const { toasterId, withToast } = useToast('Success Delete', 'Fail Delete');
 
-  const handleCreate = useCallback(() => navigate(''), [navigate]);
+  const handleCreate = useCallback(() => navigate('create'), [navigate]);
 
   const handleEdit = useCallback(
     (gate: GateSummary) => navigate(toRelativePath(gate.path, gatePath)),
@@ -55,16 +51,13 @@ export const GateList = () => {
   return (
     <>
       <div className={classes.container}>
-        <div className={classes.contents}>
-          <GateListView
-            gates={gates ?? []}
-            onClickCreate={handleCreate}
-            onClickEdit={handleEdit}
-            onClickDelete={handleDelete}
-            onClickReload={loadGates}
-          />
-        </div>
-        <Outlet />
+        <GateListView
+          gates={gates ?? []}
+          onClickCreate={handleCreate}
+          onClickEdit={handleEdit}
+          onClickDelete={handleDelete}
+          onClickReload={loadGates}
+        />
       </div>
       <Toaster toasterId={toasterId} />
     </>

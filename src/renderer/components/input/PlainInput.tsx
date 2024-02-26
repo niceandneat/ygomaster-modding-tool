@@ -5,6 +5,7 @@ import { handleNumberInput } from '../../utils/handleNumberInput';
 
 interface PlainInputProps<T extends FieldValues> {
   name: Path<T>;
+  label?: string;
   optional?: boolean;
   number?: boolean;
   multiline?: boolean;
@@ -12,6 +13,7 @@ interface PlainInputProps<T extends FieldValues> {
 
 export const PlainInput = <T extends FieldValues>({
   name,
+  label: labelInput,
   optional,
   number,
   multiline,
@@ -19,7 +21,7 @@ export const PlainInput = <T extends FieldValues>({
   const { control, formState } = useFormContext<T>();
 
   const error = formState.errors[name]?.message;
-  const label = name.replaceAll('_', ' ');
+  const label = labelInput || name.replaceAll('_', ' ');
   const Component = multiline ? Textarea : Input;
 
   return (

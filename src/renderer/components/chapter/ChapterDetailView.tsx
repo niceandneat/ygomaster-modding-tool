@@ -2,41 +2,42 @@ import {
   Button,
   Card,
   Combobox,
+  Dropdown,
   Field,
   Option,
   Text,
-  Title1,
   Tooltip,
   makeStyles,
-  shorthands,
   tokens,
 } from '@fluentui/react-components';
-import {
-  Add16Regular,
-  SaveRegular,
-  Subtract16Regular,
-} from '@fluentui/react-icons';
+import { Add16Regular, Subtract16Regular } from '@fluentui/react-icons';
 import { useEffect } from 'react';
 import {
   Controller,
   FieldArrayPath,
   FormProvider,
   Path,
-  SubmitHandler,
   useFieldArray,
   useForm,
   useFormContext,
   useWatch,
 } from 'react-hook-form';
 
-import { Solo } from '../../../common/type';
-import { useWarnNavigation } from '../../hooks/useWarnNavigation';
+import {
+  Chapter,
+  ChapterType,
+  DuelChapter,
+  GateChapter,
+  ItemCategory,
+} from '../../../common/type';
 import { FileInput } from '../input/FileInput';
 import { PlainInput } from '../input/PlainInput';
 
-const defaultSolo: Partial<Solo> = {
+const defaultDuelChapter: Partial<DuelChapter> = {
   id: 0,
+  parent_id: 0,
   description: '',
+  type: 'Duel',
   cpu_deck: '',
   rental_deck: '',
   mydeck_reward: [],
@@ -48,10 +49,15 @@ const defaultSolo: Partial<Solo> = {
   cpu_value: 98,
 };
 
+const defaultGateChapter: Partial<GateChapter> = {
+  id: 0,
+  parent_id: 0,
+  description: '',
+  type: 'Gate',
+  unlock: [],
+};
+
 const useStyles = makeStyles({
-  container: {
-    ...shorthands.padding(tokens.spacingHorizontalL),
-  },
   header: {
     display: 'flex',
     alignItems: 'flex-start',
@@ -77,68 +83,84 @@ const useStyles = makeStyles({
   },
 });
 
-interface SoloDetailViewProps {
-  title: string;
-  solo?: Solo;
+interface ChapterDetailViewProps {
+  chapter?: Chapter;
   deckPath?: string;
-  onSubmit: SubmitHandler<Solo>;
+  onChange?: (chapter: Chapter) => void;
 }
 
-export const SoloDetailView = ({
-  title,
-  solo,
+export const ChapterDetailView = ({
+  chapter,
   deckPath,
-  onSubmit,
-}: SoloDetailViewProps) => {
+  onChange,
+}: ChapterDetailViewProps) => {
   const classes = useStyles();
-  const methods = useForm<Solo>({ defaultValues: { ...defaultSolo, ...solo } });
-  const { handleSubmit, reset, formState } = methods;
 
-  const { isDirty, isSubmitSuccessful } = formState;
-  useWarnNavigation(isDirty && !isSubmitSuccessful);
+  const methods = useForm<Chapter>({
+    defaultValues: { ...defaultGateChapter, ...defaultDuelChapter, ...chapter },
+  });
+  const { watch, control } = methods;
 
   useEffect(() => {
-    reset({ ...defaultSolo, ...solo });
-  }, [solo, reset]);
+    const subscription = watch((value) => {
+      onChange?.(value as Chapter);
+    });
+    return () => subscription.unsubscribe();
+  }, [onChange, watch]);
+
+  const type = watch('type');
 
   return (
-    <div className={classes.container}>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className={classes.header}>
-            <Title1 className={classes.title}>{title}</Title1>
-            <Button icon={<SaveRegular />} type="submit" appearance="primary">
-              Save
-            </Button>
-          </div>
-          <div className={classes.stack}>
-            <PlainInput<Solo> name="id" number />
-            <PlainInput<Solo> name="description" multiline />
+    <FormProvider {...methods}>
+      <div className={classes.stack}>
+        <Controller
+          control={control}
+          name="type"
+          render={({ field }) => (
+            <Field label="type" required>
+              <Dropdown
+                value={field.value}
+                selectedOptions={[field.value]}
+                onOptionSelect={(_, data) => {
+                  field.onChange(data.optionValue as ChapterType);
+                }}
+              >
+                <Option value="Duel">Duel</Option>
+                <Option value="Gate">Gate</Option>
+              </Dropdown>
+            </Field>
+          )}
+        />
+        <PlainInput<Chapter> name="id" number />
+        <PlainInput<Chapter> name="description" multiline />
+        {type === 'Duel' && (
+          <>
             <FileNameInput name="cpu_deck" path={deckPath} />
             <FileNameInput name="rental_deck" path={deckPath} optional />
             <MydeckRewardInput />
             <RentalRewardInput />
-            <PlainInput<Solo> name="cpu_hand" number />
-            <PlainInput<Solo> name="player_hand" number />
-            <PlainInput<Solo> name="cpu_flag" />
-            <PlainInput<Solo> name="cpu_name" />
-            <PlainInput<Solo> name="cpu_value" number />
-          </div>
-        </form>
-      </FormProvider>
-    </div>
+            <PlainInput<Chapter> name="cpu_hand" number />
+            <PlainInput<Chapter> name="player_hand" number />
+            <PlainInput<Chapter> name="cpu_flag" />
+            <PlainInput<Chapter> name="cpu_name" />
+            <PlainInput<Chapter> name="cpu_value" number />
+          </>
+        )}
+        {type === 'Gate' && <UnlockInput />}
+      </div>
+    </FormProvider>
   );
 };
 
 interface FileInputProps {
-  name: Path<Solo>;
+  name: Path<Chapter>;
   path?: string;
   optional?: boolean;
 }
 const getFileName = (path: string) => path.split('\\').pop()?.split('/').pop();
 
 const FileNameInput = ({ name, path, optional }: FileInputProps) => {
-  const { control } = useFormContext<Solo>();
+  const { control } = useFormContext<Chapter>();
 
   const label = name.replaceAll('_', ' ');
 
@@ -160,27 +182,20 @@ const FileNameInput = ({ name, path, optional }: FileInputProps) => {
   );
 };
 
-interface RewardInputProps {
-  name: FieldArrayPath<Solo>;
+interface ItemInputProps {
+  name: FieldArrayPath<Chapter>;
   disabled?: boolean;
 }
 
-const rewardOptions = [
-  'GEM',
-  'DARK_ORB',
-  'LIGHT_ORB',
-  'FIRE_ORB',
-  'WARTER_ORB',
-  'EARTH_ORB',
-  'WIND_ORB',
-  'CARD',
-  'STRUCTURE',
-];
+const categoryOptions = Object.entries(ItemCategory).map(([label, value]) => ({
+  label,
+  value,
+}));
 
-const RewardInput = ({ name, disabled }: RewardInputProps) => {
+const ItemInput = ({ name, disabled }: ItemInputProps) => {
   const classes = useStyles();
-  const { control } = useFormContext<Solo>();
-  const { fields, append, remove } = useFieldArray<Solo>({ name });
+  const { control } = useFormContext<Chapter>();
+  const { fields, append, remove } = useFieldArray<Chapter>({ name });
 
   const label = name.replaceAll('_', ' ');
 
@@ -203,16 +218,17 @@ const RewardInput = ({ name, disabled }: RewardInputProps) => {
                     field.onChange(optionValue)
                   }
                 >
-                  {rewardOptions.map((option) => (
-                    <Option key={option} value={option}>
-                      {option}
+                  {categoryOptions.map(({ label, value }) => (
+                    <Option key={value} value={value}>
+                      {label}
                     </Option>
                   ))}
                 </Combobox>
               </Field>
             )}
           />
-          <PlainInput name={`${name}.${index}.value`} number />
+          <PlainInput label="id" name={`${name}.${index}.id`} />
+          <PlainInput label="counts" name={`${name}.${index}.counts`} number />
           <Tooltip content="Remove reward item" relationship="label">
             <Button
               icon={<Subtract16Regular />}
@@ -224,21 +240,27 @@ const RewardInput = ({ name, disabled }: RewardInputProps) => {
       <Button
         icon={<Add16Regular />}
         disabled={disabled}
-        onClick={() => append({ category: 'GEM', value: 100 })}
+        onClick={() =>
+          append({ category: ItemCategory.CONSUME, id: '1', counts: 100 })
+        }
       >
-        Add Reward
+        Add Item
       </Button>
     </div>
   );
 };
 
 const MydeckRewardInput = () => {
-  return <RewardInput name="mydeck_reward" />;
+  return <ItemInput name="mydeck_reward" />;
 };
 
 const RentalRewardInput = () => {
-  const { control } = useFormContext<Solo>();
+  const { control } = useFormContext<Chapter>();
   const rentalDeck = useWatch({ control, name: 'rental_deck' });
 
-  return <RewardInput name="rental_reward" disabled={Boolean(!rentalDeck)} />;
+  return <ItemInput name="rental_reward" disabled={Boolean(!rentalDeck)} />;
+};
+
+const UnlockInput = () => {
+  return <ItemInput name="unlock" />;
 };

@@ -22,7 +22,6 @@ export const InitGuard = ({ children }: InitGuardProps) => {
 
   const setSettings = useAppStore((s) => s.setSettings);
   const loadGates = useAppStore((s) => s.loadGates);
-  const loadSolos = useAppStore((s) => s.loadSolos);
 
   useEffect(() => {
     const run = async () => {
@@ -34,16 +33,13 @@ export const InitGuard = ({ children }: InitGuardProps) => {
 
         setLoading('Gates');
         await loadGates();
-
-        setLoading('Solos');
-        await loadSolos();
       } finally {
         setLoading(undefined);
       }
     };
 
     run();
-  }, [setSettings, loadGates, loadSolos]);
+  }, [setSettings, loadGates]);
 
   if (loading) {
     return <div className={classes.container}>{`Loading ${loading}`}</div>;

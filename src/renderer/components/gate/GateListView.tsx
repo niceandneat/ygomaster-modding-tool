@@ -9,11 +9,9 @@ import {
   DataGridRow,
   TableCellLayout,
   TableColumnDefinition,
-  TableColumnSizingOptions,
   Title1,
   createTableColumn,
   makeStyles,
-  shorthands,
   tokens,
 } from '@fluentui/react-components';
 import {
@@ -29,9 +27,6 @@ import { useAppStore } from '../../store';
 import { toRelativePath } from '../../utils/toRelativePath';
 
 const useStyles = makeStyles({
-  container: {
-    ...shorthands.padding(tokens.spacingHorizontalL),
-  },
   header: {
     display: 'flex',
     alignItems: 'flex-start',
@@ -62,19 +57,7 @@ interface GateListViewProps {
 
 const defaultSortState: Parameters<
   NonNullable<DataGridProps['onSortChange']>
->[1] = { sortColumn: 'id', sortDirection: 'ascending' };
-
-const columnSizingOptions: TableColumnSizingOptions = {
-  id: {
-    defaultWidth: 80,
-  },
-  path: {
-    defaultWidth: 120,
-  },
-  deck: {
-    defaultWidth: 280,
-  },
-};
+>[1] = { sortColumn: 'priority', sortDirection: 'ascending' };
 
 export const GateListView = ({
   gates,
@@ -88,6 +71,18 @@ export const GateListView = ({
 
   const columns: TableColumnDefinition<GateSummary>[] = useMemo(
     () => [
+      createTableColumn<GateSummary>({
+        columnId: 'priority',
+        compare: (a, b) => {
+          return a.priority - b.priority;
+        },
+        renderHeaderCell: () => {
+          return 'Priority';
+        },
+        renderCell: (gate) => {
+          return <TableCellLayout truncate>{gate.priority}</TableCellLayout>;
+        },
+      }),
       createTableColumn<GateSummary>({
         columnId: 'id',
         compare: (a, b) => {
@@ -155,7 +150,7 @@ export const GateListView = ({
   );
 
   return (
-    <div className={classes.container}>
+    <div>
       <div className={classes.header}>
         <Title1 className={classes.title}>Gates</Title1>
         <div className={classes.headerButtons}>
@@ -177,7 +172,6 @@ export const GateListView = ({
         sortable
         defaultSortState={defaultSortState}
         resizableColumns
-        columnSizingOptions={columnSizingOptions}
       >
         <DataGridHeader>
           <DataGridRow>
