@@ -4,9 +4,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 import {
   CREATE_GATE,
-  CREATE_SOLO,
   DELETE_GATE,
-  DELETE_SOLO,
   EXPORT_DATA,
   EXPORT_DECK,
   IMPORT_DATA,
@@ -18,30 +16,22 @@ import {
   OPEN_SETTINGS_FILE,
   READ_GATE,
   READ_GATES,
-  READ_SOLO,
-  READ_SOLOS,
   SAVE_SETTINGS,
   SHOW_MESSAGE_BOX,
   UPDATE_GATE,
-  UPDATE_SOLO,
 } from '../common/channel';
 import {
   CreateGateRequest,
-  CreateSoloRequest,
   DeleteGateRequest,
-  DeleteSoloRequest,
   ExportDataRequest,
   ExportDeckRequest,
   ImportDataRequest,
   ImportDeckRequest,
   ReadGateRequest,
   ReadGatesRequest,
-  ReadSoloRequest,
-  ReadSolosRequest,
   Settings,
   ShowMessageBoxRequest,
   UpdateGateRequest,
-  UpdateSoloRequest,
 } from '../common/type';
 
 // prettier-ignore
@@ -60,11 +50,6 @@ contextBridge.exposeInMainWorld('electron', {
   createGate: (request: CreateGateRequest) => ipcRenderer.invoke(CREATE_GATE, request),
   updateGate: (request: UpdateGateRequest) => ipcRenderer.invoke(UPDATE_GATE, request),
   deleteGate: (request: DeleteGateRequest) => ipcRenderer.invoke(DELETE_GATE, request),
-  readSolos: (request: ReadSolosRequest) => ipcRenderer.invoke(READ_SOLOS, request),
-  readSolo: (request: ReadSoloRequest) => ipcRenderer.invoke(READ_SOLO, request),
-  createSolo: (request: CreateSoloRequest) => ipcRenderer.invoke(CREATE_SOLO, request),
-  updateSolo: (request: UpdateSoloRequest) => ipcRenderer.invoke(UPDATE_SOLO, request),
-  deleteSolo: (request: DeleteSoloRequest) => ipcRenderer.invoke(DELETE_SOLO, request),
   importDeck: (request: ImportDeckRequest) => ipcRenderer.invoke(IMPORT_DECK, request),
   exportDeck: (request: ExportDeckRequest) => ipcRenderer.invoke(EXPORT_DECK, request),
 });

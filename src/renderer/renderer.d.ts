@@ -1,10 +1,7 @@
 import {
   CreateGateRequest,
   CreateGateResponse,
-  CreateSoloRequest,
-  CreateSoloResponse,
   DeleteGateRequest,
-  DeleteSoloRequest,
   ExportDataRequest,
   ExportDeckRequest,
   ImportDataRequest,
@@ -13,14 +10,9 @@ import {
   ReadGateResponse,
   ReadGatesRequest,
   ReadGatesResponse,
-  ReadSoloRequest,
-  ReadSoloResponse,
-  ReadSolosRequest,
-  ReadSolosResponse,
   Settings,
   ShowMessageBoxRequest,
   UpdateGateRequest,
-  UpdateSoloRequest,
 } from '../common/type';
 
 export interface ElectronAPI {
@@ -38,11 +30,6 @@ export interface ElectronAPI {
   createGate: (request: CreateGateRequest) => Promise<CreateGateResponse>;
   updateGate: (request: UpdateGateRequest) => Promise<void>;
   deleteGate: (request: DeleteGateRequest) => Promise<void>;
-  readSolos: (request: ReadSolosRequest) => Promise<ReadSolosResponse>;
-  readSolo: (request: ReadSoloRequest) => Promise<ReadSoloResponse>;
-  createSolo: (request: CreateSoloRequest) => Promise<CreateSoloResponse>;
-  updateSolo: (request: UpdateSoloRequest) => Promise<void>;
-  deleteSolo: (request: DeleteSoloRequest) => Promise<void>;
   importDeck: (request: ImportDeckRequest) => Promise<void>;
   exportDeck: (request: ExportDeckRequest) => Promise<void>;
 }

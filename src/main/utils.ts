@@ -58,7 +58,9 @@ export const backupFiles = async (
 
     try {
       if (path.extname(filePath) === '') {
+        // directory
         await cp(abosoluteFilePath, newPath, { recursive: true });
+        await rm(abosoluteFilePath, { recursive: true, force: true });
       } else {
         await mkdir(path.dirname(newPath), { recursive: true });
         await rename(abosoluteFilePath, newPath);

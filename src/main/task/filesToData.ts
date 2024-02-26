@@ -2,17 +2,16 @@ import log from 'electron-log/main';
 import { glob } from 'glob';
 import path from 'node:path';
 
-import { Gate, Reward, Solo, Unlock } from '../../common/type';
-import { ygoItems } from '../../common/ygoItems';
 import {
-  DataConsumItemValue,
-  DataItemCategory,
-  DataUnlockType,
-  DeckData,
-  DuelData,
-  GateData,
-  OrbStringToCode,
-} from '../type';
+  DuelChapter,
+  Gate,
+  Reward,
+  Unlock,
+  isDuelChapter,
+  isGateChapter,
+} from '../../common/new-type';
+import { ygoItems } from '../../common/ygoItems';
+import { DataUnlockType, DeckData, DuelData, GateData } from '../type';
 import {
   backupFiles,
   batchPromiseAll,
@@ -30,33 +29,26 @@ interface Ids {
 
 export const filesToData = async (paths: {
   gatePath: string;
-  soloPath: string;
   deckPath: string;
   dataPath: string;
 }) => {
-  const { gatePath, soloPath, deckPath, dataPath } = paths;
+  const { gatePath, deckPath, dataPath } = paths;
   const gates = await loadGates(gatePath);
-  const solos = await loadSolos(soloPath);
   const deckPathMap = await loadDeckPathMap(deckPath);
 
-  const gateData = createGateData(gates, solos);
-  const duelDataList = await batchPromiseAll(solos, (solo) =>
-    createDuelData(solo, deckPathMap),
+  const gateData = createGateData(gates);
+  const duelDataList = await batchPromiseAll(
+    gates.flatMap((gate) => gate.chapters).filter(isDuelChapter),
+    (chapter) => createDuelData(chapter, deckPathMap),
   );
 
-  await saveData({ gates, solos, gateData, duelDataList, dataPath });
+  await saveData({ gates, gateData, duelDataList, dataPath });
 };
 
 const loadGates = async (gatePath: string): Promise<Gate[]> => {
   const gatePaths = await glob(toPosix(path.resolve(gatePath, '**/*.json')));
   const gates = await batchPromiseAll(gatePaths, readJson<Gate>);
   return gates.sort((a, b) => a.id - b.id);
-};
-
-const loadSolos = async (soloPath: string): Promise<Solo[]> => {
-  const soloPaths = await glob(toPosix(path.resolve(soloPath, '**/*.json')));
-  const solos = await batchPromiseAll(soloPaths, readJson<Solo>);
-  return solos.sort((a, b) => a.id - b.id);
 };
 
 const loadDeckPathMap = async (
@@ -70,19 +62,19 @@ const loadDeckPathMap = async (
 };
 
 const createDuelData = async (
-  solo: Solo,
+  chapter: DuelChapter,
   pathMap: Record<string, string>,
 ): Promise<DuelData> => {
-  const cpuDeck = await readJson<DeckData>(pathMap[solo.cpu_deck]);
-  const rentalDeck = solo.rental_deck
-    ? await readJson<DeckData>(pathMap[solo.rental_deck])
+  const cpuDeck = await readJson<DeckData>(pathMap[chapter.cpu_deck]);
+  const rentalDeck = chapter.rental_deck
+    ? await readJson<DeckData>(pathMap[chapter.rental_deck])
     : cpuDeck;
 
   const field = getRandomItem(ygoItems.FIELD);
 
   return {
-    chapter: solo.id,
-    name: ['', solo.cpu_name],
+    chapter: chapter.id,
+    name: ['', chapter.cpu_name],
     mat: repeat(field),
     duel_object: repeat(field + 10000),
     avatar_home: repeat(field + 20000),
@@ -90,9 +82,9 @@ const createDuelData = async (
     sleeve: [0, getRandomItem(ygoItems.PROTECTOR)],
     icon: [0, getRandomItem(ygoItems.ICON)],
     icon_frame: [0, getRandomItem(ygoItems.ICON_FRAME)],
-    hnum: [solo.player_hand, solo.cpu_hand],
-    cpu: solo.cpu_value,
-    cpuflag: solo.cpu_flag,
+    hnum: [chapter.player_hand, chapter.cpu_hand],
+    cpu: chapter.cpu_value,
+    cpuflag: chapter.cpu_flag,
     Deck: [
       {
         Main: { CardIds: rentalDeck.m.ids, Rare: rentalDeck.m.r },
@@ -108,9 +100,7 @@ const createDuelData = async (
   };
 };
 
-const createGateData = (gates: Gate[], solos: Solo[]): GateData => {
-  const soloMap = new Map(solos.map((solo) => [solo.id, solo]));
-
+const createGateData = (gates: Gate[]): GateData => {
   const gateData: GateData = {
     gate: {},
     chapter: {},
@@ -126,7 +116,7 @@ const createGateData = (gates: Gate[], solos: Solo[]): GateData => {
   };
 
   gates.forEach((gate) => {
-    const { data, ids } = createSingleGateData(gate, soloMap, initialIds);
+    const { data, ids } = createSingleGateData(gate, initialIds);
 
     gateData.gate = { ...gateData.gate, ...data.gate };
     gateData.chapter = { ...gateData.chapter, ...data.chapter };
@@ -141,7 +131,6 @@ const createGateData = (gates: Gate[], solos: Solo[]): GateData => {
 
 const createSingleGateData = (
   gate: Gate,
-  solos: Map<number, Solo>,
   initialIds: Ids,
 ): { data: GateData; ids: Ids } => {
   const gateField: GateData['gate'][string] = {
@@ -149,7 +138,7 @@ const createSingleGateData = (
     parent_gate: gate.parent_id,
     view_gate: 0,
     unlock_id: 0,
-    clear_chapter: gate.solos.at(-1)?.id || 0,
+    clear_chapter: gate.chapters.at(-1)?.id || 0,
   };
 
   const chapterField: GateData['chapter'][string] = {};
@@ -158,14 +147,9 @@ const createSingleGateData = (
   const rewardField: GateData['reward'] = {};
   const ids = { ...initialIds };
 
-  gate.solos.forEach((soloInGate) => {
-    const solo = solos.get(soloInGate.id);
-    if (!solo) {
-      return log.error(`Gate ${gate.id}: Solo ${soloInGate.id} not found`);
-    }
-
-    const chapter: GateData['chapter'][string][string] = {
-      parent_chapter: soloInGate.parent_id,
+  gate.chapters.forEach((chapter) => {
+    const chapterData: GateData['chapter'][string][string] = {
+      parent_chapter: chapter.parent_id,
       mydeck_set_id: 0,
       set_id: 0,
       unlock_id: 0,
@@ -173,32 +157,34 @@ const createSingleGateData = (
       npc_id: 1,
     };
 
-    const reward = createReward(solo.mydeck_reward);
-    chapter.mydeck_set_id = ids.rewardId;
-    rewardField[ids.rewardId] = reward;
-    ids.rewardId += 1;
-
-    if (solo.rental_reward?.length) {
-      const reward = createReward(solo.rental_reward);
-      chapter.set_id = ids.rewardId;
-      rewardField[ids.rewardId] = reward;
-      ids.rewardId += 1;
-    }
-
-    if (soloInGate.unlock?.length) {
+    if (isGateChapter(chapter)) {
       const { unlock, unlockItem } = createUnlock(
-        soloInGate.unlock,
+        chapter.unlock,
         ids.unlockItemId,
       );
 
-      chapter.unlock_id = ids.unlockId;
+      chapterData.unlock_id = ids.unlockId;
       unlockField[ids.unlockId] = unlock;
       unlockItemField[ids.unlockItemId] = unlockItem;
       ids.unlockId += 1;
       ids.unlockItemId += 1;
     }
 
-    chapterField[soloInGate.id] = chapter;
+    if (isDuelChapter(chapter)) {
+      const reward = createReward(chapter.mydeck_reward);
+      chapterData.mydeck_set_id = ids.rewardId;
+      rewardField[ids.rewardId] = reward;
+      ids.rewardId += 1;
+
+      if (chapter.rental_deck && chapter.rental_reward) {
+        const reward = createReward(chapter.rental_reward);
+        chapterData.set_id = ids.rewardId;
+        rewardField[ids.rewardId] = reward;
+        ids.rewardId += 1;
+      }
+    }
+
+    chapterField[chapter.id] = chapterData;
   });
 
   return {
@@ -213,63 +199,35 @@ const createSingleGateData = (
   };
 };
 
-const createReward = (soloRewards: Reward[]) => {
+const createReward = (chapterRewards: Reward[]) => {
   const reward: GateData['reward'][string] = {};
-
-  soloRewards.forEach(({ category, value }) => {
-    if (category === 'GEM') {
-      return sumToExist(
-        reward,
-        DataItemCategory.CONSUME,
-        DataConsumItemValue.Gem,
-        value,
-      );
-    }
-
-    if (category === 'CARD') {
-      return sumToExist(reward, DataItemCategory.CARD, value, 1);
-    }
-
-    if (category === 'STRUCTURE') {
-      return sumToExist(reward, DataItemCategory.STRUCTURE, value, 1);
-    }
-
-    sumToExist(
-      reward,
-      DataItemCategory.CONSUME,
-      OrbStringToCode[category],
-      value,
-    );
+  chapterRewards.forEach(({ category, id, counts }) => {
+    reward[category] = { ...reward[category], [id]: counts };
   });
 
   return reward;
 };
 
-const createUnlock = (soloUnlocks: Unlock[], unlockItemId: number) => {
+const createUnlock = (chapterUnlocks: Unlock[], unlockItemId: number) => {
   const unlock: GateData['unlock'][string] = {
     [DataUnlockType.ITEM]: [unlockItemId],
   };
 
-  const unlockItem: GateData['unlock_item'][string] = {
-    [DataItemCategory.CONSUME]: Object.fromEntries(
-      soloUnlocks.map(({ category, value }) => [
-        OrbStringToCode[category],
-        value,
-      ]),
-    ),
-  };
+  const unlockItem: GateData['unlock_item'][string] = {};
+  chapterUnlocks.forEach(({ category, id, counts }) => {
+    unlockItem[category] = { ...unlockItem[category], [id]: counts };
+  });
 
   return { unlock, unlockItem };
 };
 
 const saveData = async (data: {
   gates: Gate[];
-  solos: Solo[];
   gateData: GateData;
   duelDataList: DuelData[];
   dataPath: string;
 }) => {
-  const { gates, solos, gateData, duelDataList, dataPath } = data;
+  const { gates, gateData, duelDataList, dataPath } = data;
   log.info('Start save data');
 
   // Backup original files
@@ -309,16 +267,12 @@ const saveData = async (data: {
   log.info('Created SoloGateCards.txt');
 
   // Create IDS_SOLO.txt
-  const soloMap = new Map(solos.map((solo) => [solo.id, solo]));
   let soloDescriptions = '';
-  gates.forEach(({ id, name, description, solos }) => {
+  gates.forEach(({ id, name, description = '', chapters }) => {
     soloDescriptions += `[IDS_SOLO.GATE${id}]\n${name}\n`;
     soloDescriptions += `[IDS_SOLO.GATE${id}_EXPLANATION]\n${description}\n`;
-    solos.forEach(({ id: soloId }) => {
-      const solo = soloMap.get(soloId);
-      if (!solo) return;
-
-      soloDescriptions += `[IDS_SOLO.CHAPTER${solo.id}_EXPLANATION]\n${solo.description}\n`;
+    chapters.forEach((chapter) => {
+      soloDescriptions += `[IDS_SOLO.CHAPTER${chapter.id}_EXPLANATION]\n${chapter.description}\n`;
     });
   });
 
@@ -336,16 +290,3 @@ const saveData = async (data: {
 const repeat = (id: number): [number, number] => [id, id];
 const getRandomItem = (ids: number[]) =>
   ids[Math.floor(ids.length * Math.random())];
-
-const sumToExist = (
-  reward: GateData['reward'][string],
-  category: DataItemCategory,
-  id: string | number,
-  value: number,
-) => {
-  if (!reward[category]) reward[category] = {};
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  if (!reward[category]![id]) reward[category]![id] = 0;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  reward[category]![id] += value;
-};

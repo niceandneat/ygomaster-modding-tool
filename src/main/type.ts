@@ -1,4 +1,4 @@
-import { OrbItemCategory } from '../common/type';
+import { ItemCategory } from '../common/new-type';
 
 export interface DeckData {
   name: string;
@@ -109,14 +109,14 @@ export interface GateData {
   };
   unlock_item: {
     [unlockItemId in string]: {
-      [itemCategory in DataItemCategory]?: {
+      [itemCategory in ItemCategory]?: {
         [itemId in string]: number; // counts
       };
     };
   };
   reward: {
     [rewardId in string]: {
-      [itemCategory in DataItemCategory]?: {
+      [itemCategory in ItemCategory]?: {
         [itemId in string]: number; // counts
       };
     };
@@ -135,25 +135,6 @@ export enum DataUnlockType {
   HAS_ITEM = '5',
 }
 
-export enum DataItemCategory {
-  NONE = '0',
-  CONSUME = '1',
-  CARD = '2',
-  AVATAR = '3',
-  ICON = '4',
-  PROFILE_TAG = '5',
-  ICON_FRAME = '6',
-  PROTECTOR = '7',
-  DECK_CASE = '8',
-  FIELD = '9',
-  FIELD_OBJ = '10',
-  AVATAR_HOME = '11',
-  STRUCTURE = '12',
-  WALLPAPER = '13',
-  PACK_TICKET = '14',
-  DECK_LIMIT = '15',
-}
-
 export enum DataConsumItemValue {
   None = '0',
   Gem = '1',
@@ -169,21 +150,3 @@ export enum DataConsumItemValue {
   OrbFire = '12',
   OrbWind = '13',
 }
-
-export const OrbStringToCode = {
-  DARK_ORB: DataConsumItemValue.OrbDark,
-  LIGHT_ORB: DataConsumItemValue.OrbLight,
-  EARTH_ORB: DataConsumItemValue.OrbEarth,
-  WARTER_ORB: DataConsumItemValue.OrbWater,
-  FIRE_ORB: DataConsumItemValue.OrbFire,
-  WIND_ORB: DataConsumItemValue.OrbWind,
-} satisfies Record<OrbItemCategory, DataConsumItemValue>;
-
-export const OrbCodeToString = {
-  [DataConsumItemValue.OrbDark]: 'DARK_ORB',
-  [DataConsumItemValue.OrbLight]: 'LIGHT_ORB',
-  [DataConsumItemValue.OrbEarth]: 'EARTH_ORB',
-  [DataConsumItemValue.OrbWater]: 'WARTER_ORB',
-  [DataConsumItemValue.OrbFire]: 'FIRE_ORB',
-  [DataConsumItemValue.OrbWind]: 'WIND_ORB',
-} satisfies Partial<Record<DataConsumItemValue, OrbItemCategory>>;

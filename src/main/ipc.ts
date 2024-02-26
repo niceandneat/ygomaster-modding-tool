@@ -12,9 +12,7 @@ import path from 'node:path';
 
 import {
   CREATE_GATE,
-  CREATE_SOLO,
   DELETE_GATE,
-  DELETE_SOLO,
   EXPORT_DATA,
   EXPORT_DECK,
   IMPORT_DATA,
@@ -26,20 +24,14 @@ import {
   OPEN_SETTINGS_FILE,
   READ_GATE,
   READ_GATES,
-  READ_SOLO,
-  READ_SOLOS,
   SAVE_SETTINGS,
   SHOW_MESSAGE_BOX,
   UPDATE_GATE,
-  UPDATE_SOLO,
 } from '../common/channel';
 import {
   CreateGateRequest,
   CreateGateResponse,
-  CreateSoloRequest,
-  CreateSoloResponse,
   DeleteGateRequest,
-  DeleteSoloRequest,
   ExportDataRequest,
   Gate,
   GateSummary,
@@ -49,16 +41,9 @@ import {
   ReadGateResponse,
   ReadGatesRequest,
   ReadGatesResponse,
-  ReadSoloRequest,
-  ReadSoloResponse,
-  ReadSolosRequest,
-  ReadSolosResponse,
   Settings,
   ShowMessageBoxRequest,
-  Solo,
-  SoloSummary,
   UpdateGateRequest,
-  UpdateSoloRequest,
 } from '../common/type';
 import { dataToFiles } from './task/dataToFiles';
 import { filesToData } from './task/filesToData';
@@ -161,16 +146,16 @@ const handleOpenLogFile = (app: App) => async (): Promise<string> => {
 
 const handleImportData = async (
   _event: IpcMainInvokeEvent,
-  { gatePath, soloPath, deckPath, dataPath }: ImportDataRequest,
+  { gatePath, deckPath, dataPath }: ImportDataRequest,
 ) => {
-  await dataToFiles({ gatePath, soloPath, deckPath, dataPath });
+  await dataToFiles({ gatePath, deckPath, dataPath });
 };
 
 const handleExportData = async (
   _event: IpcMainInvokeEvent,
-  { gatePath, soloPath, deckPath, dataPath }: ExportDataRequest,
+  { gatePath, deckPath, dataPath }: ExportDataRequest,
 ) => {
-  await filesToData({ gatePath, soloPath, deckPath, dataPath });
+  await filesToData({ gatePath, deckPath, dataPath });
 };
 
 const handleReadGates = async (
@@ -224,57 +209,6 @@ const handleDeleteGate = async (
   await deleteFile(filePath);
 };
 
-const handleReadSolos = async (
-  _event: IpcMainInvokeEvent,
-  { soloPath }: ReadSolosRequest,
-): Promise<ReadSolosResponse> => {
-  const soloPaths = await glob(toPosix(path.resolve(soloPath, '**/*.json')));
-  const solos = await batchPromiseAll(soloPaths, (soloPath) =>
-    readJson<Solo>(soloPath).then(
-      (solo): SoloSummary => ({
-        id: solo.id,
-        path: soloPath,
-        deck: solo.cpu_deck,
-      }),
-    ),
-  );
-
-  return { solos: solos.sort((a, b) => a.id - b.id) };
-};
-
-const handleReadSolo = async (
-  _event: IpcMainInvokeEvent,
-  { filePath }: ReadSoloRequest,
-): Promise<ReadSoloResponse> => {
-  return { solo: await readJson(filePath) };
-};
-
-const handleCreateSolo = async (
-  event: IpcMainInvokeEvent,
-  { solo, path: basePath }: CreateSoloRequest,
-): Promise<CreateSoloResponse> => {
-  const defaultPath = basePath && path.resolve(basePath, `${solo.id}.json`);
-  const filePath = await handleSaveFile(event, defaultPath);
-  if (!filePath) return {};
-
-  await saveJson(filePath, solo);
-  return { filePath };
-};
-
-const handleUpdateSolo = async (
-  _event: IpcMainInvokeEvent,
-  { filePath, solo }: UpdateSoloRequest,
-) => {
-  await saveJson(filePath, solo);
-};
-
-const handleDeleteSolo = async (
-  _event: IpcMainInvokeEvent,
-  { filePath }: DeleteSoloRequest,
-) => {
-  await deleteFile(filePath);
-};
-
 const handleImportDeck = async (
   _event: IpcMainInvokeEvent,
   { deckPath, dataPath }: ImportDeckRequest,
@@ -318,12 +252,6 @@ export const handleIpc = (app: App) => {
   handleWithLog(CREATE_GATE, handleCreateGate);
   handleWithLog(UPDATE_GATE, handleUpdateGate);
   handleWithLog(DELETE_GATE, handleDeleteGate);
-
-  handleWithLog(READ_SOLOS, handleReadSolos);
-  handleWithLog(READ_SOLO, handleReadSolo);
-  handleWithLog(CREATE_SOLO, handleCreateSolo);
-  handleWithLog(UPDATE_SOLO, handleUpdateSolo);
-  handleWithLog(DELETE_SOLO, handleDeleteSolo);
 
   handleWithLog(IMPORT_DECK, handleImportDeck);
   handleWithLog(EXPORT_DECK, handleExportDeck);

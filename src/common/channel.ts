@@ -16,11 +16,5 @@ export const CREATE_GATE = 'CREATE_GATE';
 export const UPDATE_GATE = 'UPDATE_GATE';
 export const DELETE_GATE = 'DELETE_GATE';
 
-export const READ_SOLOS = 'READ_SOLOS';
-export const READ_SOLO = 'READ_SOLO';
-export const CREATE_SOLO = 'CREATE_SOLO';
-export const UPDATE_SOLO = 'UPDATE_SOLO';
-export const DELETE_SOLO = 'DELETE_SOLO';
-
 export const IMPORT_DECK = 'IMPORT_DECK';
 export const EXPORT_DECK = 'EXPORT_DECK';

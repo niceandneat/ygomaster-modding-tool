@@ -2,17 +2,22 @@ import log from 'electron-log/main';
 import { glob } from 'glob';
 import path from 'node:path';
 
-import { Gate, Reward, Solo, SoloInGate, Unlock } from '../../common/type';
 import {
-  DataConsumItemValue,
-  DataItemCategory,
+  Chapter,
+  DuelChapter,
+  Gate,
+  GateChapter,
+  ItemCategory,
+  Reward,
+  Unlock,
+} from '../../common/new-type';
+import {
   DataUnlockType,
   DeckData,
   DuelData,
   DuelDataFile,
   GateData,
   GateDataFile,
-  OrbCodeToString,
 } from '../type';
 import {
   backupFiles,
@@ -25,32 +30,27 @@ import {
 
 export const dataToFiles = async (paths: {
   gatePath: string;
-  soloPath: string;
   deckPath: string;
   dataPath: string;
 }) => {
-  const { gatePath, soloPath, deckPath, dataPath } = paths;
+  const { gatePath, deckPath, dataPath } = paths;
 
   const gateData = await loadGateData(dataPath);
-  const duelDataList = await loadDuelDataList(dataPath);
+  const duelDataMap = await loadDuelDataList(dataPath);
   const gateIllustrations = await loadIllustrations(dataPath);
   const { gateNames, gateDescriptions, duelDescriptions } =
     await loadDescriptions(dataPath);
 
-  const gates = createGates({
+  const { gates, decks } = createGates({
     gateData,
     gateNames,
     gateDescriptions,
     gateIllustrations,
-  });
-
-  const { solos, decks } = createSolos({
-    gateData,
-    duelDataList,
+    duelDataMap,
     duelDescriptions,
   });
 
-  await saveFiles({ gatePath, soloPath, deckPath, gates, solos, decks });
+  await saveFiles({ gatePath, deckPath, gates, decks });
 };
 
 const loadGateData = async (dataPath: string): Promise<GateData> => {
@@ -61,13 +61,15 @@ const loadGateData = async (dataPath: string): Promise<GateData> => {
   return rawData.Master.Solo;
 };
 
-const loadDuelDataList = async (dataPath: string): Promise<DuelData[]> => {
-  const soloPaths = await glob(
+const loadDuelDataList = async (
+  dataPath: string,
+): Promise<Map<number, DuelData>> => {
+  const duelPaths = await glob(
     toPosix(path.resolve(dataPath, 'SoloDuels/*.json')),
   );
-  const rawData = await batchPromiseAll(soloPaths, readJson<DuelDataFile>);
+  const rawData = await batchPromiseAll(duelPaths, readJson<DuelDataFile>);
 
-  return rawData.map((data) => data.Duel);
+  return new Map(rawData.map((data) => [data.Duel.chapter, data.Duel]));
 };
 
 const loadIllustrations = async (dataPath: string) => {
@@ -154,13 +156,29 @@ const createGates = (data: {
     number,
     Pick<Gate, 'illust_id' | 'illust_x' | 'illust_y'>
   >;
-}): Gate[] => {
-  const { gateData, gateNames, gateDescriptions, gateIllustrations } = data;
+  duelDataMap: Map<number, DuelData>;
+  duelDescriptions: Map<number, string>;
+}): { gates: Gate[]; decks: DeckData[] } => {
+  const {
+    gateData,
+    gateNames,
+    gateDescriptions,
+    gateIllustrations,
+    duelDataMap,
+    duelDescriptions,
+  } = data;
 
-  return Object.keys(gateData.gate).map((gateKey) => {
+  const results = Object.keys(gateData.gate).map((gateKey) => {
     const gateId = Number(gateKey);
 
-    return {
+    const { chapters, decks } = createChapters({
+      gateData,
+      gateId,
+      duelDataMap,
+      duelDescriptions,
+    });
+
+    const gate: Gate = {
       id: gateId,
       name: gateNames.get(gateId) || '',
       description: gateDescriptions.get(gateId) || '',
@@ -169,98 +187,151 @@ const createGates = (data: {
       illust_y: gateIllustrations.get(gateId)?.illust_y || 0,
       priority: gateData.gate[gateId].priority,
       parent_id: gateData.gate[gateId].parent_gate,
-      solos: createSolosInGate(gateData, gateId),
+      chapters,
     };
+
+    return { gate, decks };
   });
+
+  return {
+    gates: results.map(({ gate }) => gate),
+    decks: results.flatMap(({ decks }) => decks),
+  };
 };
 
-const createSolosInGate = (
-  gateData: GateData,
-  gateId: number,
-): SoloInGate[] => {
-  const { chapter, unlock, unlock_item } = gateData;
-
-  return Object.entries(chapter[gateId]).map(([soloKey, value]) => {
-    const { unlock_id, parent_chapter } = value;
-    const soloId = Number(soloKey);
-    const results: SoloInGate = { id: soloId, parent_id: parent_chapter };
-
-    if (unlock_id) {
-      const unlockItemIds = unlock[unlock_id][DataUnlockType.ITEM];
-
-      results.unlock = unlockItemIds?.flatMap((id) => {
-        const unlockConsumItems = unlock_item[id][DataItemCategory.CONSUME];
-        if (!unlockConsumItems) return [];
-
-        return Object.entries(unlockConsumItems).map(
-          ([itemId, counts]) =>
-            ({
-              category: OrbCodeToString[itemId as keyof typeof OrbCodeToString],
-              value: counts,
-            }) satisfies Unlock,
-        );
-      });
-    }
-
-    return results;
-  });
-};
-
-const createSolos = (data: {
+const createChapters = (data: {
   gateData: GateData;
-  duelDataList: DuelData[];
+  gateId: number;
+  duelDataMap: Map<number, DuelData>;
   duelDescriptions: Map<number, string>;
-}): { solos: Solo[]; decks: DeckData[] } => {
-  const { gateData, duelDataList, duelDescriptions } = data;
+}): { chapters: Chapter[]; decks: DeckData[] } => {
+  const { gateData, gateId, duelDataMap, duelDescriptions } = data;
 
-  const chapterMap = new Map(
-    Object.values(gateData.chapter).flatMap((chapters) =>
-      Object.entries(chapters).map(([id, chapter]) => [Number(id), chapter]),
-    ),
+  const results = Object.entries(gateData.chapter[gateId]).map(
+    ([chapterKey, chapterData]) => {
+      const chapterId = Number(chapterKey);
+
+      if (chapterData.unlock_id) {
+        return {
+          chapter: createGateChapter({
+            gateData,
+            gateId,
+            chapterId,
+            duelDescriptions,
+          }),
+          decks: [],
+        };
+      }
+
+      return createDuelChapter({
+        gateData,
+        gateId,
+        chapterId,
+        duelDataMap,
+        duelDescriptions,
+      });
+    },
   );
+
+  return {
+    chapters: results
+      .map(({ chapter }) => chapter)
+      .filter((c): c is Chapter => Boolean(c)),
+    decks: results.flatMap(({ decks }) => decks),
+  };
+};
+
+const createGateChapter = (data: {
+  gateData: GateData;
+  gateId: number;
+  chapterId: number;
+  duelDescriptions: Map<number, string>;
+}): GateChapter => {
+  const { gateData, gateId, chapterId, duelDescriptions } = data;
+  const chapterData = gateData.chapter[gateId][chapterId];
+
+  return {
+    id: chapterId,
+    parent_id: chapterData.parent_chapter,
+    description: duelDescriptions.get(chapterId) ?? '',
+    unlock: createUnlock({ gateData, gateId, chapterId }),
+  };
+};
+
+const createUnlock = (data: {
+  gateData: GateData;
+  gateId: number;
+  chapterId: number;
+}): Unlock[] => {
+  const { gateData, gateId, chapterId } = data;
+  const chapterData = gateData.chapter[gateId][chapterId];
+  const unlockData = gateData.unlock[chapterData.unlock_id];
+
+  return (
+    unlockData[DataUnlockType.ITEM]?.flatMap((id) => {
+      const unlockConsumItems = gateData.unlock_item[id][ItemCategory.CONSUME];
+      if (!unlockConsumItems) return [];
+
+      return Object.entries(unlockConsumItems).map(
+        ([itemId, counts]) =>
+          ({
+            category: ItemCategory.CONSUME,
+            id: itemId,
+            counts,
+          }) satisfies Unlock,
+      );
+    }) ?? []
+  );
+};
+
+const createDuelChapter = (data: {
+  gateData: GateData;
+  gateId: number;
+  chapterId: number;
+  duelDataMap: Map<number, DuelData>;
+  duelDescriptions: Map<number, string>;
+}): { chapter?: DuelChapter; decks: DeckData[] } => {
+  const { gateData, gateId, chapterId, duelDataMap, duelDescriptions } = data;
+  const chapterData = gateData.chapter[gateId][chapterId];
+  const duelData = duelDataMap.get(chapterId);
+
+  if (!duelData) return { chapter: undefined, decks: [] };
 
   const decks: DeckData[] = [];
 
-  const solos: Solo[] = duelDataList
-    .map((duelData): Solo | undefined => {
-      const chapter = chapterMap.get(duelData.chapter);
-      if (!chapter) return;
+  const cpuDeckName = chapterData.mydeck_set_id.toString();
+  const myDeckReward = createReward(gateData, chapterData.mydeck_set_id);
+  const cpuDeck = createDeck(duelData.Deck[1], cpuDeckName);
+  decks.push(cpuDeck);
 
-      const description = duelDescriptions.get(duelData.chapter) || '';
+  const rentalDeckName = chapterData.set_id
+    ? chapterData.set_id.toString()
+    : undefined;
+  const rentalDeckReward = chapterData.set_id
+    ? createReward(gateData, chapterData.set_id)
+    : undefined;
+  const rentalDeck = rentalDeckName
+    ? createDeck(duelData.Deck[0], rentalDeckName)
+    : undefined;
+  if (rentalDeck) decks.push(rentalDeck);
 
-      const cpuDeckName = chapter.mydeck_set_id.toString();
-      const myDeckReward = createReward(gateData, chapter.mydeck_set_id);
-      const cpuDeck = createDeck(duelData.Deck[1], cpuDeckName);
-      decks.push(cpuDeck);
+  const chapter = {
+    id: chapterId,
+    parent_id: chapterData.parent_chapter,
+    description: duelDescriptions.get(chapterId) ?? '',
+    cpu_deck: `${cpuDeckName}.json`,
+    rental_deck: rentalDeckName && `${rentalDeckName}.json`,
+    mydeck_reward: myDeckReward,
+    rental_reward: rentalDeckReward,
+    cpu_hand: duelData.hnum?.[1] ?? 5,
+    player_hand: duelData.hnum?.[0] ?? 5,
+    cpu_name: duelData.name[1],
+    cpu_flag: duelData.cpuflag ?? 'None',
+    cpu_value: duelData.cpu ?? 98,
+    // TODO accessories
+  };
 
-      const rentalDeckName = chapter.set_id
-        ? chapter.set_id.toString()
-        : undefined;
-      const rentalDeckReward = chapter.set_id
-        ? createReward(gateData, chapter.set_id)
-        : undefined;
-      const rentalDeck = rentalDeckName
-        ? createDeck(duelData.Deck[0], rentalDeckName)
-        : undefined;
-      if (rentalDeck) decks.push(rentalDeck);
-
-      return {
-        id: duelData.chapter,
-        description,
-        cpu_deck: `${cpuDeckName}.json`,
-        rental_deck: rentalDeckName && `${rentalDeckName}.json`,
-        mydeck_reward: myDeckReward,
-        rental_reward: rentalDeckReward,
-        cpu_hand: duelData.hnum?.[1] ?? 5,
-        player_hand: duelData.hnum?.[0] ?? 5,
-        cpu_name: duelData.name[1],
-        cpu_flag: duelData.cpuflag ?? 'None',
-        cpu_value: duelData.cpu ?? 98,
-      };
-    })
-    .filter((solo): solo is Solo => Boolean(solo));
-
-  return { solos, decks };
+  return { chapter, decks };
 };
 
 const createDeck = (
@@ -290,58 +361,29 @@ const createDeck = (
 };
 
 const createReward = (gateData: GateData, rewardId: number): Reward[] => {
-  const results: Reward[] = [];
-  const rewardMap = gateData.reward[rewardId];
+  const rewardData = gateData.reward[rewardId];
 
-  const cardRewards = rewardMap[DataItemCategory.CARD];
-  const structureRewards = rewardMap[DataItemCategory.STRUCTURE];
-  const consumeRewards = rewardMap[DataItemCategory.CONSUME];
-
-  if (cardRewards) {
-    Object.entries(cardRewards).forEach(([cardId, counts]) => {
-      Array.from({ length: counts }).forEach(() => {
-        results.push({ category: 'CARD', value: Number(cardId) });
-      });
+  return Object.entries(rewardData).flatMap(([category, idCountsMap]) => {
+    return Object.entries(idCountsMap).map(([id, counts]) => {
+      return {
+        category: category as ItemCategory,
+        id,
+        counts,
+      } satisfies Reward;
     });
-  }
-
-  if (structureRewards) {
-    Object.entries(structureRewards).forEach(([deckId, counts]) => {
-      Array.from({ length: counts }).forEach(() => {
-        results.push({ category: 'STRUCTURE', value: Number(deckId) });
-      });
-    });
-  }
-
-  if (consumeRewards) {
-    Object.entries(consumeRewards).forEach(([itemId, counts]) => {
-      if (itemId === DataConsumItemValue.Gem) {
-        return results.push({ category: 'GEM', value: counts });
-      }
-
-      const orb = OrbCodeToString[itemId as keyof typeof OrbCodeToString];
-      if (orb) {
-        return results.push({ category: orb, value: counts });
-      }
-    });
-  }
-
-  return results;
+  });
 };
 
 const saveFiles = async (data: {
   gatePath: string;
-  soloPath: string;
   deckPath: string;
   gates: Gate[];
-  solos: Solo[];
   decks: DeckData[];
 }) => {
-  const { gatePath, soloPath, deckPath, gates, solos, decks } = data;
+  const { gatePath, deckPath, gates, decks } = data;
   log.info('Start save files');
 
   await backupFiles(gatePath);
-  await backupFiles(soloPath);
   await backupFiles(deckPath);
   log.info('Copied original files to backup folder');
 
@@ -349,11 +391,6 @@ const saveFiles = async (data: {
     saveJson(path.resolve(gatePath, `${gate.name}.json`), gate),
   );
   log.info('Created gate files');
-
-  await batchPromiseAll(solos, (solo) =>
-    saveJson(path.resolve(soloPath, `${solo.id}.json`), solo),
-  );
-  log.info('Created solo files');
 
   await batchPromiseAll(decks, (deck) =>
     saveJson(path.resolve(deckPath, `${deck.name}.json`), deck),
