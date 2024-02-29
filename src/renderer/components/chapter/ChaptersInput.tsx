@@ -1,51 +1,37 @@
-import {
-  Button,
-  Card,
-  Text,
-  Tooltip,
-  makeStyles,
-  tokens,
-} from '@fluentui/react-components';
-import {
-  Add16Regular,
-  Edit16Regular,
-  Subtract16Regular,
-} from '@fluentui/react-icons';
+import { Text, makeStyles, tokens } from '@fluentui/react-components';
 import { useCallback, useMemo } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
+import { ReactFlowProvider, useStore as useFlowStore } from 'reactflow';
+import 'reactflow/dist/style.css';
 
 import { Chapter, Gate } from '../../../common/type';
 import { useStateRef } from '../../hooks/useStateRef';
 import { debounce } from '../../utils/debounce';
-import { PlainInput } from '../input/PlainInput';
+import { withMessageBox } from '../../utils/withMessageBox';
 import { ChapterDetail } from './ChapterDetail';
+import { ChaptersFlow } from './ChaptersFlow';
 
 const useStyles = makeStyles({
   label: {
     display: 'block',
     marginBottom: tokens.spacingVerticalS,
   },
-  chapterCard: {
-    marginBottom: tokens.spacingVerticalM,
-  },
-  chapterCardInputs: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    columnGap: tokens.spacingHorizontalM,
-  },
 });
 
-export const ChaptersInput = () => {
+const ChaptersInputComponent = () => {
   const classes = useStyles();
   const [chapterIndex, setChapterIndex, chapterIndexRef] = useStateRef(-1);
 
-  const { getValues } = useFormContext<Gate>();
-  const { fields, append, remove, update } = useFieldArray<Gate>({
-    name: 'chapters',
-  });
+  const { getValues, setValue } = useFormContext<Gate>();
+  const { update, remove } = useFieldArray<Gate>({ name: 'chapters' });
+  const resetSelectedElements = useFlowStore((s) => s.resetSelectedElements);
 
-  const handleChange = useMemo(
+  const handleClose = useCallback(() => {
+    setChapterIndex(-1);
+    resetSelectedElements();
+  }, [setChapterIndex, resetSelectedElements]);
+
+  const handleChangeChapter = useMemo(
     () =>
       debounce((chapter: Chapter) => {
         if (chapterIndexRef.current !== -1) {
@@ -55,7 +41,30 @@ export const ChaptersInput = () => {
     [chapterIndexRef, update],
   );
 
-  const handleClose = useCallback(() => setChapterIndex(-1), [setChapterIndex]);
+  const handleDeleteChapter = useCallback(() => {
+    if (chapterIndexRef.current !== -1) {
+      withMessageBox(() => {
+        remove(chapterIndexRef.current);
+      });
+    }
+  }, [chapterIndexRef, remove]);
+
+  const handleChangeChapters = useCallback(
+    (chapters: Chapter[]) => {
+      setValue('chapters', chapters, { shouldDirty: true });
+    },
+    [setValue],
+  );
+
+  const handleChangeSelection = useCallback(
+    (chapter?: Chapter) => {
+      const index = getValues().chapters.findIndex(
+        ({ id }) => id === chapter?.id,
+      );
+      setChapterIndex(index);
+    },
+    [getValues, setChapterIndex],
+  );
 
   const initialChapter = useMemo(
     () => getValues().chapters[chapterIndex],
@@ -65,57 +74,25 @@ export const ChaptersInput = () => {
   return (
     <div>
       <Text className={classes.label}>chapters</Text>
-      {fields.map((item, index) => (
-        <Card key={item.id} className={classes.chapterCard}>
-          <div className={classes.chapterCardInputs}>
-            <PlainInput<Gate> name={`chapters.${index}.id`} number />
-            <PlainInput<Gate> name={`chapters.${index}.parent_id`} number />
-            <Tooltip content="Edit chapter" relationship="label">
-              <Button
-                icon={<Edit16Regular />}
-                onClick={() => setChapterIndex(index)}
-              />
-            </Tooltip>
-            <Tooltip content="Remove chapter" relationship="label">
-              <Button
-                icon={<Subtract16Regular />}
-                onClick={() => {
-                  remove(index);
-                  handleClose();
-                }}
-              />
-            </Tooltip>
-          </div>
-        </Card>
-      ))}
+      <ChaptersFlow
+        onChangeChapters={handleChangeChapters}
+        onChangeSelection={handleChangeSelection}
+      />
       <ChapterDetail
         key={chapterIndex}
         chapter={initialChapter}
-        onChange={handleChange}
+        onChange={handleChangeChapter}
+        onDelete={handleDeleteChapter}
         onClose={handleClose}
       />
-      <Button
-        icon={<Add16Regular />}
-        onClick={() =>
-          append({
-            id: 0,
-            parent_id: 0,
-            description: '',
-            type: 'Duel',
-            cpu_deck: '',
-            rental_deck: '',
-            mydeck_reward: [],
-            rental_reward: [],
-            cpu_hand: 6,
-            player_hand: 5,
-            cpu_name: 'CPU',
-            cpu_flag: 'None',
-            cpu_value: 98,
-          })
-        }
-      >
-        Add Chapter
-      </Button>
     </div>
+  );
+};
+
+export const ChaptersInput = () => {
+  return (
+    <ReactFlowProvider>
+      <ChaptersInputComponent />
+    </ReactFlowProvider>
   );
 };

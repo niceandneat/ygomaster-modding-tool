@@ -7,7 +7,7 @@ import {
   makeStyles,
   tokens,
 } from '@fluentui/react-components';
-import { Dismiss24Regular } from '@fluentui/react-icons';
+import { DeleteRegular, Dismiss24Regular } from '@fluentui/react-icons';
 
 import { Chapter } from '../../../common/type';
 import { useAppStore } from '../../store';
@@ -23,17 +23,25 @@ const useStyles = makeStyles({
     paddingTop: tokens.spacingVerticalL,
     paddingBottom: tokens.spacingVerticalL,
   },
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    columnGap: tokens.spacingHorizontalM,
+  },
 });
 
 interface ChapterDetailProps {
   chapter?: Chapter;
   onChange?: (chapter: Chapter) => void;
+  onDelete?: () => void;
   onClose?: () => void;
 }
 
 export const ChapterDetail = ({
   chapter,
   onChange,
+  onDelete,
   onClose,
 }: ChapterDetailProps) => {
   const classes = useStyles();
@@ -58,7 +66,16 @@ export const ChapterDetail = ({
             />
           }
         >
-          Chapter Detail
+          <div className={classes.header}>
+            <div>Chapter Detail</div>
+            <Button
+              aria-label="Delete"
+              icon={<DeleteRegular />}
+              onClick={onDelete}
+            >
+              Delete
+            </Button>
+          </div>
         </DrawerHeaderTitle>
       </DrawerHeader>
 

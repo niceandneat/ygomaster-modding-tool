@@ -4,7 +4,9 @@ interface WithMessageBoxOptions {
   cancelButton?: string;
 }
 
-export const withMessageBox = async <T extends () => Promise<unknown>>(
+export const withMessageBox = async <
+  T extends () => Promise<unknown> | unknown,
+>(
   fn: T,
   {
     message = 'Are you sure?',

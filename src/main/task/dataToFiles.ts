@@ -254,6 +254,7 @@ const createGateChapter = (data: {
     id: chapterId,
     parent_id: chapterData.parent_chapter,
     description: duelDescriptions.get(chapterId) ?? '',
+    type: 'Gate',
     unlock: createUnlock({ gateData, gateId, chapterId }),
   };
 };
@@ -315,10 +316,11 @@ const createDuelChapter = (data: {
     : undefined;
   if (rentalDeck) decks.push(rentalDeck);
 
-  const chapter = {
+  const chapter: DuelChapter = {
     id: chapterId,
     parent_id: chapterData.parent_chapter,
     description: duelDescriptions.get(chapterId) ?? '',
+    type: 'Duel',
     cpu_deck: `${cpuDeckName}.json`,
     rental_deck: rentalDeckName && `${rentalDeckName}.json`,
     mydeck_reward: myDeckReward,

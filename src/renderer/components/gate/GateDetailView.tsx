@@ -128,10 +128,10 @@ export const GateDetailView = ({
           <PlainInput<Gate> name="name" />
           <PlainInput<Gate> name="description" multiline />
           <PlainInput<Gate> name="priority" number />
+          <ChaptersInput />
           <PlainInput<Gate> name="illust_id" number />
           <PlainInput<Gate> name="illust_x" number />
           <PlainInput<Gate> name="illust_y" number />
-          <ChaptersInput />
         </div>
       </form>
     </FormProvider>

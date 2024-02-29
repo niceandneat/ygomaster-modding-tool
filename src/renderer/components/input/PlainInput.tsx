@@ -1,7 +1,15 @@
-import { Field, Input, Textarea } from '@fluentui/react-components';
+import { Field, Input, Textarea, makeStyles } from '@fluentui/react-components';
 import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form';
 
 import { handleNumberInput } from '../../utils/handleNumberInput';
+
+const useStyles = makeStyles({
+  container: {
+    '& textarea': {
+      minHeight: '84px',
+    },
+  },
+});
 
 interface PlainInputProps<T extends FieldValues> {
   name: Path<T>;
@@ -18,6 +26,7 @@ export const PlainInput = <T extends FieldValues>({
   number,
   multiline,
 }: PlainInputProps<T>) => {
+  const classes = useStyles();
   const { control, formState } = useFormContext<T>();
 
   const error = formState.errors[name]?.message;
@@ -28,8 +37,10 @@ export const PlainInput = <T extends FieldValues>({
     <Controller
       control={control}
       name={name}
+      rules={{ required: !optional && 'This field is required' }}
       render={({ field }) => (
         <Field
+          className={classes.container}
           label={label}
           required={!optional}
           validationMessage={error?.toString()}

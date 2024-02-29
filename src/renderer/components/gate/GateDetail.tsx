@@ -4,7 +4,7 @@ import {
   shorthands,
   tokens,
 } from '@fluentui/react-components';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Gate } from '../../../common/type';
@@ -24,8 +24,6 @@ const useStyles = makeStyles({
 
 export const GateDetail = () => {
   const classes = useStyles();
-  const activeGate = useAppStore((s) => s.activeGate);
-  const loadActiveGate = useAppStore((s) => s.loadActiveGate);
   const loadGates = useAppStore((s) => s.loadGates);
   const { gatePath } = useAppStore((s) => s.settings);
   const { toasterId, withToast } = useToast('Success Save', 'Fail Save');
@@ -45,20 +43,22 @@ export const GateDetail = () => {
     [withToast, filePath, loadGates],
   );
 
+  const [gate, setGate] = useState<Gate>();
   useEffect(() => {
-    loadActiveGate(filePath);
-  }, [loadActiveGate, filePath]);
+    const main = async () => {
+      const { gate } = await window.electron.readGate({ filePath });
+      setGate(gate);
+    };
 
-  if (!activeGate) return null;
+    main();
+  }, [filePath]);
+
+  if (!gate) return null;
 
   return (
     <>
       <div className={classes.container}>
-        <GateDetailView
-          title={fileName}
-          gate={activeGate}
-          onSubmit={handleSubmit}
-        />
+        <GateDetailView title={fileName} gate={gate} onSubmit={handleSubmit} />
       </div>
       <Toaster toasterId={toasterId} />
     </>

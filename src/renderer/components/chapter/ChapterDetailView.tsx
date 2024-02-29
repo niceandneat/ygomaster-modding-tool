@@ -99,7 +99,7 @@ export const ChapterDetailView = ({
   const methods = useForm<Chapter>({
     defaultValues: { ...defaultGateChapter, ...defaultDuelChapter, ...chapter },
   });
-  const { watch, control } = methods;
+  const { watch, control, trigger } = methods;
 
   useEffect(() => {
     const subscription = watch((value) => {
@@ -107,6 +107,10 @@ export const ChapterDetailView = ({
     });
     return () => subscription.unsubscribe();
   }, [onChange, watch]);
+
+  useEffect(() => {
+    trigger();
+  }, [trigger]);
 
   const type = watch('type');
 
@@ -153,23 +157,29 @@ export const ChapterDetailView = ({
 };
 
 interface FileInputProps {
-  name: Path<Chapter>;
+  name: Extract<Path<DuelChapter>, 'cpu_deck' | 'rental_deck'>;
   path?: string;
   optional?: boolean;
 }
 const getFileName = (path: string) => path.split('\\').pop()?.split('/').pop();
 
 const FileNameInput = ({ name, path, optional }: FileInputProps) => {
-  const { control } = useFormContext<Chapter>();
+  const { control, formState } = useFormContext<DuelChapter>();
 
   const label = name.replaceAll('_', ' ');
+  const error = formState.errors[name]?.message;
 
   return (
     <Controller
       control={control}
       name={name}
+      rules={{ required: !optional && 'This field is required' }}
       render={({ field }) => (
-        <Field label={label} required={!optional}>
+        <Field
+          label={label}
+          required={!optional}
+          validationMessage={error?.toString()}
+        >
           <FileInput
             onChange={(filePath) => field.onChange(getFileName(filePath))}
             value={field.value?.toString()}
