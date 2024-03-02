@@ -4,7 +4,7 @@ import { ItemCategory } from '../../../common/type';
 import { ChapterDetailView } from './ChapterDetailView';
 
 const meta = {
-  title: 'Components/ChapterDetailView',
+  title: 'Components/Chapter/ChapterDetailView',
   component: ChapterDetailView,
   tags: ['autodocs'],
   parameters: {

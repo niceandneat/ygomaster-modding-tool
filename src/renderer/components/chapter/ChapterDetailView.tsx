@@ -1,13 +1,13 @@
 import {
   Button,
   Card,
-  Combobox,
   Dropdown,
   Field,
   Option,
   Text,
   Tooltip,
   makeStyles,
+  shorthands,
   tokens,
 } from '@fluentui/react-components';
 import { Add16Regular, Subtract16Regular } from '@fluentui/react-icons';
@@ -31,6 +31,7 @@ import {
   ItemCategory,
 } from '../../../common/type';
 import { FileInput } from '../input/FileInput';
+import { ItemInput } from '../input/ItemInput';
 import { PlainInput } from '../input/PlainInput';
 
 const defaultDuelChapter: Partial<DuelChapter> = {
@@ -80,6 +81,7 @@ const useStyles = makeStyles({
     flexDirection: 'row',
     alignItems: 'flex-end',
     marginBottom: tokens.spacingVerticalM,
+    ...shorthands.overflow('visible'),
   },
 });
 
@@ -194,15 +196,11 @@ const FileNameInput = ({ name, path, optional }: FileInputProps) => {
 
 interface ItemInputProps {
   name: FieldArrayPath<Chapter>;
+  categories?: ItemCategory[];
   disabled?: boolean;
 }
 
-const categoryOptions = Object.entries(ItemCategory).map(([label, value]) => ({
-  label,
-  value,
-}));
-
-const ItemInput = ({ name, disabled }: ItemInputProps) => {
+const ItemListInput = ({ name, categories, disabled }: ItemInputProps) => {
   const classes = useStyles();
   const { control } = useFormContext<Chapter>();
   const { fields, append, remove } = useFieldArray<Chapter>({ name });
@@ -216,29 +214,15 @@ const ItemInput = ({ name, disabled }: ItemInputProps) => {
         <Card key={item.id} className={classes.card}>
           <Controller
             control={control}
-            name={`${name}.${index}.category`}
+            name={`${name}.${index}`}
             render={({ field }) => (
-              <Field label="category" required>
-                <Combobox
-                  placeholder="Select a category"
-                  value={field.value}
-                  selectedOptions={[field.value]}
-                  onInput={field.onChange}
-                  onOptionSelect={(_, { optionValue }) =>
-                    field.onChange(optionValue)
-                  }
-                >
-                  {categoryOptions.map(({ label, value }) => (
-                    <Option key={value} value={value}>
-                      {label}
-                    </Option>
-                  ))}
-                </Combobox>
-              </Field>
+              <ItemInput
+                value={field.value}
+                categories={categories}
+                onChange={field.onChange}
+              />
             )}
           />
-          <PlainInput label="id" name={`${name}.${index}.id`} />
-          <PlainInput label="counts" name={`${name}.${index}.counts`} number />
           <Tooltip content="Remove reward item" relationship="label">
             <Button
               icon={<Subtract16Regular />}
@@ -261,16 +245,18 @@ const ItemInput = ({ name, disabled }: ItemInputProps) => {
 };
 
 const MydeckRewardInput = () => {
-  return <ItemInput name="mydeck_reward" />;
+  return <ItemListInput name="mydeck_reward" />;
 };
 
 const RentalRewardInput = () => {
   const { control } = useFormContext<Chapter>();
   const rentalDeck = useWatch({ control, name: 'rental_deck' });
 
-  return <ItemInput name="rental_reward" disabled={Boolean(!rentalDeck)} />;
+  return <ItemListInput name="rental_reward" disabled={Boolean(!rentalDeck)} />;
 };
 
+const unlockCategories = [ItemCategory.CONSUME];
+
 const UnlockInput = () => {
-  return <ItemInput name="unlock" />;
+  return <ItemListInput name="unlock" categories={unlockCategories} />;
 };

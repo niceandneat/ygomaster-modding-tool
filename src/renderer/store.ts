@@ -15,7 +15,8 @@ export const useAppStore = create<State>()((set, get) => ({
     gatePath: '',
     deckPath: '',
   },
-  setSettings: (settings) => set({ settings }),
+  setSettings: ({ dataPath, gatePath, deckPath }) =>
+    set({ settings: { dataPath, gatePath, deckPath } }),
   loadGates: async () => {
     const { gatePath } = get().settings;
     if (!gatePath) return [];

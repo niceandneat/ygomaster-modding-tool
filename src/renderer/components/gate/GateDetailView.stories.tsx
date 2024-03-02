@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { GateDetailView } from './GateDetailView';
 
 const meta = {
-  title: 'Components/GateDetailView',
+  title: 'Components/Gate/GateDetailView',
   component: GateDetailView,
   tags: ['autodocs'],
   parameters: {

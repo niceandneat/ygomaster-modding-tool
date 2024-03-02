@@ -96,9 +96,7 @@ const DataSyncUtility = () => {
       <CardHeader
         header={<Body1 className={classes.cardTitle}>Data Sync</Body1>}
         description={
-          <Caption1>
-            Sync between YgoMaster Data and Gate/Solo/Deck files
-          </Caption1>
+          <Caption1>Sync between YgoMaster Data and Gate/Deck files</Caption1>
         }
       />
       <UtilityDirectoryInput
@@ -134,7 +132,7 @@ const DataSyncUtility = () => {
           }}
           disabled={loading}
         >
-          {'Data -> Gate/Solo/Deck'}
+          {'Data -> Gate/Deck'}
         </Button>
         <Button
           appearance="primary"
@@ -151,7 +149,7 @@ const DataSyncUtility = () => {
           }}
           disabled={loading}
         >
-          {'Gate/Solo/Deck -> Data'}
+          {'Gate/Deck -> Data'}
         </Button>
       </CardFooter>
     </Card>

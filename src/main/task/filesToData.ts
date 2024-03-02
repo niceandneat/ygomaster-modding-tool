@@ -10,7 +10,7 @@ import {
   isDuelChapter,
   isGateChapter,
 } from '../../common/type';
-import { ygoItems } from '../../common/ygoItems';
+import ygoItems from '../../data/items.json';
 import { DataUnlockType, DeckData, DuelData, GateData } from '../type';
 import {
   backupFiles,
@@ -288,5 +288,5 @@ const saveData = async (data: {
  */
 
 const repeat = (id: number): [number, number] => [id, id];
-const getRandomItem = (ids: number[]) =>
-  ids[Math.floor(ids.length * Math.random())];
+const getRandomItem = (items: { id: string; name: string }[]) =>
+  Number(items[Math.floor(items.length * Math.random())].id);

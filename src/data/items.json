@@ -1,0 +1,2664 @@
+{
+  "NONE": [
+    {
+      "id": "0",
+      "name": "Not Set"
+    }
+  ],
+  "CONSUME": [
+    {
+      "id": "1",
+      "name": "GEM"
+    },
+    {
+      "id": "3",
+      "name": "CP-N"
+    },
+    {
+      "id": "4",
+      "name": "CP-R"
+    },
+    {
+      "id": "5",
+      "name": "CP-SR"
+    },
+    {
+      "id": "6",
+      "name": "CP-UR"
+    },
+    {
+      "id": "7",
+      "name": "ORB"
+    },
+    {
+      "id": "8",
+      "name": "ORB-DARK"
+    },
+    {
+      "id": "9",
+      "name": "ORB-LIGHT"
+    },
+    {
+      "id": "10",
+      "name": "ORB-EARTH"
+    },
+    {
+      "id": "11",
+      "name": "ORB-WATER"
+    },
+    {
+      "id": "12",
+      "name": "ORB-FIRE"
+    },
+    {
+      "id": "13",
+      "name": "ORB-WIND"
+    }
+  ],
+  "AVATAR": [
+    {
+      "id": "1000001",
+      "name": "Rescue Rabbit"
+    },
+    {
+      "id": "1000002",
+      "name": "Ritual Raven"
+    },
+    {
+      "id": "1000003",
+      "name": "Dark Magician"
+    },
+    {
+      "id": "1000005",
+      "name": "Borreload Dragon (Mini)"
+    },
+    {
+      "id": "1000006",
+      "name": "Cyber Dragon Infinity (Mini)"
+    },
+    {
+      "id": "1000007",
+      "name": "Elemental HERO Stratos"
+    },
+    {
+      "id": "1000008",
+      "name": "Ancient Gear Wyvern"
+    },
+    {
+      "id": "1000009",
+      "name": "Sangan"
+    },
+    {
+      "id": "1000010",
+      "name": "World Chalice Guardragon"
+    },
+    {
+      "id": "1000011",
+      "name": "Salamangreat Gazelle"
+    },
+    {
+      "id": "1000012",
+      "name": "Pot of Greed"
+    },
+    {
+      "id": "1000013",
+      "name": "Ash Blossom & Joyous Spring"
+    },
+    {
+      "id": "1000014",
+      "name": "Geargiano"
+    },
+    {
+      "id": "1000015",
+      "name": "Karakuri Barrel mdl 96 \"Shinkuro\""
+    },
+    {
+      "id": "1000016",
+      "name": "Wightbaking"
+    },
+    {
+      "id": "1000017",
+      "name": "Ninja Grandmaster Hanzo"
+    },
+    {
+      "id": "1000018",
+      "name": "Ghostrick Lantern"
+    },
+    {
+      "id": "1000019",
+      "name": "Trishula, Dragon of the Ice Barrier"
+    },
+    {
+      "id": "1000020",
+      "name": "Laundry Dragonmaid"
+    },
+    {
+      "id": "1000022",
+      "name": "Revendread Slayer"
+    },
+    {
+      "id": "1000023",
+      "name": "Toadally Awesome"
+    },
+    {
+      "id": "1000024",
+      "name": "Blue-Eyes White Dragon"
+    },
+    {
+      "id": "1000026",
+      "name": "Spright Blue"
+    },
+    {
+      "id": "1000027",
+      "name": "Unchained Abomination"
+    },
+    {
+      "id": "1000029",
+      "name": "Souleating Oviraptor"
+    },
+    {
+      "id": "1000032",
+      "name": "Elemental HERO Flame Wingman"
+    },
+    {
+      "id": "1000033",
+      "name": "Blue-Eyes Chaos MAX Dragon"
+    },
+    {
+      "id": "1001001",
+      "name": "Instant Fusion"
+    },
+    {
+      "id": "1001002",
+      "name": "Noble Arms - Caliburn"
+    },
+    {
+      "id": "1001003",
+      "name": "Book of Moon"
+    },
+    {
+      "id": "1001004",
+      "name": "Qliphort Monolith"
+    },
+    {
+      "id": "1001005",
+      "name": "Scapegoat"
+    },
+    {
+      "id": "1001006",
+      "name": "Bitron"
+    },
+    {
+      "id": "1001007",
+      "name": "Moai Interceptor Cannons"
+    },
+    {
+      "id": "1001008",
+      "name": "Mokey Mokey"
+    },
+    {
+      "id": "1001009",
+      "name": "Shard of Greed"
+    },
+    {
+      "id": "1001010",
+      "name": "D/D Ghost"
+    },
+    {
+      "id": "1001011",
+      "name": "Marshmallon"
+    },
+    {
+      "id": "1001012",
+      "name": "Kuriboh"
+    },
+    {
+      "id": "1001013",
+      "name": "Danger!? Jackalope?"
+    },
+    {
+      "id": "1001014",
+      "name": "Quillbolt Hedgehog"
+    },
+    {
+      "id": "1001015",
+      "name": "PSY-Framegear Gamma"
+    },
+    {
+      "id": "1001016",
+      "name": "Kagetokage"
+    },
+    {
+      "id": "1001017",
+      "name": "Gunkan Suship Ikura"
+    },
+    {
+      "id": "1001018",
+      "name": "Genex Controller"
+    },
+    {
+      "id": "1001020",
+      "name": "A New Life - Galatea"
+    },
+    {
+      "id": "1001022",
+      "name": "Cross-Sheep"
+    },
+    {
+      "id": "1001023",
+      "name": "Hungry Burger"
+    },
+    {
+      "id": "1001024",
+      "name": "Eldlixir"
+    },
+    {
+      "id": "1002001",
+      "name": "Soccer Ball"
+    },
+    {
+      "id": "1002002",
+      "name": "Basketball"
+    },
+    {
+      "id": "1002003",
+      "name": "Record Player"
+    },
+    {
+      "id": "1002004",
+      "name": "American Football"
+    },
+    {
+      "id": "1002005",
+      "name": "Rugby"
+    },
+    {
+      "id": "1002006",
+      "name": "Car"
+    },
+    {
+      "id": "1002007",
+      "name": "Treasure Box"
+    },
+    {
+      "id": "1002008",
+      "name": "Boxing"
+    },
+    {
+      "id": "1002009",
+      "name": "Crown"
+    },
+    {
+      "id": "1002010",
+      "name": "Inline Skates"
+    },
+    {
+      "id": "1002011",
+      "name": "Darts"
+    },
+    {
+      "id": "1002012",
+      "name": "Bicycle"
+    },
+    {
+      "id": "1003001",
+      "name": "Gaia The Fierce Knight"
+    },
+    {
+      "id": "1003002",
+      "name": "Tri-Brigade Shuraig the Ominous Omen"
+    }
+  ],
+  "ICON": [
+    {
+      "id": "1010001",
+      "name": "Duelist"
+    },
+    {
+      "id": "1010002",
+      "name": "SPYRAL Quik-Fix"
+    },
+    {
+      "id": "1010003",
+      "name": "Dante, Pilgrim of the Burning Abyss"
+    },
+    {
+      "id": "1010004",
+      "name": "Condemned Darklord"
+    },
+    {
+      "id": "1010005",
+      "name": "Berserker of the Tenyi"
+    },
+    {
+      "id": "1010006",
+      "name": "Warrior Dai Grepher"
+    },
+    {
+      "id": "1010007",
+      "name": "Danger! Bigfoot!"
+    },
+    {
+      "id": "1010008",
+      "name": "Yuki-Onna, the Absolute Zero Mayakashi"
+    },
+    {
+      "id": "1010009",
+      "name": "Revendread Slayer"
+    },
+    {
+      "id": "1010010",
+      "name": "Kuriboh"
+    },
+    {
+      "id": "1010011",
+      "name": "Black Luster Soldier - Super Soldier"
+    },
+    {
+      "id": "1010012",
+      "name": "Time Thief Redoer"
+    },
+    {
+      "id": "1010013",
+      "name": "Dogmatika Ecclesia, the Virtuous"
+    },
+    {
+      "id": "1010014",
+      "name": "Hela, Generaider Boss of Doom"
+    },
+    {
+      "id": "1010015",
+      "name": "Upstart Goblin"
+    },
+    {
+      "id": "1010016",
+      "name": "Thunder Dragon Colossus"
+    },
+    {
+      "id": "1010017",
+      "name": "True King of All Calamities"
+    },
+    {
+      "id": "1010018",
+      "name": "House Dragonmaid"
+    },
+    {
+      "id": "1010019",
+      "name": "Fallen of Albaz"
+    },
+    {
+      "id": "1010020",
+      "name": "Swordsoul Supreme Sovereign - Chengying"
+    },
+    {
+      "id": "1010021",
+      "name": "Aluber the Dogmatic"
+    },
+    {
+      "id": "1010022",
+      "name": "Destiny HERO - Destroyer Phoenix Enforcer"
+    },
+    {
+      "id": "1010023",
+      "name": "Water Enchantress of the Temple"
+    },
+    {
+      "id": "1010024",
+      "name": "Visas Starfrost"
+    },
+    {
+      "id": "1010025",
+      "name": "White Relic of Dogmatika"
+    },
+    {
+      "id": "1010026",
+      "name": "The Weather Painter Moonbow"
+    },
+    {
+      "id": "1010027",
+      "name": "Blue-Eyes White Dragon"
+    },
+    {
+      "id": "1010028",
+      "name": "Dark Magician"
+    },
+    {
+      "id": "1010029",
+      "name": "Red-Eyes Black Dragon"
+    },
+    {
+      "id": "1010031",
+      "name": "Kurikara Divincarnate"
+    },
+    {
+      "id": "1010032",
+      "name": "Melffy Staring Contest"
+    },
+    {
+      "id": "1010033",
+      "name": "Ancient Fairy Dragon"
+    },
+    {
+      "id": "1010034",
+      "name": "Icejade Aegirine"
+    },
+    {
+      "id": "1010035",
+      "name": "Rafale, Champion Fur Hire"
+    },
+    {
+      "id": "1010036",
+      "name": "Springans Rockey"
+    },
+    {
+      "id": "1010037",
+      "name": "Lady Labrynth of the Silver Castle"
+    },
+    {
+      "id": "1010038",
+      "name": "Blackwing Full Armor Master"
+    },
+    {
+      "id": "1010039",
+      "name": "Another Duelist"
+    },
+    {
+      "id": "1010040",
+      "name": "Armed Neos"
+    },
+    {
+      "id": "1010041",
+      "name": "Number 41: Bagooska the Terribly Tired Tapir"
+    },
+    {
+      "id": "1010042",
+      "name": "WCS2023 \"Legendary Magician of Dark\""
+    },
+    {
+      "id": "1010043",
+      "name": "WCS2023 \"Legendary Dragon of White\""
+    },
+    {
+      "id": "1010044",
+      "name": "Purrely"
+    },
+    {
+      "id": "1010045",
+      "name": "Pumpking the King of Ghosts"
+    },
+    {
+      "id": "1010046",
+      "name": "I:P Masquerena"
+    },
+    {
+      "id": "1010047",
+      "name": "Promethean Princess, Bestower of Flames"
+    },
+    {
+      "id": "1010048",
+      "name": "Vanquish Soul Razen"
+    },
+    {
+      "id": "1010049",
+      "name": "Hungry Burger"
+    },
+    {
+      "id": "1010050",
+      "name": "Superheavy Samurai Prodigy Wakaushi"
+    },
+    {
+      "id": "1010051",
+      "name": "Dreaming Nemleria"
+    },
+    {
+      "id": "1010052",
+      "name": "Slifer the Sky Dragon"
+    },
+    {
+      "id": "1010053",
+      "name": "The Winged Dragon of Ra"
+    },
+    {
+      "id": "1010054",
+      "name": "Obelisk the Tormentor"
+    },
+    {
+      "id": "1010055",
+      "name": "Question"
+    },
+    {
+      "id": "1010056",
+      "name": "The Legend of Duelist QUARTER CENTURY"
+    },
+    {
+      "id": "1010057",
+      "name": "Yu-Gi-Oh! Card Game 25th Anniversary"
+    },
+    {
+      "id": "1010058",
+      "name": "Blue-Eyes White Dragon"
+    },
+    {
+      "id": "1010059",
+      "name": "Diabellstar the Black Witch"
+    },
+    {
+      "id": "1010060",
+      "name": "Sinful Spoils of Subversion - Snake-Eye"
+    },
+    {
+      "id": "1010064",
+      "name": "Rikka Princess"
+    },
+    {
+      "id": "1010065",
+      "name": "S-Force Nightchaser"
+    },
+    {
+      "id": "1011001",
+      "name": "Soccer Ball"
+    },
+    {
+      "id": "1011002",
+      "name": "Trophy"
+    },
+    {
+      "id": "1011003",
+      "name": "Diamond"
+    },
+    {
+      "id": "1011004",
+      "name": "DC 2022 AUG Gold Finalist"
+    },
+    {
+      "id": "1011005",
+      "name": "DC 2022 AUG Silver Finalist"
+    },
+    {
+      "id": "1011006",
+      "name": "DC 2022 AUG Bronze Finalist"
+    },
+    {
+      "id": "1011007",
+      "name": "DC 2022 DEC Gold Finalist"
+    },
+    {
+      "id": "1011008",
+      "name": "DC 2022 DEC Silver Finalist"
+    },
+    {
+      "id": "1011009",
+      "name": "DC 2022 DEC Bronze Finalist"
+    },
+    {
+      "id": "1011010",
+      "name": "DC 2023 MAR Gold Finalist"
+    },
+    {
+      "id": "1011011",
+      "name": "DC 2023 MAR Silver Finalist"
+    },
+    {
+      "id": "1011012",
+      "name": "DC 2023 MAR Bronze Finalist"
+    },
+    {
+      "id": "1011013",
+      "name": "WCS 2023 Qualifiers Gold Finalist"
+    },
+    {
+      "id": "1011014",
+      "name": "WCS 2023 Qualifiers Silver Finalist"
+    },
+    {
+      "id": "1011015",
+      "name": "WCS 2023 Qualifiers Bronze Finalist"
+    },
+    {
+      "id": "1011016",
+      "name": "WCS 2023 Champion"
+    },
+    {
+      "id": "1011017",
+      "name": "WCS 2023 Finalist"
+    },
+    {
+      "id": "1011018",
+      "name": "WCS 2023 Top 4"
+    },
+    {
+      "id": "1011019",
+      "name": "WCS 2023 Top 8"
+    },
+    {
+      "id": "1011020",
+      "name": "DC 2023 OCT Gold Finalist"
+    },
+    {
+      "id": "1011021",
+      "name": "DC 2023 OCT Silver Finalist"
+    },
+    {
+      "id": "1011022",
+      "name": "DC 2023 OCT Bronze Finalist"
+    },
+    {
+      "id": "1011023",
+      "name": "DC 2023 DEC Gold Finalist"
+    },
+    {
+      "id": "1011024",
+      "name": "DC 2023 DEC Silver Finalist"
+    },
+    {
+      "id": "1011025",
+      "name": "DC 2023 DEC Bronze Finalist"
+    },
+    {
+      "id": "1012001",
+      "name": "X-Krawler Synaphysis"
+    },
+    {
+      "id": "1012002",
+      "name": "Mekk-Knight Spectrum Supreme"
+    },
+    {
+      "id": "1012003",
+      "name": "Knightmare Gryphon"
+    },
+    {
+      "id": "1012004",
+      "name": "Digital Bug Rhinosebus"
+    },
+    {
+      "id": "1012005",
+      "name": "Erebus the Underworld Monarch"
+    },
+    {
+      "id": "1012006",
+      "name": "Elementsaber Lapauila Mana"
+    },
+    {
+      "id": "1012007",
+      "name": "Demise, Supreme King of Armageddon"
+    },
+    {
+      "id": "1012008",
+      "name": "Megalith Aratron"
+    },
+    {
+      "id": "1012009",
+      "name": "Gem-Knight Master Diamond"
+    },
+    {
+      "id": "1012010",
+      "name": "Gladiator Beast Domitianus"
+    },
+    {
+      "id": "1012011",
+      "name": "Karakuri Super Shogun mdl 00N \"Bureibu\""
+    },
+    {
+      "id": "1012012",
+      "name": "Shiranui Sunsaga"
+    },
+    {
+      "id": "1012013",
+      "name": "Geargiagear Gigant XG"
+    },
+    {
+      "id": "1012014",
+      "name": "Dinomist Rex"
+    },
+    {
+      "id": "1012015",
+      "name": "Apoqliphort Towers"
+    },
+    {
+      "id": "1012016",
+      "name": "The Weather Painter Rainbow"
+    },
+    {
+      "id": "1012017",
+      "name": "Judgment Dragon"
+    },
+    {
+      "id": "1012018",
+      "name": "Punishment Dragon"
+    },
+    {
+      "id": "1012019",
+      "name": "Mecha Phantom Beast Dracossack"
+    },
+    {
+      "id": "1012020",
+      "name": "Herald of Ultimateness"
+    },
+    {
+      "id": "1012021",
+      "name": "Auram the World Chalice Blademaster"
+    },
+    {
+      "id": "1012022",
+      "name": "Oneiros, the Dream Mirror Erlking"
+    },
+    {
+      "id": "1012023",
+      "name": "Oneiros, the Dream Mirror Tormentor"
+    },
+    {
+      "id": "1012024",
+      "name": "Crusadia Equimax"
+    },
+    {
+      "id": "1012025",
+      "name": "Longirsu, the Orcust Orchestrator"
+    },
+    {
+      "id": "1012026",
+      "name": "Orcustrion"
+    },
+    {
+      "id": "1012027",
+      "name": "U.A. Playmaker"
+    },
+    {
+      "id": "1012028",
+      "name": "Great Shogun Shien"
+    },
+    {
+      "id": "1012029",
+      "name": "Danger! Nessie!"
+    },
+    {
+      "id": "1012030",
+      "name": "Nephthys, the Sacred Flame"
+    },
+    {
+      "id": "1012031",
+      "name": "Blackbeard, the Plunder Patroll Captain"
+    },
+    {
+      "id": "1012032",
+      "name": "Bujintei Susanowo"
+    },
+    {
+      "id": "1012033",
+      "name": "Bujinki Amaterasu"
+    },
+    {
+      "id": "1012034",
+      "name": "Ally of Justice Catastor"
+    },
+    {
+      "id": "1012035",
+      "name": "Worm Dimikles"
+    },
+    {
+      "id": "1012036",
+      "name": "Mermail Abysstrite"
+    },
+    {
+      "id": "1012037",
+      "name": "Beetrooper Sting Lancer"
+    },
+    {
+      "id": "1012038",
+      "name": "Vendread Battlelord"
+    },
+    {
+      "id": "1012039",
+      "name": "Vendread Chimera"
+    },
+    {
+      "id": "1012040",
+      "name": "Legendary Six Samurai - Shi En"
+    },
+    {
+      "id": "1012041",
+      "name": "Yoko, the Graceful Mayakashi"
+    },
+    {
+      "id": "1012042",
+      "name": "Ghostrick Alucard"
+    },
+    {
+      "id": "1012043",
+      "name": "Genex Controller"
+    },
+    {
+      "id": "1012044",
+      "name": "Myutant GB-88"
+    },
+    {
+      "id": "1012045",
+      "name": "Myutant Mutant"
+    },
+    {
+      "id": "1012046",
+      "name": "Starry Night, Starry Dragon"
+    },
+    {
+      "id": "1012047",
+      "name": "Mekk-Knight Crusadia Avramax"
+    },
+    {
+      "id": "1012048",
+      "name": "Dingirsu, the Orcust of the Evening Star"
+    },
+    {
+      "id": "1012049",
+      "name": "Knightmare Incarnation Idlee"
+    },
+    {
+      "id": "1012050",
+      "name": "S-Force Justify"
+    },
+    {
+      "id": "1012051",
+      "name": "Teardrop the Rikka Queen"
+    },
+    {
+      "id": "1012052",
+      "name": "Subterror Behemoth Speleogeist"
+    },
+    {
+      "id": "1012053",
+      "name": "Monk of the Tenyi"
+    },
+    {
+      "id": "1012055",
+      "name": "Eldlich the Golden Lord"
+    },
+    {
+      "id": "1013001",
+      "name": "PawaPuro"
+    },
+    {
+      "id": "1013002",
+      "name": "Memories of Intersecting Duels"
+    }
+  ],
+  "PROFILE_TAG": [
+    {
+      "id": "1020001",
+      "name": "Beginner Duelist"
+    },
+    {
+      "id": "1020002",
+      "name": "Fan of the Anime"
+    },
+    {
+      "id": "1020003",
+      "name": "Returnee"
+    },
+    {
+      "id": "1020004",
+      "name": "TCG Player"
+    },
+    {
+      "id": "1020005",
+      "name": "Duel Links Player"
+    },
+    {
+      "id": "1020006",
+      "name": "Quick Play"
+    },
+    {
+      "id": "1020007",
+      "name": "Relaxed Play"
+    },
+    {
+      "id": "1020008",
+      "name": "Casual"
+    },
+    {
+      "id": "1020009",
+      "name": "Stoic"
+    },
+    {
+      "id": "1020010",
+      "name": "Follow Me"
+    },
+    {
+      "id": "1020011",
+      "name": "True Duelist"
+    },
+    {
+      "id": "1020012",
+      "name": "Strong Arm"
+    },
+    {
+      "id": "1020013",
+      "name": "Showoff"
+    },
+    {
+      "id": "1020014",
+      "name": "Tactician"
+    },
+    {
+      "id": "1020015",
+      "name": "Demon"
+    },
+    {
+      "id": "1020016",
+      "name": "Forbidden One"
+    },
+    {
+      "id": "1020017",
+      "name": "Destroyer"
+    },
+    {
+      "id": "1020018",
+      "name": "Strategy Expert"
+    },
+    {
+      "id": "1020019",
+      "name": "Unfathomable"
+    },
+    {
+      "id": "1020020",
+      "name": "Synchro Festival 2022"
+    },
+    {
+      "id": "1020022",
+      "name": "Fusion Festival 2022"
+    },
+    {
+      "id": "1020023",
+      "name": "Limit One Festival 2022"
+    },
+    {
+      "id": "1020024",
+      "name": "EX-ZERO Festival 2022"
+    },
+    {
+      "id": "1020025",
+      "name": "DC 2022 AUG Top 10"
+    },
+    {
+      "id": "1020026",
+      "name": "DC 2022 AUG Top 100"
+    },
+    {
+      "id": "1020027",
+      "name": "DC 2022 AUG Top 500"
+    },
+    {
+      "id": "1020028",
+      "name": "DC 2022 AUG Top 1000"
+    },
+    {
+      "id": "1020029",
+      "name": "DC 2022 AUG Top 10000"
+    },
+    {
+      "id": "1020030",
+      "name": "DC 2022 AUG 2nd Stage Duelist"
+    },
+    {
+      "id": "1020031",
+      "name": "Link Beginner"
+    },
+    {
+      "id": "1020032",
+      "name": "Link Challenger"
+    },
+    {
+      "id": "1020033",
+      "name": "Link Practitioner"
+    },
+    {
+      "id": "1020034",
+      "name": "Link Expert"
+    },
+    {
+      "id": "1020035",
+      "name": "Link Elite"
+    },
+    {
+      "id": "1020036",
+      "name": "Link Master"
+    },
+    {
+      "id": "1020037",
+      "name": "Synchro x Xyz Festival2022"
+    },
+    {
+      "id": "1020038",
+      "name": "DC 2022 DEC Top 10"
+    },
+    {
+      "id": "1020039",
+      "name": "DC 2022 DEC Top 100"
+    },
+    {
+      "id": "1020040",
+      "name": "DC 2022 DEC Top 500"
+    },
+    {
+      "id": "1020041",
+      "name": "DC 2022 DEC Top 1000"
+    },
+    {
+      "id": "1020042",
+      "name": "DC 2022 DEC Top 10000"
+    },
+    {
+      "id": "1020043",
+      "name": "DC 2022 DEC 2nd Stage Duelist"
+    },
+    {
+      "id": "1020044",
+      "name": "Anti-Spell Festival 2022"
+    },
+    {
+      "id": "1020045",
+      "name": "Theme Chronicle 2023"
+    },
+    {
+      "id": "1020046",
+      "name": "Legend Anthology 2023"
+    },
+    {
+      "id": "1020047",
+      "name": "DC 2023 MAR Top 10"
+    },
+    {
+      "id": "1020048",
+      "name": "DC 2023 MAR Top 100"
+    },
+    {
+      "id": "1020049",
+      "name": "DC 2023 MAR Top 500"
+    },
+    {
+      "id": "1020050",
+      "name": "DC 2023 MAR Top 1000"
+    },
+    {
+      "id": "1020051",
+      "name": "DC 2023 MAR Top 10000"
+    },
+    {
+      "id": "1020052",
+      "name": "DC 2023 MAR 2nd Stage Duelist"
+    },
+    {
+      "id": "1020053",
+      "name": "Xyz Festival 2023"
+    },
+    {
+      "id": "1020054",
+      "name": "Attribute 4 (2023)"
+    },
+    {
+      "id": "1020055",
+      "name": "WCS 2023 Qualifiers Top 10"
+    },
+    {
+      "id": "1020056",
+      "name": "WCS 2023 Qualifiers Top 100"
+    },
+    {
+      "id": "1020057",
+      "name": "WCS 2023 Qualifiers Top 500"
+    },
+    {
+      "id": "1020058",
+      "name": "WCS 2023 Qualifiers Top 1000"
+    },
+    {
+      "id": "1020059",
+      "name": "WCS 2023 Qualifiers Top 10000"
+    },
+    {
+      "id": "1020060",
+      "name": "WCS 2023 Qualifiers DLv. MAX"
+    },
+    {
+      "id": "1020061",
+      "name": "Explorer"
+    },
+    {
+      "id": "1020062",
+      "name": "Academy 2023"
+    },
+    {
+      "id": "1020063",
+      "name": "Synchro Festival 2023"
+    },
+    {
+      "id": "1020064",
+      "name": "Monster Type Festival 2023"
+    },
+    {
+      "id": "1020065",
+      "name": "Harnesser of Chaos"
+    },
+    {
+      "id": "1020066",
+      "name": "DARK Side"
+    },
+    {
+      "id": "1020067",
+      "name": "LIGHT Side"
+    },
+    {
+      "id": "1020068",
+      "name": "King of the Island 2023"
+    },
+    {
+      "id": "1020069",
+      "name": "Fusion x Xyz Festival 2023"
+    },
+    {
+      "id": "1020070",
+      "name": "DC 2023 OCT Top 10"
+    },
+    {
+      "id": "1020071",
+      "name": "DC 2023 OCT Top 100"
+    },
+    {
+      "id": "1020072",
+      "name": "DC 2023 OCT Top 500"
+    },
+    {
+      "id": "1020073",
+      "name": "DC 2023 OCT Top 1000"
+    },
+    {
+      "id": "1020074",
+      "name": "DC 2023 OCT Top 10000"
+    },
+    {
+      "id": "1020075",
+      "name": "DC 2023 OCT 2nd Stage Duelist"
+    },
+    {
+      "id": "1020076",
+      "name": "WCS 2023 Champion"
+    },
+    {
+      "id": "1020077",
+      "name": "WCS 2023 Finalist"
+    },
+    {
+      "id": "1020078",
+      "name": "WCS 2023 Top 4"
+    },
+    {
+      "id": "1020079",
+      "name": "WCS 2023 Top 8"
+    },
+    {
+      "id": "1020080",
+      "name": "MD Proficiency Test Grade 10"
+    },
+    {
+      "id": "1020081",
+      "name": "Ritual Festival 2023"
+    },
+    {
+      "id": "1020082",
+      "name": "DC 2023 DEC Top 10"
+    },
+    {
+      "id": "1020083",
+      "name": "DC 2023 DEC Top 100"
+    },
+    {
+      "id": "1020084",
+      "name": "DC 2023 DEC Top 500"
+    },
+    {
+      "id": "1020085",
+      "name": "DC 2023 DEC Top 1000"
+    },
+    {
+      "id": "1020086",
+      "name": "DC 2023 DEC Top 10000"
+    },
+    {
+      "id": "1020087",
+      "name": "DC 2023 DEC 2nd Stage Duelist"
+    },
+    {
+      "id": "1020088",
+      "name": "Theme Chronicle 2024"
+    },
+    {
+      "id": "1020089",
+      "name": "The Bond of Duelists"
+    },
+    {
+      "id": "1020090",
+      "name": "Acceleration 2024"
+    },
+    {
+      "id": "1020091",
+      "name": "Synchro x Link Festival 2024"
+    }
+  ],
+  "ICON_FRAME": [
+    {
+      "id": "1030001",
+      "name": "Beginner's Frame"
+    },
+    {
+      "id": "1030002",
+      "name": "SILVER Frame"
+    },
+    {
+      "id": "1030003",
+      "name": "BRONZE Frame"
+    },
+    {
+      "id": "1030004",
+      "name": "GOLD Frame"
+    },
+    {
+      "id": "1030005",
+      "name": "Green Frame"
+    },
+    {
+      "id": "1030006",
+      "name": "Purple Frame"
+    },
+    {
+      "id": "1030007",
+      "name": "PLATINUM Frame"
+    },
+    {
+      "id": "1030008",
+      "name": "DIAMOND Frame"
+    },
+    {
+      "id": "1030009",
+      "name": "Blue Frame"
+    },
+    {
+      "id": "1030010",
+      "name": "Bronze Award Frame"
+    },
+    {
+      "id": "1030011",
+      "name": "Silver Award Frame"
+    },
+    {
+      "id": "1030012",
+      "name": "Gold Award Frame"
+    },
+    {
+      "id": "1030013",
+      "name": "Red Frame"
+    },
+    {
+      "id": "1030014",
+      "name": "Icon Frame - LIGHT"
+    },
+    {
+      "id": "1030015",
+      "name": "Icon Frame - DARK"
+    },
+    {
+      "id": "1030016",
+      "name": "Icon Frame - EARTH"
+    },
+    {
+      "id": "1030017",
+      "name": "Icon Frame - WATER"
+    },
+    {
+      "id": "1030018",
+      "name": "Icon Frame - FIRE"
+    },
+    {
+      "id": "1030019",
+      "name": "Icon Frame - WIND"
+    },
+    {
+      "id": "1030020",
+      "name": "Yellow Frame"
+    },
+    {
+      "id": "1030021",
+      "name": "Master Frame"
+    },
+    {
+      "id": "1030022",
+      "name": "Pink Frame"
+    },
+    {
+      "id": "1030023",
+      "name": "Orange Frame"
+    },
+    {
+      "id": "1030025",
+      "name": "Mint Frame"
+    },
+    {
+      "id": "1030026",
+      "name": "Link Master Frame"
+    },
+    {
+      "id": "1030027",
+      "name": "The Legend of Duelist  QUARTER CENTURY Frame"
+    },
+    {
+      "id": "1031001",
+      "name": "The Path of the Blue Sky Striker"
+    },
+    {
+      "id": "1031002",
+      "name": "The Path of the Red Sky Striker"
+    },
+    {
+      "id": "1031003",
+      "name": "Magic Cylinder"
+    },
+    {
+      "id": "1031004",
+      "name": "Dark Magical Circle"
+    },
+    {
+      "id": "1031005",
+      "name": "Evil Eye of Selene"
+    },
+    {
+      "id": "1031006",
+      "name": "Polymerization"
+    },
+    {
+      "id": "1031007",
+      "name": "Blue-Eyes White Dragon"
+    },
+    {
+      "id": "1032001",
+      "name": "Festive Ornament"
+    },
+    {
+      "id": "1032002",
+      "name": "Celebration of Spring Breeze"
+    },
+    {
+      "id": "1032003",
+      "name": "Tropical Seaside"
+    },
+    {
+      "id": "1032004",
+      "name": "Night festival in Costume"
+    },
+    {
+      "id": "1032005",
+      "name": "Frost Frame"
+    },
+    {
+      "id": "1033001",
+      "name": "WCS 2023 Party Favor"
+    }
+  ],
+  "PROTECTOR": [
+    {
+      "id": "1070001",
+      "name": "Yu-Gi-Oh! Trading Card Game"
+    },
+    {
+      "id": "1070002",
+      "name": "Auram the World Chalice Blademaster"
+    },
+    {
+      "id": "1070003",
+      "name": "Link Black"
+    },
+    {
+      "id": "1070004",
+      "name": "Fusion Purple"
+    },
+    {
+      "id": "1070005",
+      "name": "Synchro Silver"
+    },
+    {
+      "id": "1070006",
+      "name": "Xyz Black"
+    },
+    {
+      "id": "1070007",
+      "name": "Geartown"
+    },
+    {
+      "id": "1070008",
+      "name": "Ash Blossom & Joyous Spring"
+    },
+    {
+      "id": "1070009",
+      "name": "Blue-Eyes Chaos MAX Dragon"
+    },
+    {
+      "id": "1070010",
+      "name": "Trishula, Dragon of the Ice Barrier"
+    },
+    {
+      "id": "1070011",
+      "name": "Protector Silver"
+    },
+    {
+      "id": "1070012",
+      "name": "Dragonmaid Send-Off"
+    },
+    {
+      "id": "1070013",
+      "name": "Protector - FIRE"
+    },
+    {
+      "id": "1070014",
+      "name": "Protector - WIND"
+    },
+    {
+      "id": "1070015",
+      "name": "Protector: WATER"
+    },
+    {
+      "id": "1070016",
+      "name": "Protector: EARTH"
+    },
+    {
+      "id": "1070017",
+      "name": "Protector: LIGHT"
+    },
+    {
+      "id": "1070018",
+      "name": "Protector: DARK"
+    },
+    {
+      "id": "1070019",
+      "name": "Token Collector"
+    },
+    {
+      "id": "1070020",
+      "name": "Link Blue"
+    },
+    {
+      "id": "1070021",
+      "name": "DC 2022 AUG Celebration"
+    },
+    {
+      "id": "1070022",
+      "name": "Ghostrick Festival"
+    },
+    {
+      "id": "1070023",
+      "name": "Dinomorphia Frenzy"
+    },
+    {
+      "id": "1070024",
+      "name": "Runick Fountain"
+    },
+    {
+      "id": "1070025",
+      "name": "Lovely Labrynth of the Silver Castle"
+    },
+    {
+      "id": "1070026",
+      "name": "Mamonaka the Vaylantz United"
+    },
+    {
+      "id": "1070027",
+      "name": "Therion \"King\" Regulus"
+    },
+    {
+      "id": "1070028",
+      "name": "Tri-Brigade"
+    },
+    {
+      "id": "1070029",
+      "name": "The Weather Forecast"
+    },
+    {
+      "id": "1070030",
+      "name": "DC 2022 DEC Celebration"
+    },
+    {
+      "id": "1070031",
+      "name": "The Millennium Puzzle"
+    },
+    {
+      "id": "1070032",
+      "name": "The World Legacy"
+    },
+    {
+      "id": "1070033",
+      "name": "Vera the Vernusylph Goddess"
+    },
+    {
+      "id": "1070034",
+      "name": "Gigantic Spright"
+    },
+    {
+      "id": "1070035",
+      "name": "Kurikara Divincarnate"
+    },
+    {
+      "id": "1070036",
+      "name": "Tearlaments Kaleido-Heart"
+    },
+    {
+      "id": "1070037",
+      "name": "Exosisters Magnifica"
+    },
+    {
+      "id": "1070038",
+      "name": "P.U.N.K. JAM Dragon Drive"
+    },
+    {
+      "id": "1070039",
+      "name": "Video Game Awards 2022 Commemoration"
+    },
+    {
+      "id": "1070040",
+      "name": "Five-Headed Dragon"
+    },
+    {
+      "id": "1070041",
+      "name": "Number 41: Bagooska the Terribly Tired Tapir"
+    },
+    {
+      "id": "1070042",
+      "name": "DC 2023 MAR Celebration"
+    },
+    {
+      "id": "1070044",
+      "name": "Spirit Charmers"
+    },
+    {
+      "id": "1070045",
+      "name": "Pendulum Green"
+    },
+    {
+      "id": "1070046",
+      "name": "WCS 2023 Qualifiers Celebration"
+    },
+    {
+      "id": "1070047",
+      "name": "Mayhem Fur Hire"
+    },
+    {
+      "id": "1070048",
+      "name": "Ghoti of the Deep Beyond"
+    },
+    {
+      "id": "1070049",
+      "name": "Witchcrafter Vice-Madame"
+    },
+    {
+      "id": "1070050",
+      "name": "The Bystial Lubellion"
+    },
+    {
+      "id": "1070051",
+      "name": "Traptantalizing Tune"
+    },
+    {
+      "id": "1070052",
+      "name": "Reign-Beaux, Overking of Dark World"
+    },
+    {
+      "id": "1070053",
+      "name": "Road to Worlds! Proficiency Test 2023"
+    },
+    {
+      "id": "1070054",
+      "name": "Chaos Angel"
+    },
+    {
+      "id": "1070055",
+      "name": "Black Luster Soldier - Legendary Swordsman"
+    },
+    {
+      "id": "1070056",
+      "name": "Ohime the Manifested Mikanko"
+    },
+    {
+      "id": "1070057",
+      "name": "Kashtira Arise-Heart"
+    },
+    {
+      "id": "1070058",
+      "name": "Live☆Twin Lil-la Treat"
+    },
+    {
+      "id": "1070059",
+      "name": "WCS2023 \"Legendary Magician of Dark\""
+    },
+    {
+      "id": "1070060",
+      "name": "WCS2023 \"Legendary Dragon of White\""
+    },
+    {
+      "id": "1070061",
+      "name": "Light and Darkness Dragon"
+    },
+    {
+      "id": "1070062",
+      "name": "Promethean Princess, Bestower of Flames"
+    },
+    {
+      "id": "1070063",
+      "name": "Firewall Dragon Singularity"
+    },
+    {
+      "id": "1070064",
+      "name": "Stake your Soul!"
+    },
+    {
+      "id": "1070065",
+      "name": "Live☆Twin Ki-sikil Frost"
+    },
+    {
+      "id": "1070066",
+      "name": "Albion the Sanctifire Dragon"
+    },
+    {
+      "id": "1070067",
+      "name": "Gold Pride"
+    },
+    {
+      "id": "1070068",
+      "name": "Slifer the Sky Dragon"
+    },
+    {
+      "id": "1070069",
+      "name": "WANTED: Seeker of Sinful Spoils"
+    },
+    {
+      "id": "1070070",
+      "name": "Blue-Eyes White Dragon"
+    },
+    {
+      "id": "1070076",
+      "name": "The Iris Swordsoul"
+    },
+    {
+      "id": "1070077",
+      "name": "Crimson Dragon"
+    },
+    {
+      "id": "1070078",
+      "name": "Emperor Charles the Great"
+    },
+    {
+      "id": "1071001",
+      "name": "Crusadia Maximus"
+    },
+    {
+      "id": "1071002",
+      "name": "Longirsu, the Orcust Orchestrator"
+    },
+    {
+      "id": "1071003",
+      "name": "Dream Mirror Phantasms"
+    },
+    {
+      "id": "1071004",
+      "name": "Six Samurai United"
+    },
+    {
+      "id": "1071005",
+      "name": "Danger! Bigfoot!"
+    },
+    {
+      "id": "1071006",
+      "name": "Nephthys, the Sacred Flame"
+    },
+    {
+      "id": "1071007",
+      "name": "U.A. Playmaker"
+    },
+    {
+      "id": "1071008",
+      "name": "Blackbeard, the Plunder Patroll Captain"
+    },
+    {
+      "id": "1071009",
+      "name": "Bujintei Susanowo"
+    },
+    {
+      "id": "1071010",
+      "name": "Ally of Justice Catastor"
+    },
+    {
+      "id": "1071011",
+      "name": "Mermail Abyssmegalo"
+    },
+    {
+      "id": "1071012",
+      "name": "Giant Beetrooper Invincible Atlas"
+    },
+    {
+      "id": "1071013",
+      "name": "Revendread Slayer"
+    },
+    {
+      "id": "1071014",
+      "name": "Ghostrick Alucard"
+    },
+    {
+      "id": "1071015",
+      "name": "Yoko, the Graceful Mayakashi"
+    },
+    {
+      "id": "1071016",
+      "name": "Legendary Six Samurai - Shi En"
+    },
+    {
+      "id": "1071017",
+      "name": "Genex Controller"
+    },
+    {
+      "id": "1071018",
+      "name": "Myutant Ultimus"
+    },
+    {
+      "id": "1071019",
+      "name": "Starry Night, Starry Dragon"
+    },
+    {
+      "id": "1071020",
+      "name": "Mekk-Knight Crusadia Avramax"
+    },
+    {
+      "id": "1071021",
+      "name": "Dingirsu, the Orcust of the Evening Star"
+    },
+    {
+      "id": "1071022",
+      "name": "S-Force Justify"
+    },
+    {
+      "id": "1071023",
+      "name": "Teardrop the Rikka Queen"
+    },
+    {
+      "id": "1071024",
+      "name": "Subterror Behemoth Speleogeist"
+    },
+    {
+      "id": "1071025",
+      "name": "Draco Masters of the Tenyi"
+    },
+    {
+      "id": "1071027",
+      "name": "Eldlixir of Black Awakening"
+    },
+    {
+      "id": "1072001",
+      "name": "Sky Striker Conversion: Flaming Wings of Destruction"
+    },
+    {
+      "id": "1072002",
+      "name": "Chaos Xyz Evolution -Galactic Gathering of Dragons-"
+    },
+    {
+      "id": "1073001",
+      "name": "WCS 2023 Party Favor"
+    },
+    {
+      "id": "1073002",
+      "name": "WCS 2023 Celebration"
+    },
+    {
+      "id": "1073003",
+      "name": "DC 2023 OCT Celebration"
+    },
+    {
+      "id": "1073004",
+      "name": "DC 2023 DEC Celebration"
+    }
+  ],
+  "DECK_CASE": [
+    {
+      "id": "1080001",
+      "name": "Duelist Card Case Red"
+    },
+    {
+      "id": "1080002",
+      "name": "Fusion Purple"
+    },
+    {
+      "id": "1080003",
+      "name": "Synchro Silver"
+    },
+    {
+      "id": "1080004",
+      "name": "Link Blue"
+    },
+    {
+      "id": "1080005",
+      "name": "Re-Contract Universe"
+    },
+    {
+      "id": "1080006",
+      "name": "Magician of Pendulum"
+    },
+    {
+      "id": "1080007",
+      "name": "Rage of Cipher"
+    },
+    {
+      "id": "1080008",
+      "name": "Cybernetic Successor"
+    },
+    {
+      "id": "1080009",
+      "name": "Heir to the Shiranui-Style"
+    },
+    {
+      "id": "1080010",
+      "name": "Growing Digital Bug"
+    },
+    {
+      "id": "1080011",
+      "name": "Roar of the Gladiator Beasts"
+    },
+    {
+      "id": "1080012",
+      "name": "Emergence of the Monarchs"
+    },
+    {
+      "id": "1080013",
+      "name": "Being Who Sees the End of the World"
+    },
+    {
+      "id": "1080014",
+      "name": "Gem-Knights' Resolution"
+    },
+    {
+      "id": "1080015",
+      "name": "Dragonmaid-To-Order"
+    },
+    {
+      "id": "1080016",
+      "name": "Burning Spirits"
+    },
+    {
+      "id": "1080018",
+      "name": "Spellbook of Prophecy"
+    },
+    {
+      "id": "1080019",
+      "name": "Immortal Glory"
+    },
+    {
+      "id": "1080020",
+      "name": "Vortex of Magic"
+    },
+    {
+      "id": "1080021",
+      "name": "Spiral Spear Strike"
+    },
+    {
+      "id": "1080022",
+      "name": "Blackwing's Pride"
+    },
+    {
+      "id": "1080023",
+      "name": "Hidden Arts of Shadows"
+    },
+    {
+      "id": "1080024",
+      "name": "Blue-Eyes Max"
+    },
+    {
+      "id": "1080025",
+      "name": "Sword of Souls"
+    },
+    {
+      "id": "1082001",
+      "name": "Xyz Black"
+    },
+    {
+      "id": "1082002",
+      "name": "The Millennium Puzzle"
+    },
+    {
+      "id": "1082003",
+      "name": "Duelist Card Case Blue"
+    },
+    {
+      "id": "1082004",
+      "name": "Card Case - LIGHT"
+    },
+    {
+      "id": "1082005",
+      "name": "Card Case - DARK"
+    },
+    {
+      "id": "1082006",
+      "name": "Card Case - EARTH"
+    },
+    {
+      "id": "1082007",
+      "name": "Card Case - WATER"
+    },
+    {
+      "id": "1082008",
+      "name": "Card Case - FIRE"
+    },
+    {
+      "id": "1082009",
+      "name": "Card Case - WIND"
+    },
+    {
+      "id": "1082010",
+      "name": "Gold Pride"
+    },
+    {
+      "id": "1082011",
+      "name": "2024 Card Case"
+    },
+    {
+      "id": "1082012",
+      "name": "President's Briefcase"
+    },
+    {
+      "id": "1082013",
+      "name": "Magicians of Bonds and Unity"
+    }
+  ],
+  "FIELD": [
+    {
+      "id": "1090001",
+      "name": "Forest"
+    },
+    {
+      "id": "1090002",
+      "name": "Spellbook Star Hall"
+    },
+    {
+      "id": "1090003",
+      "name": "Ritual Cage"
+    },
+    {
+      "id": "1090004",
+      "name": "Geartown"
+    },
+    {
+      "id": "1090005",
+      "name": "Volcano"
+    },
+    {
+      "id": "1090006",
+      "name": "World Legacy Ruins"
+    },
+    {
+      "id": "1090007",
+      "name": "Foreign Capital"
+    },
+    {
+      "id": "1090008",
+      "name": "Realm of Danger!"
+    },
+    {
+      "id": "1090009",
+      "name": "Night Skyscrapers"
+    },
+    {
+      "id": "1090010",
+      "name": "Glacial World"
+    },
+    {
+      "id": "1090011",
+      "name": "The Desolate Temple"
+    },
+    {
+      "id": "1090012",
+      "name": "Mount Swordsoul"
+    },
+    {
+      "id": "1090013",
+      "name": "Vivid Abyssal Waters"
+    },
+    {
+      "id": "1090014",
+      "name": "Madolche Chateau"
+    },
+    {
+      "id": "1090015",
+      "name": "Ghostrick Mansion"
+    },
+    {
+      "id": "1090016",
+      "name": "Myutant Evolution Lab"
+    },
+    {
+      "id": "1090017",
+      "name": "Cyber Universe"
+    },
+    {
+      "id": "1090018",
+      "name": "Memories of an Ancient Duel"
+    },
+    {
+      "id": "1090019",
+      "name": "Dogmatika Cathedral"
+    },
+    {
+      "id": "1090020",
+      "name": "Archfiend Palabyrinth"
+    },
+    {
+      "id": "1090021",
+      "name": "The Revived Sky Temple"
+    },
+    {
+      "id": "1090025",
+      "name": "Blue-Eyes Mausoleum"
+    },
+    {
+      "id": "1092001",
+      "name": "Colosseum"
+    },
+    {
+      "id": "1092002",
+      "name": "WCS"
+    }
+  ],
+  "FIELD_OBJ": [
+    {
+      "id": "1100001",
+      "name": "Forest"
+    },
+    {
+      "id": "1100002",
+      "name": "Spellbook Star Hall"
+    },
+    {
+      "id": "1100003",
+      "name": "Ritual Cage"
+    },
+    {
+      "id": "1100004",
+      "name": "Geartown"
+    },
+    {
+      "id": "1100005",
+      "name": "Volcano"
+    },
+    {
+      "id": "1100006",
+      "name": "World Legacy Ruins"
+    },
+    {
+      "id": "1100007",
+      "name": "Foreign Capital"
+    },
+    {
+      "id": "1100008",
+      "name": "Realm of Danger!"
+    },
+    {
+      "id": "1100009",
+      "name": "Night Skyscrapers"
+    },
+    {
+      "id": "1100010",
+      "name": "Glacial World"
+    },
+    {
+      "id": "1100011",
+      "name": "The Desolate Temple"
+    },
+    {
+      "id": "1100012",
+      "name": "Mount Swordsoul"
+    },
+    {
+      "id": "1100013",
+      "name": "Vivid Abyssal Waters"
+    },
+    {
+      "id": "1100014",
+      "name": "Madolche Chateau"
+    },
+    {
+      "id": "1100015",
+      "name": "Ghostrick Mansion"
+    },
+    {
+      "id": "1100016",
+      "name": "Myutant Evolution Lab"
+    },
+    {
+      "id": "1100017",
+      "name": "Cyber Universe"
+    },
+    {
+      "id": "1100018",
+      "name": "Memories of an Ancient Duel"
+    },
+    {
+      "id": "1100019",
+      "name": "Dogmatika Cathedral"
+    },
+    {
+      "id": "1100020",
+      "name": "Archfiend Palabyrinth"
+    },
+    {
+      "id": "1100021",
+      "name": "The Revived Sky Temple"
+    },
+    {
+      "id": "1100025",
+      "name": "Blue-Eyes Mausoleum"
+    },
+    {
+      "id": "1101001",
+      "name": "Trap Hole"
+    },
+    {
+      "id": "1101002",
+      "name": "Magical Hats"
+    },
+    {
+      "id": "1101003",
+      "name": "Summon Limit"
+    },
+    {
+      "id": "1101004",
+      "name": "Giant Trap Hole"
+    },
+    {
+      "id": "1101005",
+      "name": "TG1-EM1"
+    },
+    {
+      "id": "1101006",
+      "name": "Predaplant Chimerafflesia"
+    },
+    {
+      "id": "1101007",
+      "name": "Contract with the Abyss"
+    },
+    {
+      "id": "1101008",
+      "name": "Loop of Destruction"
+    },
+    {
+      "id": "1101009",
+      "name": "Genex Furnace"
+    },
+    {
+      "id": "1101011",
+      "name": "Negate Attack"
+    },
+    {
+      "id": "1101012",
+      "name": "Twin Twisters"
+    },
+    {
+      "id": "1101013",
+      "name": "Foolish Burial"
+    },
+    {
+      "id": "1102001",
+      "name": "Colosseum"
+    },
+    {
+      "id": "1102002",
+      "name": "WCS"
+    }
+  ],
+  "AVATAR_HOME": [
+    {
+      "id": "1110001",
+      "name": "Forest"
+    },
+    {
+      "id": "1110002",
+      "name": "Spellbook Star Hall"
+    },
+    {
+      "id": "1110003",
+      "name": "Ritual Cage"
+    },
+    {
+      "id": "1110004",
+      "name": "Geartown"
+    },
+    {
+      "id": "1110005",
+      "name": "Volcano"
+    },
+    {
+      "id": "1110006",
+      "name": "World Legacy Ruins"
+    },
+    {
+      "id": "1110007",
+      "name": "Foreign Capital"
+    },
+    {
+      "id": "1110008",
+      "name": "Realm of Danger!"
+    },
+    {
+      "id": "1110009",
+      "name": "Night Skyscrapers"
+    },
+    {
+      "id": "1110010",
+      "name": "Glacial World"
+    },
+    {
+      "id": "1110011",
+      "name": "The Desolate Temple"
+    },
+    {
+      "id": "1110012",
+      "name": "Mount Swordsoul"
+    },
+    {
+      "id": "1110013",
+      "name": "Vivid Abyssal Waters"
+    },
+    {
+      "id": "1110014",
+      "name": "Madolche Chateau"
+    },
+    {
+      "id": "1110015",
+      "name": "Ghostrick Mansion"
+    },
+    {
+      "id": "1110016",
+      "name": "Myutant Evolution Lab"
+    },
+    {
+      "id": "1110017",
+      "name": "Cyber Universe"
+    },
+    {
+      "id": "1110018",
+      "name": "Memories of an Ancient Duel"
+    },
+    {
+      "id": "1110019",
+      "name": "Dogmatika Cathedral"
+    },
+    {
+      "id": "1110020",
+      "name": "Archfiend Palabyrinth"
+    },
+    {
+      "id": "1110021",
+      "name": "The Revived Sky Temple"
+    },
+    {
+      "id": "1110025",
+      "name": "Blue-Eyes Mausoleum"
+    },
+    {
+      "id": "1111001",
+      "name": "Destiny Board"
+    },
+    {
+      "id": "1111002",
+      "name": "Bug Matrix"
+    },
+    {
+      "id": "1111003",
+      "name": "Shien's Dojo"
+    },
+    {
+      "id": "1111004",
+      "name": "Flower Gathering"
+    },
+    {
+      "id": "1111005",
+      "name": "Dragonic Tactics"
+    },
+    {
+      "id": "1111006",
+      "name": "Catapult Turtle"
+    },
+    {
+      "id": "1111007",
+      "name": "World Legacy - \"World Key\""
+    },
+    {
+      "id": "1111008",
+      "name": "Rank-Up-Magic Barian's Force"
+    },
+    {
+      "id": "1111009",
+      "name": "Rank-Up-Magic Astral Force"
+    },
+    {
+      "id": "1111011",
+      "name": "Destiny Signal"
+    },
+    {
+      "id": "1111012",
+      "name": "H - Heated Heart"
+    },
+    {
+      "id": "1111013",
+      "name": "E - Emergency Call"
+    },
+    {
+      "id": "1111014",
+      "name": "R - Righteous Justice"
+    },
+    {
+      "id": "1111015",
+      "name": "O - Oversoul"
+    },
+    {
+      "id": "1111016",
+      "name": "Normal Monster Card"
+    },
+    {
+      "id": "1111018",
+      "name": "Spell Card"
+    },
+    {
+      "id": "1111019",
+      "name": "Polymerization"
+    },
+    {
+      "id": "1111021",
+      "name": "Green Stone of Magic"
+    },
+    {
+      "id": "1111022",
+      "name": "Summer Trace of the Thunder God"
+    },
+    {
+      "id": "1112001",
+      "name": "Colosseum"
+    },
+    {
+      "id": "1112002",
+      "name": "WCS"
+    },
+    {
+      "id": "1113001",
+      "name": "WCS 2023 Party Favor"
+    }
+  ],
+  "STRUCTURE": [
+    {
+      "id": "1120001",
+      "name": "Starting Deck"
+    },
+    {
+      "id": "1120002",
+      "name": "Power of the Dragon"
+    },
+    {
+      "id": "1120003",
+      "name": "Synchro of Unity"
+    },
+    {
+      "id": "1120004",
+      "name": "Link Generation"
+    },
+    {
+      "id": "1120005",
+      "name": "Re-Contract Universe"
+    },
+    {
+      "id": "1120006",
+      "name": "Magician of Pendulum"
+    },
+    {
+      "id": "1120007",
+      "name": "Rage of Cipher"
+    },
+    {
+      "id": "1120008",
+      "name": "Cybernetic Successor"
+    },
+    {
+      "id": "1120009",
+      "name": "Heir to the Shiranui-Style"
+    },
+    {
+      "id": "1120010",
+      "name": "Growing Digital Bug"
+    },
+    {
+      "id": "1120011",
+      "name": "Roar of the Gladiator Beasts"
+    },
+    {
+      "id": "1120012",
+      "name": "Emergence of the Monarchs"
+    },
+    {
+      "id": "1120013",
+      "name": "Being Who Sees the End of the World"
+    },
+    {
+      "id": "1120014",
+      "name": "Gem-Knights' Resolution"
+    },
+    {
+      "id": "1120015",
+      "name": "Dragonmaid-To-Order"
+    },
+    {
+      "id": "1120016",
+      "name": "Burning Spirits"
+    },
+    {
+      "id": "1120018",
+      "name": "Spellbook of Prophecy"
+    },
+    {
+      "id": "1120019",
+      "name": "Immortal Glory"
+    },
+    {
+      "id": "1120020",
+      "name": "Vortex of Magic"
+    },
+    {
+      "id": "1120021",
+      "name": "Spiral Spear Strike"
+    },
+    {
+      "id": "1120022",
+      "name": "Blackwing's Pride"
+    },
+    {
+      "id": "1120023",
+      "name": "Hidden Arts of Shadows"
+    },
+    {
+      "id": "1120024",
+      "name": "Blue-Eyes Max"
+    },
+    {
+      "id": "1120025",
+      "name": "Sword of Souls"
+    }
+  ],
+  "WALLPAPER": [
+    {
+      "id": "1130001",
+      "name": "Blue-Eyes Alternative White Dragon"
+    },
+    {
+      "id": "1130002",
+      "name": "El Shaddoll Construct"
+    },
+    {
+      "id": "1130003",
+      "name": "Tri-Brigade Shuraig the Ominous Omen"
+    },
+    {
+      "id": "1130004",
+      "name": "Dingirsu, the Orcust of the Evening Star"
+    },
+    {
+      "id": "1130005",
+      "name": "Sky Striker Ace - Kagari"
+    },
+    {
+      "id": "1130006",
+      "name": "Eldlich the Golden Lord"
+    },
+    {
+      "id": "1130007",
+      "name": "Mekk-Knight Crusadia Avramax"
+    },
+    {
+      "id": "1130008",
+      "name": "Meteonis Drytron"
+    },
+    {
+      "id": "1130009",
+      "name": "Palladium Oracle Mahad"
+    },
+    {
+      "id": "1130010",
+      "name": "Elemental HERO Honest Neos"
+    },
+    {
+      "id": "1130011",
+      "name": "Shooting Quasar Dragon"
+    },
+    {
+      "id": "1130012",
+      "name": "Number F0: Utopic Draco Future"
+    },
+    {
+      "id": "1130013",
+      "name": "Odd-Eyes Arc Pendulum Dragon"
+    },
+    {
+      "id": "1130014",
+      "name": "Accesscode Talker"
+    },
+    {
+      "id": "1130015",
+      "name": "Ghostrick Festival"
+    },
+    {
+      "id": "1130016",
+      "name": "The World Legacy"
+    },
+    {
+      "id": "1130017",
+      "name": "Dark Magician"
+    },
+    {
+      "id": "1130018",
+      "name": "Vernusylph of the Flourishing Hills"
+    },
+    {
+      "id": "1130019",
+      "name": "Ursarctic Radiation"
+    },
+    {
+      "id": "1130020",
+      "name": "Abyss Actors' Curtain Call"
+    },
+    {
+      "id": "1130021",
+      "name": "Rescue-ACE Turbulence"
+    },
+    {
+      "id": "1130022",
+      "name": "Master Peace, the True Dracoslayer"
+    },
+    {
+      "id": "1130023",
+      "name": "WCS2023 \"Legendary Magician of Dark\""
+    },
+    {
+      "id": "1130024",
+      "name": "WCS2023 \"Legendary Dragon of White\""
+    },
+    {
+      "id": "1130025",
+      "name": "Vanquish Soul Caesar Valius"
+    },
+    {
+      "id": "1130026",
+      "name": "Branded Fusion"
+    },
+    {
+      "id": "1130027",
+      "name": "New Frontier"
+    },
+    {
+      "id": "1130028",
+      "name": "Gold Pride - Star Leon"
+    },
+    {
+      "id": "1130029",
+      "name": "Gift Exchange"
+    },
+    {
+      "id": "1130030",
+      "name": "Onikuji"
+    },
+    {
+      "id": "1130032",
+      "name": "Blue-Eyes White Dragon"
+    },
+    {
+      "id": "1130037",
+      "name": "Mamemaki"
+    },
+    {
+      "id": "1130039",
+      "name": "Snake-Eyes Flamberge Dragon"
+    },
+    {
+      "id": "1130040",
+      "name": "Flawless Perfection of the Tenyi"
+    },
+    {
+      "id": "1130041",
+      "name": "Number 41: Bagooska the Terribly Tired Tapir"
+    }
+  ],
+  "PACK_TICKET": [
+    {
+      "id": "1140001",
+      "name": "Legacy Pack ticket"
+    },
+    {
+      "id": "1140002",
+      "name": "Tournament Pack ticket 1"
+    },
+    {
+      "id": "1141001",
+      "name": "Xyz Reward Ticket"
+    },
+    {
+      "id": "1141002",
+      "name": "Fusion Reward Ticket"
+    },
+    {
+      "id": "1141003",
+      "name": "Synchro Reward Ticket"
+    },
+    {
+      "id": "1141004",
+      "name": "Duelist Cup Reward Tickets"
+    }
+  ],
+  "DECK_LIMIT": [
+    {
+      "id": "1150001",
+      "name": "Deck Slot"
+    }
+  ]
+}
