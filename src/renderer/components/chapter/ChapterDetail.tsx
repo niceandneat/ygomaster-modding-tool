@@ -15,7 +15,7 @@ import { ChapterDetailView } from './ChapterDetailView';
 
 const useStyles = makeStyles({
   container: {
-    width: '800px',
+    width: '656px',
     backgroundColor: tokens.colorNeutralBackground2,
   },
   contents: {
