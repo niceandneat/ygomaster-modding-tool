@@ -143,7 +143,6 @@ export const ChapterDetailView = ({
             </Field>
           )}
         />
-        <PlainInput<Chapter> name="id" number />
         <PlainInput<Chapter> name="description" multiline />
         {type === 'Duel' && (
           <>

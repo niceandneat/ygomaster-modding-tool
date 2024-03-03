@@ -15,6 +15,7 @@ import { DataUnlockType, DeckData, DuelData, GateData } from '../type';
 import {
   backupFiles,
   batchPromiseAll,
+  fileChaterIdToDataChapterId,
   readJson,
   saveJson,
   saveText,
@@ -48,7 +49,16 @@ export const filesToData = async (paths: {
 const loadGates = async (gatePath: string): Promise<Gate[]> => {
   const gatePaths = await glob(toPosix(path.resolve(gatePath, '**/*.json')));
   const gates = await batchPromiseAll(gatePaths, readJson<Gate>);
-  return gates.sort((a, b) => a.id - b.id);
+
+  return gates
+    .map((gate) => ({
+      ...gate,
+      chapters: gate.chapters.map((chapter) => ({
+        ...chapter,
+        id: fileChaterIdToDataChapterId(chapter.id, gate.id),
+      })),
+    }))
+    .sort((a, b) => a.id - b.id);
 };
 
 const loadDeckPathMap = async (

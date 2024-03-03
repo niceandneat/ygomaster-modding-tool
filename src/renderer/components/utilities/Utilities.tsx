@@ -38,6 +38,10 @@ const useStyles = makeStyles({
   cardTitle: {
     fontWeight: 700,
   },
+  cardDescription: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
 });
 
 export const Utilities = () => {
@@ -96,7 +100,19 @@ const DataSyncUtility = () => {
       <CardHeader
         header={<Body1 className={classes.cardTitle}>Data Sync</Body1>}
         description={
-          <Caption1>Sync between YgoMaster Data and Gate/Deck files</Caption1>
+          <div className={classes.cardDescription}>
+            <Caption1>Sync between YgoMaster Data and Gate/Deck files</Caption1>
+            <Caption1>
+              {
+                'When creating data from files, the IDs of the chapters in the gate file are combined with the ID of the gate. (e.g. { chapterId: 1, gateId: 1 } => { chapterId: 10001 })'
+              }
+            </Caption1>
+            <Caption1>
+              {
+                'When creating files from data, the same rule applies but in reverse. (e.g. { chapterId: 10001 } => { chapterId: 1, gateId: 1 })'
+              }
+            </Caption1>
+          </div>
         }
       />
       <UtilityDirectoryInput

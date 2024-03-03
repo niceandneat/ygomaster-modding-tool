@@ -22,6 +22,7 @@ import {
 import {
   backupFiles,
   batchPromiseAll,
+  dataChaterIdToFileChapterId,
   readJson,
   readLines,
   saveJson,
@@ -251,7 +252,7 @@ const createGateChapter = (data: {
   const chapterData = gateData.chapter[gateId][chapterId];
 
   return {
-    id: chapterId,
+    id: dataChaterIdToFileChapterId(chapterId),
     parent_id: chapterData.parent_chapter,
     description: duelDescriptions.get(chapterId) ?? '',
     type: 'Gate',
@@ -317,7 +318,7 @@ const createDuelChapter = (data: {
   if (rentalDeck) decks.push(rentalDeck);
 
   const chapter: DuelChapter = {
-    id: chapterId,
+    id: dataChaterIdToFileChapterId(chapterId),
     parent_id: chapterData.parent_chapter,
     description: duelDescriptions.get(chapterId) ?? '',
     type: 'Duel',
