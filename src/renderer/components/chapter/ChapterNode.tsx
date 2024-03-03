@@ -8,7 +8,17 @@ import { Add16Regular } from '@fluentui/react-icons';
 import { memo } from 'react';
 import { Handle, NodeProps, Position } from 'reactflow';
 
-import { Chapter, DuelChapter, GateChapter } from '../../../common/type';
+import {
+  Chapter,
+  ChapterType,
+  DuelChapter,
+  GateChapter,
+} from '../../../common/type';
+
+export const ChapterColor: Record<ChapterType, string> = {
+  Duel: tokens.colorPaletteLightGreenBackground2,
+  Gate: tokens.colorPaletteBlueBackground2,
+};
 
 const useStyles = makeStyles({
   container: {
@@ -55,10 +65,10 @@ const useStyles = makeStyles({
     paddingLeft: '10px',
   },
   duelTag: {
-    backgroundColor: tokens.colorPaletteLightGreenBackground2,
+    backgroundColor: ChapterColor.Duel,
   },
   gateTag: {
-    backgroundColor: tokens.colorPaletteBlueBackground2,
+    backgroundColor: ChapterColor.Gate,
   },
   contents: {
     ...shorthands.padding('16px'),

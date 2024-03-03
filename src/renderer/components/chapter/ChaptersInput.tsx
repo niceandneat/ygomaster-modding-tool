@@ -1,4 +1,4 @@
-import { Text, makeStyles, tokens } from '@fluentui/react-components';
+import { InfoLabel, makeStyles, tokens } from '@fluentui/react-components';
 import { useCallback, useMemo } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { ReactFlowProvider, useStore as useFlowStore } from 'reactflow';
@@ -73,7 +73,12 @@ const ChaptersInputComponent = () => {
 
   return (
     <div>
-      <Text className={classes.label}>chapters</Text>
+      <InfoLabel
+        className={classes.label}
+        info="Click right mouse button to add a node."
+      >
+        chapters
+      </InfoLabel>
       <ChaptersFlow
         onChangeChapters={handleChangeChapters}
         onChangeSelection={handleChangeSelection}

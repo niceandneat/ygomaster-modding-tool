@@ -25,6 +25,10 @@ import {
 } from 'reactflow';
 
 import { Chapter } from '../../../common/type';
+import {
+  ChapterContextMenu,
+  useChapterContextMenu,
+} from './ChapterContextMenu';
 import { ChapterNode } from './ChapterNode';
 import { useChaptersFlow } from './useChaptersFlow';
 
@@ -87,6 +91,7 @@ const ChaptersFlowComponent = ({
   const {
     nodes,
     edges,
+    addChapter,
     onNodesChange,
     onEdgesChange,
     onEdgeUpdate,
@@ -98,6 +103,9 @@ const ChaptersFlowComponent = ({
     onLayout,
   } = useChaptersFlow({ onChangeChapters, onChangeSelection });
 
+  const { flowRef, menuProps, onPaneContextMenu, closeMenu } =
+    useChapterContextMenu(addChapter);
+
   return (
     <div
       className={mergeClasses(
@@ -106,6 +114,7 @@ const ChaptersFlowComponent = ({
       )}
     >
       <ReactFlow
+        ref={flowRef}
         className={classes.flow}
         nodes={nodes}
         edges={edges}
@@ -117,6 +126,9 @@ const ChaptersFlowComponent = ({
         onConnectEnd={onConnectEnd}
         isValidConnection={isValidConnection}
         onSelectionChange={onSelectionChange}
+        onPaneContextMenu={onPaneContextMenu}
+        onPaneClick={closeMenu}
+        onMoveStart={closeMenu}
         nodeTypes={nodeTypes}
         defaultEdgeOptions={defaultEdgeOptions}
         proOptions={proOptions}
@@ -166,6 +178,7 @@ const ChaptersFlowComponent = ({
             </Tooltip>
           </Toolbar>
         </Panel>
+        <ChapterContextMenu {...menuProps} />
       </ReactFlow>
     </div>
   );
