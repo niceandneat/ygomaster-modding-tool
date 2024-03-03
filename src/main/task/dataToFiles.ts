@@ -253,7 +253,9 @@ const createGateChapter = (data: {
 
   return {
     id: dataChaterIdToFileChapterId(chapterId),
-    parent_id: chapterData.parent_chapter,
+    parent_id:
+      chapterData.parent_chapter &&
+      dataChaterIdToFileChapterId(chapterData.parent_chapter),
     description: duelDescriptions.get(chapterId) ?? '',
     type: 'Gate',
     unlock: createUnlock({ gateData, gateId, chapterId }),
@@ -319,7 +321,9 @@ const createDuelChapter = (data: {
 
   const chapter: DuelChapter = {
     id: dataChaterIdToFileChapterId(chapterId),
-    parent_id: chapterData.parent_chapter,
+    parent_id:
+      chapterData.parent_chapter &&
+      dataChaterIdToFileChapterId(chapterData.parent_chapter),
     description: duelDescriptions.get(chapterId) ?? '',
     type: 'Duel',
     cpu_deck: `${cpuDeckName}.json`,

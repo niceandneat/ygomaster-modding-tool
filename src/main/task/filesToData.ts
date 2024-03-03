@@ -56,6 +56,9 @@ const loadGates = async (gatePath: string): Promise<Gate[]> => {
       chapters: gate.chapters.map((chapter) => ({
         ...chapter,
         id: fileChaterIdToDataChapterId(chapter.id, gate.id),
+        parent_id:
+          chapter.parent_id &&
+          fileChaterIdToDataChapterId(chapter.parent_id, gate.id),
       })),
     }))
     .sort((a, b) => a.id - b.id);
