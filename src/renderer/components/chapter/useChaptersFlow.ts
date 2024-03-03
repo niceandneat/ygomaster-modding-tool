@@ -19,9 +19,33 @@ import {
   useReactFlow,
 } from 'reactflow';
 
-import { Chapter, Gate } from '../../../common/type';
+import { Chapter, DuelChapter, Gate, GateChapter } from '../../../common/type';
 
 type LayoutDirection = 'LR' | 'TB';
+
+const defaultDuelChapter: DuelChapter = {
+  id: 0,
+  parent_id: 0,
+  description: '',
+  type: 'Duel',
+  cpu_deck: '',
+  rental_deck: '',
+  mydeck_reward: [],
+  rental_reward: [],
+  cpu_hand: 6,
+  player_hand: 5,
+  cpu_name: 'CPU',
+  cpu_flag: 'None',
+  cpu_value: 98,
+};
+
+const defaultGateChapter: GateChapter = {
+  id: 0,
+  parent_id: 0,
+  description: '',
+  type: 'Gate',
+  unlock: [],
+};
 
 const DATA_CHANGES = ['remove', 'add', 'reset', 'replace'];
 const dagreGraph = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
@@ -86,11 +110,17 @@ export const useChaptersFlow = ({
   useEffect(() => {
     const nodeMap = new Map(getNodes().map((node) => [node.data.id, node]));
 
+    const isHorizontal = layoutDirection.current === 'LR';
+    const targetPosition = isHorizontal ? Position.Left : Position.Top;
+    const sourcePosition = isHorizontal ? Position.Right : Position.Bottom;
+
     const newNodes = chapters.map((chapter) => {
       return {
         id: `${chapter.id}`,
         position: { x: -100, y: -100 },
         type: 'chapterNode',
+        targetPosition,
+        sourcePosition,
         ...nodeMap.get(chapter.id),
         data: chapter,
       };
@@ -107,6 +137,43 @@ export const useChaptersFlow = ({
     setNodes(newNodes);
     setEdges(newEdges);
   }, [chapters, getNodes]);
+
+  const addChapter = useCallback(
+    ({
+      position = { x: 0, y: 0 },
+      data,
+    }: {
+      position?: { x: number; y: number };
+      data?: Partial<Chapter>;
+    }) => {
+      const id = Math.max(...getNodes().map(({ data }) => data.id)) + 1;
+
+      const isHorizontal = layoutDirection.current === 'LR';
+      const targetPosition = isHorizontal ? Position.Left : Position.Top;
+      const sourcePosition = isHorizontal ? Position.Right : Position.Bottom;
+
+      const newNode: Node<Chapter> = {
+        id: `${id}`,
+        position,
+        data: {
+          ...defaultGateChapter,
+          ...defaultDuelChapter,
+          id,
+          parent_id: 0,
+          ...data,
+        },
+        type: 'chapterNode',
+        targetPosition,
+        sourcePosition,
+      };
+
+      const newNodes = [...getNodes(), newNode];
+
+      setNodes(newNodes);
+      onChangeChapters(newNodes.map(({ data }) => data));
+    },
+    [getNodes, onChangeChapters],
+  );
 
   const onNodesChange = useCallback<OnNodesChange>(
     (changes) => {
@@ -224,51 +291,16 @@ export const useChaptersFlow = ({
         const id = Math.max(...getNodes().map(({ data }) => data.id)) + 1;
 
         const parentNode = getNode(connectingNodeId.current);
-        const isHorizontal = layoutDirection.current === 'LR';
-        const targetPosition = isHorizontal ? Position.Left : Position.Top;
-        const sourcePosition = isHorizontal ? Position.Right : Position.Bottom;
-
-        const newNode: Node<Chapter> = {
-          id: `${id}`,
+        addChapter({
           position: screenToFlowPosition({
             x: event.clientX,
             y: event.clientY,
           }),
-          data: {
-            id,
-            parent_id: parentNode?.data.id ?? 0,
-            description: '',
-            type: 'Duel',
-            cpu_deck: '',
-            rental_deck: '',
-            mydeck_reward: [],
-            rental_reward: [],
-            cpu_hand: 6,
-            player_hand: 5,
-            cpu_name: 'CPU',
-            cpu_flag: 'None',
-            cpu_value: 98,
-          },
-          type: 'chapterNode',
-          targetPosition,
-          sourcePosition,
-        };
-
-        const newEdge: Edge = {
-          id: `${newNode.data.parent_id}_${newNode.data.id}`,
-          source: connectingNodeId.current,
-          target: `${id}`,
-        };
-
-        const newNodes = [...getNodes(), newNode];
-        const newEdges = [...getEdges(), newEdge];
-
-        setEdges(newEdges);
-        setNodes(newNodes);
-        onChangeChapters(newNodes.map(({ data }) => data));
+          data: { id, parent_id: parentNode?.data.id ?? 0, type: 'Duel' },
+        });
       }
     },
-    [getEdges, getNode, getNodes, onChangeChapters, screenToFlowPosition],
+    [addChapter, getNode, getNodes, screenToFlowPosition],
   );
 
   const isValidConnection = useCallback<IsValidConnection>(
@@ -308,6 +340,7 @@ export const useChaptersFlow = ({
   return {
     nodes,
     edges,
+    addChapter,
     onNodesChange,
     onEdgesChange,
     onEdgeUpdate,
