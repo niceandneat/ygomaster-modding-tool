@@ -110,11 +110,6 @@ export const useChaptersFlow = ({
 
   const onNodesChange = useCallback<OnNodesChange>(
     (changes) => {
-      console.log(
-        'node change',
-        changes.map(({ type }) => type),
-        changes,
-      );
       const newNodes = applyNodeChanges(changes, getNodes());
       setNodes(newNodes);
 
@@ -131,11 +126,6 @@ export const useChaptersFlow = ({
 
   const onEdgesChange = useCallback<OnEdgesChange>(
     (changes) => {
-      console.log(
-        'edge change',
-        changes.map(({ type }) => type),
-        changes,
-      );
       const newEdges = applyEdgeChanges(changes, getEdges());
       setEdges(newEdges);
 
@@ -163,7 +153,6 @@ export const useChaptersFlow = ({
 
   const onEdgeUpdate = useCallback<OnEdgeUpdateFunc>(
     (oldEdge, connection) => {
-      console.log('edge update', oldEdge, connection);
       const newEdges = updateEdge(oldEdge, connection, getEdges());
       setEdges(newEdges);
 
@@ -191,7 +180,6 @@ export const useChaptersFlow = ({
 
   const onConnect = useCallback<OnConnect>(
     (connection) => {
-      console.log('edge connect', connection);
       const newEdges = addEdge(connection, getEdges());
       setEdges(newEdges);
 
@@ -275,8 +263,6 @@ export const useChaptersFlow = ({
         const newNodes = [...getNodes(), newNode];
         const newEdges = [...getEdges(), newEdge];
 
-        console.log(newNodes);
-
         setEdges(newEdges);
         setNodes(newNodes);
         onChangeChapters(newNodes.map(({ data }) => data));
@@ -292,7 +278,6 @@ export const useChaptersFlow = ({
 
   const onSelectionChange = useCallback(
     ({ nodes }: { nodes: Node<Chapter>[] }) => {
-      console.log(nodes);
       const [selectedNode] = nodes;
       onChangeSelection(selectedNode?.data);
     },
