@@ -279,8 +279,9 @@ const saveData = async (data: {
   // Create IDS_SOLO.txt
   let soloDescriptions = '';
   gates.forEach(({ id, name, description = '', chapters }) => {
-    soloDescriptions += `[IDS_SOLO.GATE${id}]\n${name}\n`;
-    soloDescriptions += `[IDS_SOLO.GATE${id}_EXPLANATION]\n${description}\n`;
+    const paddedId = id.toString().padStart(3, '0');
+    soloDescriptions += `[IDS_SOLO.GATE${paddedId}]\n${name}\n`;
+    soloDescriptions += `[IDS_SOLO.GATE${paddedId}_EXPLANATION]\n${description}\n`;
     chapters.forEach((chapter) => {
       soloDescriptions += `[IDS_SOLO.CHAPTER${chapter.id}_EXPLANATION]\n${chapter.description}\n`;
     });
