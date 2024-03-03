@@ -146,7 +146,7 @@ export const useChaptersFlow = ({
       position?: { x: number; y: number };
       data?: Partial<Chapter>;
     }) => {
-      const id = Math.max(...getNodes().map(({ data }) => data.id)) + 1;
+      const id = Math.max(...getNodes().map(({ data }) => data.id), 0) + 1;
 
       const isHorizontal = layoutDirection.current === 'LR';
       const targetPosition = isHorizontal ? Position.Left : Position.Top;
@@ -288,19 +288,17 @@ export const useChaptersFlow = ({
       );
 
       if (targetIsPane && event instanceof MouseEvent) {
-        const id = Math.max(...getNodes().map(({ data }) => data.id)) + 1;
-
         const parentNode = getNode(connectingNodeId.current);
         addChapter({
           position: screenToFlowPosition({
             x: event.clientX,
             y: event.clientY,
           }),
-          data: { id, parent_id: parentNode?.data.id ?? 0, type: 'Duel' },
+          data: { parent_id: parentNode?.data.id ?? 0, type: 'Duel' },
         });
       }
     },
-    [addChapter, getNode, getNodes, screenToFlowPosition],
+    [addChapter, getNode, screenToFlowPosition],
   );
 
   const isValidConnection = useCallback<IsValidConnection>(
