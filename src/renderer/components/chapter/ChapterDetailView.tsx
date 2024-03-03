@@ -30,6 +30,7 @@ import {
   GateChapter,
   ItemCategory,
 } from '../../../common/type';
+import { debounce } from '../../utils/debounce';
 import { FileInput } from '../input/FileInput';
 import { ItemInput } from '../input/ItemInput';
 import { PlainInput } from '../input/PlainInput';
@@ -104,11 +105,16 @@ export const ChapterDetailView = ({
   const { watch, control, trigger } = methods;
 
   useEffect(() => {
+    if (!onChange) return;
+
+    const validate = debounce(() => trigger(), 100);
     const subscription = watch((value) => {
-      onChange?.(value as Chapter);
+      onChange(value as Chapter);
+      validate();
     });
+
     return () => subscription.unsubscribe();
-  }, [onChange, watch]);
+  }, [onChange, trigger, watch]);
 
   useEffect(() => {
     trigger();
