@@ -13,7 +13,6 @@ import {
   FullScreenMaximize24Regular,
   FullScreenMinimize24Regular,
 } from '@fluentui/react-icons';
-import { memo, useState } from 'react';
 import {
   DefaultEdgeOptions,
   MarkerType,
@@ -22,7 +21,8 @@ import {
   Panel,
   ProOptions,
   ReactFlow,
-} from 'reactflow';
+} from '@xyflow/react';
+import { memo, useState } from 'react';
 
 import { Chapter } from '../../../common/type';
 import {
@@ -70,7 +70,7 @@ interface ChaptersFlowProps {
 }
 
 const nodeTypes: NodeTypes = {
-  chapterNode: ChapterNode,
+  chapter: ChapterNode,
 };
 
 const defaultEdgeOptions: DefaultEdgeOptions = {

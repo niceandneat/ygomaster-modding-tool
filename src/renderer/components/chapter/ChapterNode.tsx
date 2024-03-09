@@ -5,15 +5,11 @@ import {
   tokens,
 } from '@fluentui/react-components';
 import { Add16Regular } from '@fluentui/react-icons';
+import { Handle, Node, NodeProps, Position } from '@xyflow/react';
 import { memo } from 'react';
-import { Handle, NodeProps, Position } from 'reactflow';
 
-import {
-  Chapter,
-  ChapterType,
-  DuelChapter,
-  GateChapter,
-} from '../../../common/type';
+import { ChapterType, DuelChapter, GateChapter } from '../../../common/type';
+import { NodeType } from './useChaptersFlow';
 
 export const ChapterColor: Record<ChapterType, string> = {
   Duel: tokens.colorPaletteLightGreenBackground2,
@@ -37,18 +33,6 @@ const useStyles = makeStyles({
     backgroundColor: tokens.colorNeutralBackground1Hover,
     width: '20px',
     height: '20px',
-    '&.react-flow__handle-left': {
-      left: '-10px',
-    },
-    '&.react-flow__handle-right': {
-      right: '-10px',
-    },
-    '&.react-flow__handle-top': {
-      top: '-10px',
-    },
-    '&.react-flow__handle-bottom': {
-      bottom: '-10px',
-    },
     '& *': {
       pointerEvents: 'none',
     },
@@ -79,7 +63,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ChapterNodeComponent = (props: NodeProps<Chapter>) => {
+const ChapterNodeComponent = (props: NodeProps<NodeType>) => {
   const {
     data,
     isConnectable,
@@ -119,7 +103,7 @@ export const ChapterNode = memo(ChapterNodeComponent);
 const DuelChapterNodeContents = ({
   data,
   selected,
-}: NodeProps<DuelChapter>) => {
+}: NodeProps<Node<DuelChapter>>) => {
   const classes = useStyles();
 
   return (
@@ -135,7 +119,7 @@ const DuelChapterNodeContents = ({
 const GateChapterNodeContents = ({
   data,
   selected,
-}: NodeProps<GateChapter>) => {
+}: NodeProps<Node<GateChapter>>) => {
   const classes = useStyles();
 
   return (

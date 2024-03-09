@@ -5,11 +5,17 @@ import {
   tokens,
 } from '@fluentui/react-components';
 import { DualScreenSpan24Regular } from '@fluentui/react-icons';
-import { MouseEvent, useCallback, useRef, useState } from 'react';
-import { Node, useReactFlow } from 'reactflow';
+import { useReactFlow } from '@xyflow/react';
+import {
+  MouseEvent as ReactMouseEvent,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
 
 import { Chapter, ChapterType, isGateChapter } from '../../../common/type';
 import { ChapterColor } from './ChapterNode';
+import { EdgeType, NodeType } from './useChaptersFlow';
 
 const WIDTH = 160;
 
@@ -20,10 +26,10 @@ export const useChapterContextMenu = (
   }) => void,
 ) => {
   const flowRef = useRef<HTMLDivElement>(null);
-  const [currentNode, setCurrentNode] = useState<Node<Chapter>>();
+  const [currentNode, setCurrentNode] = useState<NodeType>();
   const [nodePosition, setNodePosition] = useState<{ x: number; y: number }>();
   const [menuPosition, setMenuPosition] = useState<{ x: number; y: number }>();
-  const { screenToFlowPosition } = useReactFlow<Chapter>();
+  const { screenToFlowPosition } = useReactFlow<NodeType, EdgeType>();
 
   const closeMenu = useCallback(() => {
     setCurrentNode(undefined);
@@ -59,7 +65,7 @@ export const useChapterContextMenu = (
   );
 
   const onPaneContextMenu = useCallback(
-    (event: MouseEvent<Element>) => {
+    (event: ReactMouseEvent<Element> | MouseEvent) => {
       event.preventDefault();
 
       const clientPosition = { x: event.clientX, y: event.clientY };
@@ -72,7 +78,7 @@ export const useChapterContextMenu = (
   );
 
   const onNodeContextMenu = useCallback(
-    (event: MouseEvent<Element>, node: Node<Chapter>) => {
+    (event: ReactMouseEvent<Element>, node: NodeType) => {
       event.preventDefault();
 
       const clientPosition = { x: event.clientX, y: event.clientY };
@@ -99,7 +105,7 @@ export const useChapterContextMenu = (
 
     const position = {
       x: currentNode.position.x,
-      y: currentNode.position.y + (currentNode.height ?? 0) + 10,
+      y: currentNode.position.y + (currentNode.computed?.height ?? 0) + 10,
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

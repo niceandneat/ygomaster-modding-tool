@@ -1,8 +1,8 @@
 import { InfoLabel, makeStyles, tokens } from '@fluentui/react-components';
+import { ReactFlowProvider, useStore as useFlowStore } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
 import { useCallback, useMemo } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
-import { ReactFlowProvider, useStore as useFlowStore } from 'reactflow';
-import 'reactflow/dist/style.css';
 
 import { Chapter, Gate } from '../../../common/type';
 import { useStateRef } from '../../hooks/useStateRef';

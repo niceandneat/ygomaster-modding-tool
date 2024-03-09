@@ -21,18 +21,18 @@ export interface GateSummary {
 export type Chapter = DuelChapter | GateChapter;
 export type ChapterType = 'Duel' | 'Gate';
 
-export interface BaseChapter {
+export type BaseChapter = {
   id: number; // 솔로 id
   parent_id: number; // 0 이면 시작 솔로 / 0 이외이면 완료해야할 솔로 id
   description: string; // 솔로 description
-}
+};
 
-export interface GateChapter extends BaseChapter {
+export type GateChapter = BaseChapter & {
   type: 'Gate';
   unlock: Unlock[]; // 이 필드가 존재할경우 듀얼하는 솔로가 아니며 아래 아이템을 필요로 함.
-}
+};
 
-export interface DuelChapter extends BaseChapter {
+export type DuelChapter = BaseChapter & {
   type: 'Duel';
   cpu_deck: string; // 상대방 덱. /data/solo 내의 모든 폴더에서 이름이 일치하는 덱을 찾기
   rental_deck?: string; // 렌탈 덱, 이 키값이 존재하지 않는 경우 렌탈덱 듀얼이 불가
@@ -44,7 +44,7 @@ export interface DuelChapter extends BaseChapter {
   cpu_flag: string; // cpuflag (ai 관련)
   cpu_value: number; // cpu의 성능. 100보다 98,97 이 더 뛰어나다는 커뮤니티 의견이 있다.
   // TODO 장식 요소 추가
-}
+};
 
 export type Unlock = Item<ItemCategory.CONSUME>;
 export type Reward = Item<ItemCategory>;

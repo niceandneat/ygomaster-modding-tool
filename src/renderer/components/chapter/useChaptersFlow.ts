@@ -1,6 +1,4 @@
 import Dagre from '@dagrejs/dagre';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useWatch } from 'react-hook-form';
 import {
   Edge,
   IsValidConnection,
@@ -11,17 +9,22 @@ import {
   OnEdgeUpdateFunc,
   OnEdgesChange,
   OnNodesChange,
+  OnSelectionChangeFunc,
   Position,
   addEdge,
   applyEdgeChanges,
   applyNodeChanges,
   updateEdge,
   useReactFlow,
-} from 'reactflow';
+} from '@xyflow/react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 
 import { Chapter, DuelChapter, Gate, GateChapter } from '../../../common/type';
 
 type LayoutDirection = 'LR' | 'TB';
+export type NodeType = Node<Chapter, 'chapter'>;
+export type EdgeType = Edge<Chapter>;
 
 const defaultDuelChapter: DuelChapter = {
   id: 0,
@@ -47,16 +50,16 @@ const defaultGateChapter: GateChapter = {
   unlock: [],
 };
 
-const DATA_CHANGES = ['remove', 'add', 'reset', 'replace'];
+const DATA_CHANGES = ['remove', 'add', 'replace'];
 
 const getNodeSize = (node: Node) => ({
-  width: node.width ?? 0,
-  height: node.height ?? 0,
+  width: node.computed?.width ?? 0,
+  height: node.computed?.height ?? 0,
 });
 
 const getLayoutedNodes = (
-  nodes: Node<Chapter>[],
-  edges: Edge[],
+  nodes: NodeType[],
+  edges: EdgeType[],
   direction: LayoutDirection = 'TB',
 ) => {
   if (!nodes.length) return [];
@@ -97,10 +100,10 @@ export const useChaptersFlow = ({
   onChangeSelection,
 }: UseChaptersInputFlowParams) => {
   const { fitView, getNode, getNodes, getEdges, screenToFlowPosition } =
-    useReactFlow<Chapter>();
+    useReactFlow<NodeType, EdgeType>();
 
-  const [nodes, setNodes] = useState<Node<Chapter>[]>([]);
-  const [edges, setEdges] = useState<Edge[]>([]);
+  const [nodes, setNodes] = useState<NodeType[]>([]);
+  const [edges, setEdges] = useState<EdgeType[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   const connectingNodeId = useRef<string>();
@@ -118,7 +121,7 @@ export const useChaptersFlow = ({
       return {
         id: `${chapter.id}`,
         position: { x: -100, y: -100 },
-        type: 'chapterNode',
+        type: 'chapter' as const,
         targetPosition,
         sourcePosition,
         ...nodeMap.get(chapter.id),
@@ -154,7 +157,7 @@ export const useChaptersFlow = ({
       const targetPosition = isHorizontal ? Position.Left : Position.Top;
       const sourcePosition = isHorizontal ? Position.Right : Position.Bottom;
 
-      const newNode: Node<Chapter> = {
+      const newNode: NodeType = {
         id: `${id}`,
         position,
         data: {
@@ -164,7 +167,7 @@ export const useChaptersFlow = ({
           parent_id: 0,
           ...data,
         },
-        type: 'chapterNode',
+        type: 'chapter',
         targetPosition,
         sourcePosition,
       };
@@ -177,7 +180,7 @@ export const useChaptersFlow = ({
     [getNodes, onChangeChapters],
   );
 
-  const onNodesChange = useCallback<OnNodesChange>(
+  const onNodesChange = useCallback<OnNodesChange<NodeType>>(
     (changes) => {
       const newNodes = applyNodeChanges(changes, getNodes());
       setNodes(newNodes);
@@ -193,7 +196,7 @@ export const useChaptersFlow = ({
     [getNodes, onChangeChapters],
   );
 
-  const onEdgesChange = useCallback<OnEdgesChange>(
+  const onEdgesChange = useCallback<OnEdgesChange<EdgeType>>(
     (changes) => {
       const newEdges = applyEdgeChanges(changes, getEdges());
       setEdges(newEdges);
@@ -220,7 +223,7 @@ export const useChaptersFlow = ({
     [getEdges, getNodes, onChangeChapters],
   );
 
-  const onEdgeUpdate = useCallback<OnEdgeUpdateFunc>(
+  const onEdgeUpdate = useCallback<OnEdgeUpdateFunc<EdgeType>>(
     (oldEdge, connection) => {
       const newEdges = updateEdge(oldEdge, connection, getEdges());
       setEdges(newEdges);
@@ -308,10 +311,10 @@ export const useChaptersFlow = ({
     [],
   );
 
-  const onSelectionChange = useCallback(
-    ({ nodes }: { nodes: Node<Chapter>[] }) => {
+  const onSelectionChange = useCallback<OnSelectionChangeFunc>(
+    ({ nodes }) => {
       const [selectedNode] = nodes;
-      onChangeSelection(selectedNode?.data);
+      onChangeSelection(selectedNode?.data as Chapter | undefined);
     },
     [onChangeSelection],
   );
