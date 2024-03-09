@@ -8,7 +8,7 @@ import { useCallback, useId } from 'react';
 
 interface UseToastResults {
   toasterId: string;
-  withToast: <T extends () => Promise<unknown>>(fn: T) => Promise<void>;
+  withToast: <T extends () => Promise<unknown>>(fn: T) => Promise<boolean>;
 }
 
 export const useToast = (success: string, fail: string): UseToastResults => {
@@ -25,6 +25,8 @@ export const useToast = (success: string, fail: string): UseToastResults => {
             </Toast>,
             { intent: 'success', position: 'top' },
           );
+
+          return true; // success
         }
       } catch (e) {
         console.error(e);
@@ -36,6 +38,8 @@ export const useToast = (success: string, fail: string): UseToastResults => {
           { intent: 'error', position: 'top' },
         );
       }
+
+      return false; // falied or skipped
     },
     [dispatchToast, fail, success],
   );

@@ -37,7 +37,7 @@ const defaultGate: Partial<Gate> = {
   illust_x: 0.03,
   illust_y: 0,
   priority: 0,
-  clear_chapter: 1,
+  clear_chapter: 0,
   chapters: [],
 };
 
@@ -123,18 +123,19 @@ export const GateDetailView = ({
 }: GateDetailViewProps) => {
   const classes = useStyles();
   const methods = useForm<Gate>({ defaultValues: { ...defaultGate, ...gate } });
-  const { handleSubmit, formState } = methods;
+  const { handleSubmit, reset, formState } = methods;
 
-  const { isDirty, isSubmitSuccessful } = formState;
-  useWarnNavigation(isDirty && !isSubmitSuccessful);
+  useWarnNavigation(formState.isDirty);
 
   const handleGateSubmit = useCallback(
-    (gate: Gate) =>
-      onSubmit({
+    async (gate: Gate) => {
+      const successed = await onSubmit({
         ...gate,
         chapters: gate.chapters.map(extractOnlyRelevantFields),
-      }),
-    [onSubmit],
+      });
+      if (successed) reset({ ...defaultGate, ...gate });
+    },
+    [onSubmit, reset],
   );
 
   return (
@@ -193,14 +194,16 @@ const ClearChapterInput = () => {
       control={control}
       name="clear_chapter"
       rules={{
-        required: 'This field is required',
         validate: {
-          exists: (value = 0) => value > 0, // false if no matching chapter
+          required: (value = 0) => value > 0 || 'This field is required',
+          exist: (value = 0) =>
+            options.some(({ id }) => id === value) ||
+            'This chapter is not exist',
         },
       }}
       render={({ field }) => {
         const selectedOption = options.find(({ id }) => id === field.value) ?? {
-          id: -1,
+          id: 0,
           name: '',
         }; // for empty selected option input
 

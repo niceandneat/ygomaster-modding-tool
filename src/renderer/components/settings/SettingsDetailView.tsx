@@ -7,6 +7,7 @@ import {
   tokens,
 } from '@fluentui/react-components';
 import { OpenRegular, SaveRegular } from '@fluentui/react-icons';
+import { useCallback } from 'react';
 import {
   Controller,
   FormProvider,
@@ -66,14 +67,22 @@ export const SettingsDetailView = ({
   const methods = useForm<Settings>({
     defaultValues: { ...defaultSettings, ...settings },
   });
+  const { handleSubmit, reset, formState } = methods;
 
-  const { isDirty, isSubmitSuccessful } = methods.formState;
-  useWarnNavigation(isDirty && !isSubmitSuccessful);
+  useWarnNavigation(formState.isDirty);
+
+  const handleSettingsSubmit = useCallback(
+    async (settings: Settings) => {
+      const successed = await onSubmit(settings);
+      if (successed) reset({ ...defaultSettings, ...settings });
+    },
+    [onSubmit, reset],
+  );
 
   return (
     <div className={classes.container}>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(handleSettingsSubmit)}>
           <div className={classes.header}>
             <Title1 className={classes.title}>Settings</Title1>
             <div className={classes.headerButtons}>

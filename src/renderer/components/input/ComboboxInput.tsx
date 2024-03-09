@@ -184,6 +184,7 @@ export const ComboboxInput = <T,>({
         <div className={classes.inputContainer}>
           <Input
             {...getInputProps()}
+            required={false}
             placeholder={valueToString(value) ? undefined : 'Category'}
             className={classes.input}
             // https://github.com/downshift-js/downshift/issues/1108#issuecomment-842407759
