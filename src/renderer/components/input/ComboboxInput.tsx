@@ -2,6 +2,7 @@ import {
   Button,
   Field,
   Input,
+  Text,
   makeStyles,
   mergeClasses,
   shorthands,
@@ -28,8 +29,26 @@ const useStyles = makeStyles({
   container: {
     position: 'relative',
   },
+  inputContainer: {
+    position: 'relative',
+    display: 'grid',
+  },
   input: {
     minWidth: '0px',
+  },
+  inputValueContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    pointerEvents: 'none',
+    ...shorthands.padding(0, `calc(${tokens.spacingHorizontalMNudge} + 1px)`), // 1px for adding border width of input
+  },
+  inputValue: {
+    ...shorthands.padding(0, tokens.spacingHorizontalXXS),
   },
   menu: {
     position: 'absolute',
@@ -53,7 +72,7 @@ const useStyles = makeStyles({
     backgroundColor: tokens.colorNeutralBackground1Selected,
   },
   defaultContents: {
-    ...shorthands.padding(tokens.spacingVerticalM),
+    ...shorthands.padding(0, tokens.spacingVerticalM),
   },
 });
 
@@ -90,9 +109,7 @@ export const ComboboxInput = <T,>({
 }: ComboboxInputProps<T>) => {
   const classes = useStyles();
   const [items, setItems] = useState(() => options.slice(0, 100));
-  const [inputValue, setInputValue] = useState<string>(() =>
-    valueToString(value),
-  );
+  const [inputValue, setInputValue] = useState<string>('');
 
   const handleItemToString = useCallback(
     (item: T | null) => (item ? valueToString(item) : ''),
@@ -106,12 +123,8 @@ export const ComboboxInput = <T,>({
   );
 
   const handleIsOpenChange = useCallback(
-    ({ isOpen, selectedItem }: UseComboboxStateChange<T>) => {
-      if (!isOpen && selectedItem) {
-        setInputValue(valueToString(selectedItem));
-      }
-    },
-    [valueToString],
+    ({ isOpen }: UseComboboxStateChange<T>) => !isOpen && setInputValue(''),
+    [],
   );
 
   const applyInputChange = useMemo(() => {
@@ -122,10 +135,6 @@ export const ComboboxInput = <T,>({
       setItems(fuse.search(inputValue, { limit: 20 }).map(({ item }) => item));
     }, 100);
   }, [options, fuseOptions]);
-
-  useEffect(() => {
-    setInputValue(valueToString(value));
-  }, [value, valueToString]);
 
   useEffect(() => {
     applyInputChange(inputValue);
@@ -172,28 +181,35 @@ export const ComboboxInput = <T,>({
           children: label,
         }}
       >
-        <Input
-          {...getInputProps()}
-          placeholder="Category"
-          className={classes.input}
-          // https://github.com/downshift-js/downshift/issues/1108#issuecomment-842407759
-          value={inputValue}
-          onChange={handleInputValueChange}
-          contentAfter={
-            <Button
-              appearance="transparent"
-              size="small"
-              icon={
-                isOpen ? (
-                  <ArrowCircleUp24Regular />
-                ) : (
-                  <ArrowCircleDown24Regular />
-                )
-              }
-              {...getToggleButtonProps()}
-            />
-          }
-        />
+        <div className={classes.inputContainer}>
+          <Input
+            {...getInputProps()}
+            placeholder={valueToString(value) ? undefined : 'Category'}
+            className={classes.input}
+            // https://github.com/downshift-js/downshift/issues/1108#issuecomment-842407759
+            value={inputValue}
+            onChange={handleInputValueChange}
+            contentAfter={
+              <Button
+                appearance="transparent"
+                size="small"
+                icon={
+                  isOpen ? (
+                    <ArrowCircleUp24Regular />
+                  ) : (
+                    <ArrowCircleDown24Regular />
+                  )
+                }
+                {...getToggleButtonProps()}
+              />
+            }
+          />
+          {!inputValue && (
+            <div className={classes.inputValueContainer}>
+              <Text className={classes.inputValue}>{valueToString(value)}</Text>
+            </div>
+          )}
+        </div>
       </Field>
       <div
         className={classes.menu}
