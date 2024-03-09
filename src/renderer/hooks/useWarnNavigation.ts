@@ -35,18 +35,6 @@ export const useWarnNavigation = (shouldBlock: boolean) => {
 
     const handler = (event: BeforeUnloadEvent) => {
       event.preventDefault();
-      // const response = window.electron.showMessageBoxSync({
-      //   message:
-      //     'Are you sure you want to leave?\nYour form completion will be deleted.',
-      //   buttons: ['leave', 'stay'],
-      //   cancelId: 1,
-      // });
-
-      // console.log(response);
-
-      // if (response === 1) {
-      //   event.preventDefault();
-      // }
     };
 
     window.addEventListener('beforeunload', handler);

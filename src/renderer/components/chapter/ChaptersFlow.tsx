@@ -96,6 +96,7 @@ const ChaptersFlowComponent = ({
     onNodesChange,
     onEdgesChange,
     onEdgeUpdate,
+    onBeforeDelete,
     onConnect,
     onConnectStart,
     onConnectEnd,
@@ -137,6 +138,7 @@ const ChaptersFlowComponent = ({
         onPaneContextMenu={onPaneContextMenu}
         onPaneClick={closeMenu}
         onMoveStart={closeMenu}
+        onBeforeDelete={onBeforeDelete}
         nodeTypes={nodeTypes}
         defaultEdgeOptions={defaultEdgeOptions}
         proOptions={proOptions}

@@ -3,6 +3,7 @@ import {
   Edge,
   IsValidConnection,
   Node,
+  OnBeforeDelete,
   OnConnect,
   OnConnectEnd,
   OnConnectStart,
@@ -250,6 +251,18 @@ export const useChaptersFlow = ({
     [getEdges, getNodes, onChangeChapters],
   );
 
+  const onBeforeDelete = useCallback<
+    OnBeforeDelete<NodeType, EdgeType>
+  >(async () => {
+    const response = await window.electron.showMessageBox({
+      message: 'Are you sure?',
+      buttons: ['yes', 'no'],
+      cancelId: 1,
+    });
+
+    return response === 0;
+  }, []);
+
   const onConnect = useCallback<OnConnect>(
     (connection) => {
       const newEdges = addEdge(connection, getEdges());
@@ -347,6 +360,7 @@ export const useChaptersFlow = ({
     onNodesChange,
     onEdgesChange,
     onEdgeUpdate,
+    onBeforeDelete,
     onConnect,
     onConnectStart,
     onConnectEnd,
