@@ -90,6 +90,7 @@ export const isDuelChapter = (chapter: BaseChapter): chapter is DuelChapter =>
 
 export interface ShowMessageBoxRequest {
   message: string;
+  detail?: string;
   buttons: string[];
   type?: 'none' | 'info' | 'error' | 'question' | 'warning';
   cancelId?: number;

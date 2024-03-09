@@ -1,4 +1,4 @@
-import { BrowserWindow, app } from 'electron';
+import { BrowserWindow, app, dialog } from 'electron';
 import log from 'electron-log/main';
 import path from 'path';
 
@@ -28,6 +28,17 @@ const createWindow = () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
     );
   }
+
+  // make 'beforeunload' event work
+  mainWindow.webContents.on('will-prevent-unload', (event) => {
+    const response = dialog.showMessageBoxSync(mainWindow, {
+      message: 'Are you sure you want to leave?',
+      detail: 'Changes that you made may not be saved.',
+      buttons: ['Leave', 'Stay'],
+      cancelId: 1,
+    });
+    if (response === 0) event.preventDefault();
+  });
 
   return mainWindow;
 };

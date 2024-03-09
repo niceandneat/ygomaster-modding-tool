@@ -101,13 +101,14 @@ const handleSaveFile = async (event: IpcMainInvokeEvent, path?: string) => {
 
 const handleShowMessageBox = async (
   event: IpcMainInvokeEvent,
-  { message, buttons, cancelId, type }: ShowMessageBoxRequest,
+  { message, detail, buttons, cancelId, type }: ShowMessageBoxRequest,
 ) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (!win) return;
 
   const { response } = await dialog.showMessageBox(win, {
     message,
+    detail,
     buttons,
     cancelId,
     type,

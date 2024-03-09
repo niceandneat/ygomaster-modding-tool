@@ -8,6 +8,7 @@ export const useWarnNavigation = (shouldBlock: boolean) => {
     },
     [shouldBlock],
   );
+
   const blocker = useBlocker(handleBlock);
 
   useEffect(() => {
@@ -15,8 +16,8 @@ export const useWarnNavigation = (shouldBlock: boolean) => {
 
     const run = async () => {
       const response = await window.electron.showMessageBox({
-        message:
-          'Are you sure you want to leave?\nYour form completion will be deleted.',
+        message: 'Are you sure you want to leave?',
+        detail: 'Changes that you made may not be saved.',
         buttons: ['leave', 'stay'],
         cancelId: 1,
       });
@@ -28,6 +29,29 @@ export const useWarnNavigation = (shouldBlock: boolean) => {
 
     run();
   }, [blocker]);
+
+  useEffect(() => {
+    if (!shouldBlock) return;
+
+    const handler = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      // const response = window.electron.showMessageBoxSync({
+      //   message:
+      //     'Are you sure you want to leave?\nYour form completion will be deleted.',
+      //   buttons: ['leave', 'stay'],
+      //   cancelId: 1,
+      // });
+
+      // console.log(response);
+
+      // if (response === 1) {
+      //   event.preventDefault();
+      // }
+    };
+
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [shouldBlock]);
 
   return blocker.state === 'blocked';
 };
