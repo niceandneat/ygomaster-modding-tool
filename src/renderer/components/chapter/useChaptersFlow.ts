@@ -126,13 +126,15 @@ export const useChaptersFlow = ({
       };
     });
 
-    const newEdges = chapters.map((chapter) => {
-      return {
-        id: `${chapter.parent_id}_${chapter.id}`,
-        source: `${chapter.parent_id}`,
-        target: `${chapter.id}`,
-      };
-    });
+    const newEdges = chapters
+      .filter((chapter) => chapter.parent_id !== 0)
+      .map((chapter) => {
+        return {
+          id: `${chapter.parent_id}_${chapter.id}`,
+          source: `${chapter.parent_id}`,
+          target: `${chapter.id}`,
+        };
+      });
 
     setNodes(newNodes);
     setEdges(newEdges);
