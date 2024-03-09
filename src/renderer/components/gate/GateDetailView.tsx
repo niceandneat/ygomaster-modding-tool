@@ -1,11 +1,31 @@
-import { Button, Title1, makeStyles, tokens } from '@fluentui/react-components';
+import {
+  Button,
+  Title1,
+  makeStyles,
+  shorthands,
+  tokens,
+} from '@fluentui/react-components';
 import { SaveRegular } from '@fluentui/react-icons';
-import { useCallback } from 'react';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { IFuseOptions } from 'fuse.js';
+import { useCallback, useMemo } from 'react';
+import {
+  Controller,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+  useFormContext,
+  useWatch,
+} from 'react-hook-form';
 
-import { Chapter, Gate, isGateChapter } from '../../../common/type';
+import {
+  Chapter,
+  Gate,
+  isDuelChapter,
+  isGateChapter,
+} from '../../../common/type';
 import { useWarnNavigation } from '../../hooks/useWarnNavigation';
 import { ChaptersInput } from '../chapter/ChaptersInput';
+import { ComboboxInput } from '../input/ComboboxInput';
 import { PlainInput } from '../input/PlainInput';
 
 const defaultGate: Partial<Gate> = {
@@ -17,6 +37,7 @@ const defaultGate: Partial<Gate> = {
   illust_x: 0.03,
   illust_y: 0,
   priority: 0,
+  clear_chapter: 1,
   chapters: [],
 };
 
@@ -44,6 +65,9 @@ const useStyles = makeStyles({
     alignItems: 'flex-end',
     marginBottom: tokens.spacingVerticalM,
     backgroundColor: tokens.colorNeutralBackground2,
+  },
+  menuitem: {
+    ...shorthands.padding(tokens.spacingVerticalM),
   },
 });
 
@@ -128,6 +152,7 @@ export const GateDetailView = ({
           <PlainInput<Gate> name="name" />
           <PlainInput<Gate> name="description" multiline />
           <PlainInput<Gate> name="priority" number />
+          <ClearChapterInput />
           <ChaptersInput />
           <PlainInput<Gate> name="illust_id" number />
           <PlainInput<Gate> name="illust_x" number />
@@ -135,5 +160,67 @@ export const GateDetailView = ({
         </div>
       </form>
     </FormProvider>
+  );
+};
+
+interface ClearChapterOption {
+  id: number;
+  name?: string;
+}
+
+const optionToString = (option?: ClearChapterOption) => option?.name ?? '';
+const fuseOptions: IFuseOptions<ClearChapterOption> = {
+  keys: ['name'],
+};
+
+const ClearChapterInput = () => {
+  const classes = useStyles();
+  const { control, formState } = useFormContext<Gate>();
+  const chapters = useWatch<Gate, 'chapters'>({ name: 'chapters' });
+
+  const options = useMemo(
+    () =>
+      chapters
+        .filter(isDuelChapter)
+        .map(({ id, cpu_deck }) => ({ id, name: cpu_deck })),
+    [chapters],
+  );
+
+  const error = formState.errors.clear_chapter?.message;
+
+  return (
+    <Controller
+      control={control}
+      name="clear_chapter"
+      rules={{
+        required: 'This field is required',
+        validate: {
+          exists: (value = 0) => value > 0, // false if no matching chapter
+        },
+      }}
+      render={({ field }) => {
+        const selectedOption = options.find(({ id }) => id === field.value) ?? {
+          id: -1,
+          name: '',
+        }; // for empty selected option input
+
+        return (
+          <ComboboxInput
+            label="clear chapter"
+            required
+            validationMessage={error?.toString()}
+            value={selectedOption}
+            options={options}
+            fuseOptions={fuseOptions}
+            onChange={(value) => field.onChange(value.id)}
+            valueToString={optionToString}
+          >
+            {({ value }) => (
+              <div className={classes.menuitem}>{value.name}</div>
+            )}
+          </ComboboxInput>
+        );
+      }}
+    />
   );
 };

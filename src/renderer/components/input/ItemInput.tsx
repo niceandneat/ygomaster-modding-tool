@@ -60,12 +60,13 @@ const categoryDefaultIdMap = {
   [ItemCategory.CARD]: '4007', // Blue-Eyes White Dragon
 } as Record<ItemCategory, string>;
 
-const categoryOptionToString = ({ name }: CategoryOption<ItemCategory>) => name;
+const categoryOptionToString = (option?: CategoryOption<ItemCategory>) =>
+  option?.name ?? '';
 const categoryFuseOptions: IFuseOptions<CategoryOption<ItemCategory>> = {
   keys: ['name'],
 };
 
-const idOptionToString = ({ name }: IdOption) => name;
+const idOptionToString = (option?: IdOption) => option?.name ?? '';
 const idFuseOptions: IFuseOptions<IdOption> = {
   keys: ['name'],
 };

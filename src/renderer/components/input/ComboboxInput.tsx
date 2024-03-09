@@ -58,12 +58,14 @@ const useStyles = makeStyles({
 });
 
 interface ComboboxInputProps<T> {
-  value: T;
+  value?: T;
   options: T[];
   label: string;
   fuseOptions?: IFuseOptions<T>;
+  required?: boolean;
+  validationMessage?: string;
   onChange: (value: T) => void;
-  valueToString?: (value: T) => string;
+  valueToString?: (value?: T) => string;
   children?: (props: { value: T }) => ReactNode;
 }
 
@@ -80,6 +82,8 @@ export const ComboboxInput = <T,>({
   options,
   label,
   fuseOptions,
+  required,
+  validationMessage,
   onChange,
   valueToString = defaultValueToString,
   children,
@@ -161,6 +165,8 @@ export const ComboboxInput = <T,>({
   return (
     <div className={classes.container}>
       <Field
+        required={required}
+        validationMessage={validationMessage}
         label={{
           ...(getLabelProps() as ReturnType<typeof getLabelProps>),
           children: label,

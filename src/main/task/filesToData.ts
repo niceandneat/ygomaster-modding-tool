@@ -151,7 +151,7 @@ const createSingleGateData = (
     parent_gate: gate.parent_id,
     view_gate: 0,
     unlock_id: 0,
-    clear_chapter: gate.chapters.at(-1)?.id || 0,
+    clear_chapter: gate.clear_chapter || gate.chapters.at(-1)?.id || 0,
   };
 
   const chapterField: GateData['chapter'][string] = {};

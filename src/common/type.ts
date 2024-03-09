@@ -7,6 +7,7 @@ export interface Gate {
   illust_x: number; // 일러스트 x offset
   illust_y: number; // 일러스트 y offset
   priority: number; // 노출 우선순위
+  clear_chapter?: number;
   chapters: Chapter[];
 }
 
