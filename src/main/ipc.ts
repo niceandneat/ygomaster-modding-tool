@@ -188,7 +188,7 @@ const handleCreateGate = async (
   event: IpcMainInvokeEvent,
   { gate, path: basePath }: CreateGateRequest,
 ): Promise<CreateGateResponse> => {
-  const defaultPath = basePath && path.resolve(basePath, `${gate.id}.json`);
+  const defaultPath = basePath && path.resolve(basePath, `${gate.name}.json`);
   const filePath = await handleSaveFile(event, defaultPath);
   if (!filePath) return {};
 
