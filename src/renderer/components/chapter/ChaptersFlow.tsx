@@ -26,7 +26,8 @@ import {
 
 import { Chapter } from '../../../common/type';
 import {
-  ChapterContextMenu,
+  NodeContextMenu,
+  PaneContextMenu,
   useChapterContextMenu,
 } from './ChapterContextMenu';
 import { ChapterNode } from './ChapterNode';
@@ -103,8 +104,14 @@ const ChaptersFlowComponent = ({
     onLayout,
   } = useChaptersFlow({ onChangeChapters, onChangeSelection });
 
-  const { flowRef, menuProps, onPaneContextMenu, closeMenu } =
-    useChapterContextMenu(addChapter);
+  const {
+    flowRef,
+    paneMenuProps,
+    nodeMenuProps,
+    onPaneContextMenu,
+    onNodeContextMenu,
+    closeMenu,
+  } = useChapterContextMenu(addChapter);
 
   return (
     <div
@@ -126,6 +133,7 @@ const ChaptersFlowComponent = ({
         onConnectEnd={onConnectEnd}
         isValidConnection={isValidConnection}
         onSelectionChange={onSelectionChange}
+        onNodeContextMenu={onNodeContextMenu}
         onPaneContextMenu={onPaneContextMenu}
         onPaneClick={closeMenu}
         onMoveStart={closeMenu}
@@ -178,7 +186,8 @@ const ChaptersFlowComponent = ({
             </Tooltip>
           </Toolbar>
         </Panel>
-        <ChapterContextMenu {...menuProps} />
+        <PaneContextMenu {...paneMenuProps} />
+        <NodeContextMenu {...nodeMenuProps} />
       </ReactFlow>
     </div>
   );
