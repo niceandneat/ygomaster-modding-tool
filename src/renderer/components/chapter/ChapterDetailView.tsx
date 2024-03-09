@@ -102,7 +102,7 @@ export const ChapterDetailView = ({
   const methods = useForm<Chapter>({
     defaultValues: { ...defaultGateChapter, ...defaultDuelChapter, ...chapter },
   });
-  const { watch, control, trigger } = methods;
+  const { watch, control, trigger, setValue } = methods;
 
   useEffect(() => {
     if (!onChange) return;
@@ -146,7 +146,14 @@ export const ChapterDetailView = ({
         <PlainInput<Chapter> name="description" multiline />
         {type === 'Duel' && (
           <>
-            <FileNameInput name="cpu_deck" path={deckPath} />
+            <FileNameInput
+              name="cpu_deck"
+              path={deckPath}
+              onChange={(fileName) => {
+                const cpuName = fileName?.replace(/\.json$/, '') ?? '';
+                setValue('cpu_name', cpuName);
+              }}
+            />
             <FileNameInput name="rental_deck" path={deckPath} optional />
             <MydeckRewardInput />
             <RentalRewardInput />
@@ -167,10 +174,11 @@ interface FileInputProps {
   name: Extract<Path<DuelChapter>, 'cpu_deck' | 'rental_deck'>;
   path?: string;
   optional?: boolean;
+  onChange?: (fileName?: string) => void;
 }
 const getFileName = (path: string) => path.split('\\').pop()?.split('/').pop();
 
-const FileNameInput = ({ name, path, optional }: FileInputProps) => {
+const FileNameInput = ({ name, path, optional, onChange }: FileInputProps) => {
   const { control, formState } = useFormContext<DuelChapter>();
 
   const label = name.replaceAll('_', ' ');
@@ -188,7 +196,11 @@ const FileNameInput = ({ name, path, optional }: FileInputProps) => {
           validationMessage={error?.toString()}
         >
           <FileInput
-            onChange={(filePath) => field.onChange(getFileName(filePath))}
+            onChange={(filePath) => {
+              const fileName = getFileName(filePath);
+              field.onChange(fileName);
+              onChange?.(fileName);
+            }}
             value={field.value?.toString()}
             path={path}
             placeholder="Select deck file"
