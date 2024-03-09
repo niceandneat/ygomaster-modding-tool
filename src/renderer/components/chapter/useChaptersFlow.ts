@@ -48,7 +48,6 @@ const defaultGateChapter: GateChapter = {
 };
 
 const DATA_CHANGES = ['remove', 'add', 'reset', 'replace'];
-const dagreGraph = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
 const getNodeSize = (node: Node) => ({
   width: node.width ?? 0,
@@ -62,6 +61,7 @@ const getLayoutedNodes = (
 ) => {
   if (!nodes.length) return [];
 
+  const dagreGraph = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
   const isHorizontal = direction === 'LR';
   dagreGraph.setGraph({ rankdir: direction, align: 'DR' });
 
