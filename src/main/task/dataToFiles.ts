@@ -188,7 +188,9 @@ const createGates = (data: {
       illust_y: gateIllustrations.get(gateId)?.illust_y || 0,
       priority: gateData.gate[gateId].priority,
       parent_id: gateData.gate[gateId].parent_gate,
-      clear_chapter: gateData.gate[gateId].clear_chapter,
+      clear_chapter: dataChaterIdToFileChapterId(
+        gateData.gate[gateId].clear_chapter,
+      ),
       chapters,
     };
 
