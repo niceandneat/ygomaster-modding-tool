@@ -1,6 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs/promises');
 
-// out.json from https://github.com/JSY1728/EDOPRO-Korean-CDB-TEST
+// input.json from https://github.com/JSY1728/EDOPRO-Korean-CDB-TEST
 
 const main = async () => {
   // read Ydk-to-id map
@@ -10,7 +11,7 @@ const main = async () => {
 
   const jsonFile = await fs.readFile('./input.json', { encoding: 'utf-8' });
   const data = JSON.parse(jsonFile)
-    .map((d) => ({ ...d, id: ydkToId.get(d.id)?.toString() }))
+    .map((d) => ({ id: ydkToId.get(d.id)?.toString(), name: d.name }))
     .filter(({ id }) => Boolean(id))
     .reduce((res, d) => {
       if (!res[d.id]) res[d.id] = d;

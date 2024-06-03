@@ -157,12 +157,20 @@
       "name": "Souleating Oviraptor"
     },
     {
+      "id": "1000030",
+      "name": "Purrely"
+    },
+    {
       "id": "1000032",
       "name": "Elemental HERO Flame Wingman"
     },
     {
       "id": "1000033",
       "name": "Blue-Eyes Chaos MAX Dragon"
+    },
+    {
+      "id": "1000041",
+      "name": "Number 41: Bagooska the Terribly Tired Tapir"
     },
     {
       "id": "1001001",
@@ -241,6 +249,10 @@
       "name": "A New Life - Galatea"
     },
     {
+      "id": "1001021",
+      "name": "Linkuriboh"
+    },
+    {
       "id": "1001022",
       "name": "Cross-Sheep"
     },
@@ -251,6 +263,10 @@
     {
       "id": "1001024",
       "name": "Eldlixir"
+    },
+    {
+      "id": "1001025",
+      "name": "Naturia Cosmobeet"
     },
     {
       "id": "1002001",
@@ -547,12 +563,32 @@
       "name": "Sinful Spoils of Subversion - Snake-Eye"
     },
     {
+      "id": "1010061",
+      "name": "Magicians of Bonds and Unity"
+    },
+    {
+      "id": "1010062",
+      "name": "Dragon of Pride and Soul"
+    },
+    {
+      "id": "1010063",
+      "name": "Scareclaw Light-Heart"
+    },
+    {
       "id": "1010064",
       "name": "Rikka Princess"
     },
     {
       "id": "1010065",
       "name": "S-Force Nightchaser"
+    },
+    {
+      "id": "1010066",
+      "name": "Mementotlan Ghattic"
+    },
+    {
+      "id": "1010071",
+      "name": "Ash Blossom & Joyous Spring"
     },
     {
       "id": "1011001",
@@ -653,6 +689,18 @@
     {
       "id": "1011025",
       "name": "DC 2023 DEC Bronze Finalist"
+    },
+    {
+      "id": "1011026",
+      "name": "DC 2024 MAR Gold Finalist"
+    },
+    {
+      "id": "1011027",
+      "name": "DC 2024 MAR Silver Finalist"
+    },
+    {
+      "id": "1011028",
+      "name": "DC 2024 MAR Bronze Finalist"
     },
     {
       "id": "1012001",
@@ -867,8 +915,28 @@
       "name": "Monk of the Tenyi"
     },
     {
+      "id": "1012054",
+      "name": "Commander Gottoms, Swordmaster"
+    },
+    {
       "id": "1012055",
       "name": "Eldlich the Golden Lord"
+    },
+    {
+      "id": "1012056",
+      "name": "Naturia Leodrake"
+    },
+    {
+      "id": "1012061",
+      "name": "Cyber Dragon"
+    },
+    {
+      "id": "1012062",
+      "name": "Evil★Twins Ki-sikil & Lil-la"
+    },
+    {
+      "id": "1012063",
+      "name": "Eldlixir of White Destiny"
     },
     {
       "id": "1013001",
@@ -877,6 +945,10 @@
     {
       "id": "1013002",
       "name": "Memories of Intersecting Duels"
+    },
+    {
+      "id": "1013003",
+      "name": "Yu-Gi-Oh! CARD GAME THE CHRONICLES"
     }
   ],
   "PROFILE_TAG": [
@@ -962,7 +1034,7 @@
     },
     {
       "id": "1020022",
-      "name": "Fusion Festival 2022"
+      "name": "<color=#9933CC>Fusion Festival 2022</color>"
     },
     {
       "id": "1020023",
@@ -1239,6 +1311,46 @@
     {
       "id": "1020091",
       "name": "Synchro x Link Festival 2024"
+    },
+    {
+      "id": "1020092",
+      "name": "DC 2024 MAR Top 10"
+    },
+    {
+      "id": "1020093",
+      "name": "DC 2024 MAR Top 100"
+    },
+    {
+      "id": "1020094",
+      "name": "DC 2024 MAR Top 500"
+    },
+    {
+      "id": "1020095",
+      "name": "DC 2024 MAR Top 1000"
+    },
+    {
+      "id": "1020096",
+      "name": "DC 2024 MAR Top 10000"
+    },
+    {
+      "id": "1020097",
+      "name": "DC 2024 MAR 2nd Stage Duelist"
+    },
+    {
+      "id": "1020098",
+      "name": "Three Pillars"
+    },
+    {
+      "id": "1020099",
+      "name": "Purple Wave"
+    },
+    {
+      "id": "1020100",
+      "name": "White Wave"
+    },
+    {
+      "id": "1020101",
+      "name": "Black Wave"
     }
   ],
   "ICON_FRAME": [
@@ -1335,6 +1447,10 @@
       "name": "Orange Frame"
     },
     {
+      "id": "1030024",
+      "name": "Navy Frame"
+    },
+    {
       "id": "1030025",
       "name": "Mint Frame"
     },
@@ -1345,6 +1461,10 @@
     {
       "id": "1030027",
       "name": "The Legend of Duelist  QUARTER CENTURY Frame"
+    },
+    {
+      "id": "1030030",
+      "name": "Leodrake's Mane"
     },
     {
       "id": "1031001",
@@ -1375,6 +1495,10 @@
       "name": "Blue-Eyes White Dragon"
     },
     {
+      "id": "1031008",
+      "name": "Brain Control"
+    },
+    {
       "id": "1032001",
       "name": "Festive Ornament"
     },
@@ -1393,6 +1517,10 @@
     {
       "id": "1032005",
       "name": "Frost Frame"
+    },
+    {
+      "id": "1032006",
+      "name": "Flurry of Cherry Blossoms"
     },
     {
       "id": "1033001",
@@ -1677,6 +1805,22 @@
       "name": "Blue-Eyes White Dragon"
     },
     {
+      "id": "1070071",
+      "name": "Magicians of Bonds and Unity"
+    },
+    {
+      "id": "1070072",
+      "name": "Dragon of Pride and Soul"
+    },
+    {
+      "id": "1070074",
+      "name": "Tearlaments Perlegia"
+    },
+    {
+      "id": "1070075",
+      "name": "Nightmare Magician"
+    },
+    {
       "id": "1070076",
       "name": "The Iris Swordsoul"
     },
@@ -1687,6 +1831,34 @@
     {
       "id": "1070078",
       "name": "Emperor Charles the Great"
+    },
+    {
+      "id": "1070079",
+      "name": "Supreme King Z-ARC"
+    },
+    {
+      "id": "1070080",
+      "name": "Imsety, Glory of Horus"
+    },
+    {
+      "id": "1070085",
+      "name": "Traptrix Sera"
+    },
+    {
+      "id": "1070086",
+      "name": "Dark Magician Girl"
+    },
+    {
+      "id": "1070087",
+      "name": "Diabellstar the Black Witch"
+    },
+    {
+      "id": "1070089",
+      "name": "Flower Cardian Cherry Blossom with Curtain"
+    },
+    {
+      "id": "1070090",
+      "name": "Aleister the Invoker of Madness"
     },
     {
       "id": "1071001",
@@ -1789,8 +1961,16 @@
       "name": "Draco Masters of the Tenyi"
     },
     {
+      "id": "1071026",
+      "name": "Commander Gottoms, Swordmaster"
+    },
+    {
       "id": "1071027",
       "name": "Eldlixir of Black Awakening"
+    },
+    {
+      "id": "1071028",
+      "name": "Naturia Leodrake"
     },
     {
       "id": "1072001",
@@ -1798,7 +1978,7 @@
     },
     {
       "id": "1072002",
-      "name": "Chaos Xyz Evolution -Galactic Gathering of Dragons-"
+      "name": "Chaos Xyz Evolution －Galactic Gathering of Dragons－"
     },
     {
       "id": "1073001",
@@ -1815,6 +1995,14 @@
     {
       "id": "1073004",
       "name": "DC 2023 DEC Celebration"
+    },
+    {
+      "id": "1073005",
+      "name": "DC 2024 MAR Celebration"
+    },
+    {
+      "id": "1075001",
+      "name": "Yu-Gi-Oh! CARD GAME THE CHRONICLES"
     }
   ],
   "DECK_CASE": [
@@ -1965,6 +2153,10 @@
     {
       "id": "1082013",
       "name": "Magicians of Bonds and Unity"
+    },
+    {
+      "id": "1082014",
+      "name": "King's Sarcophagus"
     }
   ],
   "FIELD": [
@@ -2051,6 +2243,10 @@
     {
       "id": "1090021",
       "name": "The Revived Sky Temple"
+    },
+    {
+      "id": "1090022",
+      "name": "Pyroxene Cave"
     },
     {
       "id": "1090025",
@@ -2151,6 +2347,10 @@
       "name": "The Revived Sky Temple"
     },
     {
+      "id": "1100022",
+      "name": "Pyroxene Cave"
+    },
+    {
       "id": "1100025",
       "name": "Blue-Eyes Mausoleum"
     },
@@ -2191,6 +2391,10 @@
       "name": "Genex Furnace"
     },
     {
+      "id": "1101010",
+      "name": "Jar of Metamorphosis"
+    },
+    {
       "id": "1101011",
       "name": "Negate Attack"
     },
@@ -2201,6 +2405,10 @@
     {
       "id": "1101013",
       "name": "Foolish Burial"
+    },
+    {
+      "id": "1101016",
+      "name": "Magical Thorn"
     },
     {
       "id": "1102001",
@@ -2297,6 +2505,10 @@
       "name": "The Revived Sky Temple"
     },
     {
+      "id": "1110022",
+      "name": "Pyroxene Cave"
+    },
+    {
       "id": "1110025",
       "name": "Blue-Eyes Mausoleum"
     },
@@ -2337,6 +2549,10 @@
       "name": "Rank-Up-Magic Astral Force"
     },
     {
+      "id": "1111010",
+      "name": "D - Force"
+    },
+    {
       "id": "1111011",
       "name": "Destiny Signal"
     },
@@ -2375,6 +2591,10 @@
     {
       "id": "1111022",
       "name": "Summer Trace of the Thunder God"
+    },
+    {
+      "id": "1111024",
+      "name": "Limiter Removal"
     },
     {
       "id": "1112001",
@@ -2609,12 +2829,36 @@
       "name": "Onikuji"
     },
     {
+      "id": "1130031",
+      "name": "Loka Samsara"
+    },
+    {
       "id": "1130032",
       "name": "Blue-Eyes White Dragon"
     },
     {
+      "id": "1130033",
+      "name": "Magicians of Bonds and Unity"
+    },
+    {
+      "id": "1130034",
+      "name": "Dragon of Pride and Soul"
+    },
+    {
+      "id": "1130035",
+      "name": "Promethean Princess, Bestower of Flames"
+    },
+    {
+      "id": "1130036",
+      "name": "Chimera the Illusion Beast"
+    },
+    {
       "id": "1130037",
       "name": "Mamemaki"
+    },
+    {
+      "id": "1130038",
+      "name": "Red Dragon Archfiend"
     },
     {
       "id": "1130039",
