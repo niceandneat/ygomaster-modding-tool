@@ -129,11 +129,11 @@ export const GateDetailView = ({
 
   const handleGateSubmit = useCallback(
     async (gate: Gate) => {
-      const successed = await onSubmit({
+      const succeed = await onSubmit({
         ...gate,
         chapters: gate.chapters.map(extractOnlyRelevantFields),
       });
-      if (successed) reset({ ...defaultGate, ...gate });
+      if (succeed) reset({ ...defaultGate, ...gate });
     },
     [onSubmit, reset],
   );

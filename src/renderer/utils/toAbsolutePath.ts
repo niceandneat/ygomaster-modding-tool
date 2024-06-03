@@ -1,9 +1,9 @@
 export const toAbsolutePath = (relativePath: string, basePath: string) => {
   const isWindows = !basePath.startsWith('/');
-  const seperator = isWindows ? '\\' : '/';
+  const separator = isWindows ? '\\' : '/';
   const posixRelativePath = isWindows
     ? relativePath.replaceAll('/', '\\')
     : relativePath;
 
-  return `${basePath}${seperator}${posixRelativePath.replace(/^\//, '')}`;
+  return `${basePath}${separator}${posixRelativePath.replace(/^\//, '')}`;
 };

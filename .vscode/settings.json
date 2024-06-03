@@ -1,3 +1,21 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "cSpell.words": [
+    "asar",
+    "CARDMENU",
+    "cpuflag",
+    "Dagre",
+    "dagrejs",
+    "fluentui",
+    "graphlib",
+    "hnum",
+    "jsnext",
+    "konami",
+    "Layouted",
+    "mydeck",
+    "niceandneat",
+    "trivago",
+    "xyflow",
+    "ygomaster"
+  ]
 }

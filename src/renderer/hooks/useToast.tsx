@@ -39,7 +39,7 @@ export const useToast = (success: string, fail: string): UseToastResults => {
         );
       }
 
-      return false; // falied or skipped
+      return false; // failed or skipped
     },
     [dispatchToast, fail, success],
   );

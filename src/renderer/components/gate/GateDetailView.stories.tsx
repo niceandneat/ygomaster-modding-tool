@@ -27,7 +27,7 @@ export const Edit: Story = {
       id: 123,
       parent_id: 0,
       name: 'name',
-      description: 'decription',
+      description: 'description',
       illust_id: 4027,
       illust_x: 0.03,
       illust_y: 0,

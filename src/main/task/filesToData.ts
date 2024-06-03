@@ -15,7 +15,7 @@ import { DataUnlockType, DeckData, DuelData, GateData } from '../type';
 import {
   backupFiles,
   batchPromiseAll,
-  fileChaterIdToDataChapterId,
+  fileChapterIdToDataChapterId,
   readJson,
   saveJson,
   saveText,
@@ -55,10 +55,10 @@ const loadGates = async (gatePath: string): Promise<Gate[]> => {
       ...gate,
       chapters: gate.chapters.map((chapter) => ({
         ...chapter,
-        id: fileChaterIdToDataChapterId(chapter.id, gate.id),
+        id: fileChapterIdToDataChapterId(chapter.id, gate.id),
         parent_id:
           chapter.parent_id &&
-          fileChaterIdToDataChapterId(chapter.parent_id, gate.id),
+          fileChapterIdToDataChapterId(chapter.parent_id, gate.id),
       })),
     }))
     .sort((a, b) => a.id - b.id);
@@ -151,7 +151,7 @@ const createSingleGateData = (
     parent_gate: gate.parent_id,
     view_gate: 0,
     unlock_id: 0,
-    clear_chapter: fileChaterIdToDataChapterId(
+    clear_chapter: fileChapterIdToDataChapterId(
       gate.clear_chapter || gate.chapters.at(-1)?.id || 0,
       gate.id,
     ),

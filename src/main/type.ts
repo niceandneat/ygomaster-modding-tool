@@ -135,7 +135,7 @@ export enum DataUnlockType {
   HAS_ITEM = '5',
 }
 
-export enum DataConsumItemValue {
+export enum DataConsumeItemValue {
   None = '0',
   Gem = '1',
   GemAlt = '2',

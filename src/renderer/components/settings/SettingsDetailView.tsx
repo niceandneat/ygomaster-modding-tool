@@ -73,8 +73,8 @@ export const SettingsDetailView = ({
 
   const handleSettingsSubmit = useCallback(
     async (settings: Settings) => {
-      const successed = await onSubmit(settings);
-      if (successed) reset({ ...defaultSettings, ...settings });
+      const succeed = await onSubmit(settings);
+      if (succeed) reset({ ...defaultSettings, ...settings });
     },
     [onSubmit, reset],
   );

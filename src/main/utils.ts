@@ -53,17 +53,17 @@ export const backupFiles = async (
   await rm(backupDir, { recursive: true, force: true });
   await mkdir(backupDir, { recursive: true });
   return await batchPromiseAll(backupTargets, async (filePath) => {
-    const abosoluteFilePath = path.resolve(baseDir, filePath);
+    const absoluteFilePath = path.resolve(baseDir, filePath);
     const newPath = path.resolve(backupDir, filePath);
 
     try {
       if (path.extname(filePath) === '') {
         // directory
-        await cp(abosoluteFilePath, newPath, { recursive: true });
-        await rm(abosoluteFilePath, { recursive: true, force: true });
+        await cp(absoluteFilePath, newPath, { recursive: true });
+        await rm(absoluteFilePath, { recursive: true, force: true });
       } else {
         await mkdir(path.dirname(newPath), { recursive: true });
-        await rename(abosoluteFilePath, newPath);
+        await rename(absoluteFilePath, newPath);
       }
     } catch {
       // ignore file missing error.
@@ -90,9 +90,9 @@ export const batchPromiseAll = async <T, R>(
 export const toPosix = (filePath: string) =>
   filePath.split(path.sep).join(path.posix.sep);
 
-export const dataChaterIdToFileChapterId = (chapterId: number) =>
+export const dataChapterIdToFileChapterId = (chapterId: number) =>
   chapterId % 10000;
-export const fileChaterIdToDataChapterId = (
+export const fileChapterIdToDataChapterId = (
   chapterId: number,
   gateId: number,
 ) => gateId * 10000 + chapterId;

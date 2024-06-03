@@ -22,7 +22,7 @@ import {
 import {
   backupFiles,
   batchPromiseAll,
-  dataChaterIdToFileChapterId,
+  dataChapterIdToFileChapterId,
   readJson,
   readLines,
   saveJson,
@@ -84,10 +84,10 @@ const loadIllustrations = async (dataPath: string) => {
   >();
 
   lines.forEach((line) => {
-    const [gateId, cardId, xOffest, yOffset] = line.split(',').map(Number);
+    const [gateId, cardId, xOffset, yOffset] = line.split(',').map(Number);
     gateIllustrations.set(gateId, {
       illust_id: cardId,
-      illust_x: xOffest,
+      illust_x: xOffset,
       illust_y: yOffset,
     });
   });
@@ -183,12 +183,12 @@ const createGates = (data: {
       id: gateId,
       name: gateNames.get(gateId) || '',
       description: gateDescriptions.get(gateId) || '',
-      illust_id: gateIllustrations.get(gateId)?.illust_id || 4027, // Exodia
+      illust_id: gateIllustrations.get(gateId)?.illust_id || 4027, // Exordia
       illust_x: gateIllustrations.get(gateId)?.illust_x || 0,
       illust_y: gateIllustrations.get(gateId)?.illust_y || 0,
       priority: gateData.gate[gateId].priority,
       parent_id: gateData.gate[gateId].parent_gate,
-      clear_chapter: dataChaterIdToFileChapterId(
+      clear_chapter: dataChapterIdToFileChapterId(
         gateData.gate[gateId].clear_chapter,
       ),
       chapters,
@@ -255,10 +255,10 @@ const createGateChapter = (data: {
   const chapterData = gateData.chapter[gateId][chapterId];
 
   return {
-    id: dataChaterIdToFileChapterId(chapterId),
+    id: dataChapterIdToFileChapterId(chapterId),
     parent_id:
       chapterData.parent_chapter &&
-      dataChaterIdToFileChapterId(chapterData.parent_chapter),
+      dataChapterIdToFileChapterId(chapterData.parent_chapter),
     description: duelDescriptions.get(chapterId) ?? '',
     type: 'Gate',
     unlock: createUnlock({ gateData, gateId, chapterId }),
@@ -276,10 +276,10 @@ const createUnlock = (data: {
 
   return (
     unlockData[DataUnlockType.ITEM]?.flatMap((id) => {
-      const unlockConsumItems = gateData.unlock_item[id][ItemCategory.CONSUME];
-      if (!unlockConsumItems) return [];
+      const unlockConsumeItems = gateData.unlock_item[id][ItemCategory.CONSUME];
+      if (!unlockConsumeItems) return [];
 
-      return Object.entries(unlockConsumItems).map(
+      return Object.entries(unlockConsumeItems).map(
         ([itemId, counts]) =>
           ({
             category: ItemCategory.CONSUME,
@@ -323,10 +323,10 @@ const createDuelChapter = (data: {
   if (rentalDeck) decks.push(rentalDeck);
 
   const chapter: DuelChapter = {
-    id: dataChaterIdToFileChapterId(chapterId),
+    id: dataChapterIdToFileChapterId(chapterId),
     parent_id:
       chapterData.parent_chapter &&
-      dataChaterIdToFileChapterId(chapterData.parent_chapter),
+      dataChapterIdToFileChapterId(chapterData.parent_chapter),
     description: duelDescriptions.get(chapterId) ?? '',
     type: 'Duel',
     cpu_deck: `${cpuDeckName}.json`,

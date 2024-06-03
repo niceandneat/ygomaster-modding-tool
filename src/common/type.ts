@@ -86,7 +86,7 @@ export const isDuelChapter = (chapter: BaseChapter): chapter is DuelChapter =>
   Boolean((chapter as DuelChapter).type === 'Duel');
 
 /**
- * DTOs
+ * DTO
  */
 
 export interface ShowMessageBoxRequest {

@@ -22,7 +22,7 @@ const useStyles = makeStyles({
   },
 });
 
-const makeValidChaters = (gate: Gate): Gate => ({
+const makeValidChapters = (gate: Gate): Gate => ({
   ...gate,
   chapters: gate.chapters.map((chapter) => {
     if (chapter.type === 'Gate') {
@@ -69,7 +69,7 @@ export const GateDetail = () => {
       withToast(() =>
         withMessageBox(async () => {
           await window.electron.updateGate({
-            gate: makeValidChaters(gate),
+            gate: makeValidChapters(gate),
             filePath,
           });
           await loadGates();
