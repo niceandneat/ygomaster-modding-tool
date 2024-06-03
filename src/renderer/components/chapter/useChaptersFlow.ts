@@ -36,8 +36,10 @@ const defaultDuelChapter: DuelChapter = {
   rental_deck: '',
   mydeck_reward: [],
   rental_reward: [],
-  cpu_hand: 6,
+  cpu_hand: 5,
   player_hand: 5,
+  cpu_life: 8000,
+  player_life: 8000,
   cpu_name: 'CPU',
   cpu_flag: 'None',
   cpu_value: 98,
@@ -54,8 +56,8 @@ const defaultGateChapter: GateChapter = {
 const DATA_CHANGES = ['remove', 'add', 'replace'];
 
 const getNodeSize = (node: Node) => ({
-  width: node.computed?.width ?? 0,
-  height: node.computed?.height ?? 0,
+  width: node.measured?.width ?? 0,
+  height: node.measured?.height ?? 0,
 });
 
 const getLayoutedNodes = (

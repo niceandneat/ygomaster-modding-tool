@@ -40,6 +40,8 @@ export type DuelChapter = BaseChapter & {
   rental_reward?: Reward[];
   cpu_hand: number; // 시작시 상대 손패 매수
   player_hand: number; // 시작시 플레이어 손패 매수
+  cpu_life: number; // 시작시 상대 라이프 포인트
+  player_life: number; // 시작시 플레이어 라이프 포인트
   cpu_name: string; // 상대방 이름
   cpu_flag: string; // cpuflag (ai 관련)
   cpu_value: number; // cpu의 성능. 100보다 98,97 이 더 뛰어나다는 커뮤니티 의견이 있다.

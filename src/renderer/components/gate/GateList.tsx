@@ -24,9 +24,9 @@ const useStyles = makeStyles({
 
 export const GateList = () => {
   const classes = useStyles();
+  const { gatePath } = useAppStore((s) => s.settings);
   const gates = useAppStore((s) => s.gates);
   const loadGates = useAppStore((s) => s.loadGates);
-  const { gatePath } = useAppStore((s) => s.settings);
   const navigate = useNavigate();
   const { toasterId, withToast } = useToast('Success Delete', 'Fail Delete');
 

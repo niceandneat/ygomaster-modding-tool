@@ -335,6 +335,8 @@ const createDuelChapter = (data: {
     rental_reward: rentalDeckReward,
     cpu_hand: duelData.hnum?.[1] ?? 5,
     player_hand: duelData.hnum?.[0] ?? 5,
+    cpu_life: duelData.life?.[1] ?? 8000,
+    player_life: duelData.life?.[0] ?? 8000,
     cpu_name: duelData.name[1],
     cpu_flag: duelData.cpuflag ?? 'None',
     cpu_value: duelData.cpu ?? 98,

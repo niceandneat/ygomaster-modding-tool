@@ -96,6 +96,7 @@ const createDuelData = async (
     icon: [0, getRandomItem(ygoItems.ICON)],
     icon_frame: [0, getRandomItem(ygoItems.ICON_FRAME)],
     hnum: [chapter.player_hand, chapter.cpu_hand],
+    life: [chapter.player_life, chapter.cpu_life],
     cpu: chapter.cpu_value,
     cpuflag: chapter.cpu_flag,
     Deck: [

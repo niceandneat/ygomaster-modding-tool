@@ -105,7 +105,7 @@ export const useChapterContextMenu = (
 
     const position = {
       x: currentNode.position.x,
-      y: currentNode.position.y + (currentNode.computed?.height ?? 0) + 10,
+      y: currentNode.position.y + (currentNode.measured?.height ?? 0) + 10,
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -153,7 +153,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Inicator = ({ type }: { type: ChapterType }) => (
+const Indicator = ({ type }: { type: ChapterType }) => (
   <div
     style={{ width: 16, height: 16, backgroundColor: ChapterColor[type] }}
   ></div>
@@ -181,7 +181,7 @@ export const PaneContextMenu = ({
         {(['Duel', 'Gate'] as ChapterType[]).map((type) => (
           <MenuItem
             key={type}
-            icon={<Inicator type={type} />}
+            icon={<Indicator type={type} />}
             onClick={() => onClick(type)}
           >
             {type}

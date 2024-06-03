@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
 import { GateDetailView } from './GateDetailView';
 
@@ -8,6 +9,9 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
+  },
+  args: {
+    onSubmit: fn(),
   },
 } satisfies Meta<typeof GateDetailView>;
 

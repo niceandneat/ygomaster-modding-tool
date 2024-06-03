@@ -47,6 +47,8 @@ const makeValidChapters = (gate: Gate): Gate => ({
       rental_reward: chapter.rental_reward,
       cpu_hand: chapter.cpu_hand,
       player_hand: chapter.player_hand,
+      cpu_life: chapter.cpu_life,
+      player_life: chapter.player_life,
       cpu_name: chapter.cpu_name,
       cpu_flag: chapter.cpu_flag,
       cpu_value: chapter.cpu_value,

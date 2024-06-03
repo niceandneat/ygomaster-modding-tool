@@ -19,12 +19,12 @@ export const ChapterColor: Record<ChapterType, string> = {
 const useStyles = makeStyles({
   container: {
     ...shorthands.border('1px', 'solid', tokens.colorNeutralForeground1),
-    ...shorthands.borderRadius('10px'),
+    borderRadius: '10px',
     backgroundColor: tokens.colorNeutralBackground2,
     minWidth: '120px',
     maxWidth: '240px',
     columnGap: tokens.spacingHorizontalS,
-    ...shorthands.overflow('hidden'),
+    overflow: 'hidden',
   },
   selected: {
     ...shorthands.border('1px', 'solid', tokens.colorBrandForeground1),

@@ -7,7 +7,6 @@ import {
   Text,
   Tooltip,
   makeStyles,
-  shorthands,
   tokens,
 } from '@fluentui/react-components';
 import { Add16Regular, Subtract16Regular } from '@fluentui/react-icons';
@@ -44,8 +43,10 @@ const defaultDuelChapter: Partial<DuelChapter> = {
   rental_deck: '',
   mydeck_reward: [],
   rental_reward: [],
-  cpu_hand: 6,
+  cpu_hand: 5,
   player_hand: 5,
+  cpu_life: 8000,
+  player_life: 8000,
   cpu_name: 'CPU',
   cpu_flag: 'None',
   cpu_value: 98,
@@ -70,6 +71,14 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     rowGap: tokens.spacingVerticalL,
   },
+  split: {
+    display: 'flex',
+    alignItems: 'center',
+    columnGap: tokens.spacingHorizontalM,
+    '& > *': {
+      flexGrow: '1',
+    },
+  },
   title: {
     marginBottom: tokens.spacingVerticalL,
   },
@@ -82,7 +91,7 @@ const useStyles = makeStyles({
     flexDirection: 'row',
     alignItems: 'flex-end',
     marginBottom: tokens.spacingVerticalM,
-    ...shorthands.overflow('visible'),
+    overflow: 'visible',
   },
 });
 
@@ -157,8 +166,14 @@ export const ChapterDetailView = ({
             <FileNameInput name="rental_deck" path={deckPath} optional />
             <MydeckRewardInput />
             <RentalRewardInput />
-            <PlainInput<Chapter> name="cpu_hand" number />
-            <PlainInput<Chapter> name="player_hand" number />
+            <div className={classes.split}>
+              <PlainInput<Chapter> name="cpu_hand" number />
+              <PlainInput<Chapter> name="player_hand" number />
+            </div>
+            <div className={classes.split}>
+              <PlainInput<Chapter> name="cpu_life" number />
+              <PlainInput<Chapter> name="player_life" number />
+            </div>
             <PlainInput<Chapter> name="cpu_flag" />
             <PlainInput<Chapter> name="cpu_name" />
             <PlainInput<Chapter> name="cpu_value" number />

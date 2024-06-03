@@ -1,5 +1,6 @@
 import { useArgs } from '@storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 import { useCallback } from 'react';
 
 import { ComboboxInput } from './ComboboxInput';
@@ -8,6 +9,9 @@ const meta = {
   title: 'Components/Input/ComboboxInput',
   component: ComboboxInput,
   tags: ['autodocs'],
+  args: {
+    onChange: fn(),
+  },
   argTypes: {
     value: {
       control: {

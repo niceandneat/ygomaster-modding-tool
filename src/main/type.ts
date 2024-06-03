@@ -42,6 +42,7 @@ export interface DuelData {
   icon_frame: [number, number];
   sleeve: [number, number];
   hnum?: [number, number];
+  life?: [number, number];
   cpu?: number;
   cpuflag?: string;
   Deck: [

@@ -1,5 +1,6 @@
 import { useArgs } from '@storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 import { useCallback } from 'react';
 
 import { Item, ItemCategory } from '../../../common/type';
@@ -9,6 +10,9 @@ const meta = {
   title: 'Components/Input/ItemInput',
   component: ItemInput,
   tags: ['autodocs'],
+  args: {
+    onChange: fn(),
+  },
 } satisfies Meta<typeof ItemInput>;
 
 export default meta;
