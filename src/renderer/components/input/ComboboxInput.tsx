@@ -12,7 +12,11 @@ import {
   ArrowCircleDown24Regular,
   ArrowCircleUp24Regular,
 } from '@fluentui/react-icons';
-import { UseComboboxStateChange, useCombobox } from 'downshift';
+import {
+  UseComboboxHighlightedIndexChange,
+  UseComboboxStateChange,
+  useCombobox,
+} from 'downshift';
 import Fuse, { IFuseOptions } from 'fuse.js';
 import {
   ChangeEvent,
@@ -20,6 +24,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -40,11 +45,12 @@ const useStyles = makeStyles({
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '100%',
+    width: '90%',
     height: '100%',
     display: 'flex',
     alignItems: 'center',
     pointerEvents: 'none',
+    overflow: 'hidden',
     ...shorthands.padding(0, `calc(${tokens.spacingHorizontalMNudge} + 1px)`), // 1px for adding border width of input
   },
   inputValue: {
@@ -76,6 +82,12 @@ const useStyles = makeStyles({
   },
 });
 
+type OptionRenderFunction<T> = (props: {
+  value: T;
+  highlighted: boolean;
+  selected: boolean;
+}) => ReactNode;
+
 interface ComboboxInputProps<T> {
   value?: T;
   options: T[];
@@ -84,8 +96,10 @@ interface ComboboxInputProps<T> {
   required?: boolean;
   validationMessage?: string;
   onChange: (value: T) => void;
+  onChangeHighlight?: (change?: { value: T; node: HTMLDivElement }) => void;
   valueToString?: (value?: T) => string;
-  children?: (props: { value: T }) => ReactNode;
+  compareValues?: (a?: T, b?: T) => boolean;
+  children?: OptionRenderFunction<T>;
 }
 
 const DefaultContents = ({ children }: { children: ReactNode }) => {
@@ -95,6 +109,7 @@ const DefaultContents = ({ children }: { children: ReactNode }) => {
 };
 
 const defaultValueToString = (value?: unknown) => String(value ?? '');
+const defaultCompareValue = (a?: unknown, b?: unknown) => a === b;
 
 export const ComboboxInput = <T,>({
   value,
@@ -104,10 +119,13 @@ export const ComboboxInput = <T,>({
   required,
   validationMessage,
   onChange,
+  onChangeHighlight,
   valueToString = defaultValueToString,
+  compareValues = defaultCompareValue,
   children,
 }: ComboboxInputProps<T>) => {
   const classes = useStyles();
+  const optionsContainerRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState(() => options.slice(0, 100));
   const [inputValue, setInputValue] = useState<string>('');
 
@@ -125,6 +143,21 @@ export const ComboboxInput = <T,>({
   const handleIsOpenChange = useCallback(
     ({ isOpen }: UseComboboxStateChange<T>) => !isOpen && setInputValue(''),
     [],
+  );
+
+  const handleHighlightIndexChange = useCallback(
+    ({ highlightedIndex }: UseComboboxHighlightedIndexChange<T>) => {
+      if (!onChangeHighlight || !optionsContainerRef.current) return;
+      if (highlightedIndex < 0) return onChangeHighlight(undefined);
+
+      onChangeHighlight({
+        value: items[highlightedIndex],
+        node: optionsContainerRef.current.children[
+          highlightedIndex
+        ] as HTMLDivElement,
+      });
+    },
+    [onChangeHighlight, items],
   );
 
   const applyInputChange = useMemo(() => {
@@ -156,6 +189,7 @@ export const ComboboxInput = <T,>({
     selectedItem: value,
     onSelectedItemChange: handleSelectedItemChange,
     onIsOpenChange: handleIsOpenChange,
+    onHighlightedIndexChange: handleHighlightIndexChange,
     defaultHighlightedIndex: 0,
   });
 
@@ -167,7 +201,7 @@ export const ComboboxInput = <T,>({
     [openMenu],
   );
 
-  const render: (props: { value: T }) => ReactNode =
+  const render: OptionRenderFunction<T> =
     children ||
     (({ value }) => <DefaultContents>{valueToString(value)}</DefaultContents>);
 
@@ -207,7 +241,9 @@ export const ComboboxInput = <T,>({
           />
           {!inputValue && (
             <div className={classes.inputValueContainer}>
-              <Text className={classes.inputValue}>{valueToString(value)}</Text>
+              <Text className={classes.inputValue} wrap={false} truncate>
+                {valueToString(value)}
+              </Text>
             </div>
           )}
         </div>
@@ -215,22 +251,27 @@ export const ComboboxInput = <T,>({
       <div
         className={classes.menu}
         style={{ display: !(isOpen && items.length) ? 'none' : undefined }}
-        {...getMenuProps()}
+        {...getMenuProps({ ref: optionsContainerRef })}
       >
         {isOpen &&
-          items.map((item, index) => (
-            <div
-              key={valueToString(item)}
-              className={mergeClasses(
-                classes.menuitem,
-                index === highlightedIndex && classes.menuitemHighlight,
-                item === value && classes.menuitemSelected,
-              )}
-              {...getItemProps({ item, index })}
-            >
-              {render({ value: item })}
-            </div>
-          ))}
+          items.map((item, index) => {
+            const highlighted = index === highlightedIndex;
+            const selected = compareValues(item, value);
+
+            return (
+              <div
+                key={valueToString(item)}
+                className={mergeClasses(
+                  classes.menuitem,
+                  highlighted && classes.menuitemHighlight,
+                  selected && classes.menuitemSelected,
+                )}
+                {...getItemProps({ item, index })}
+              >
+                {render({ value: item, highlighted, selected })}
+              </div>
+            );
+          })}
       </div>
     </div>
   );

@@ -72,8 +72,8 @@ export enum ItemCategory {
   AVATAR_HOME = '11',
   STRUCTURE = '12',
   WALLPAPER = '13',
-  PACK_TICKET = '14',
-  DECK_LIMIT = '15',
+  // PACK_TICKET = '14',
+  // DECK_LIMIT = '15',
 }
 
 export interface Settings {

@@ -1,6 +1,8 @@
 import { FluentProvider, webLightTheme } from '@fluentui/react-components';
 import type { Preview } from '@storybook/react';
 
+import './global.css';
+
 const preview: Preview = {
   parameters: {
     actions: { argTypesRegex: '^on[A-Z].*' },

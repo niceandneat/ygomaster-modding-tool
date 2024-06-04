@@ -174,6 +174,8 @@ interface ClearChapterOption {
 }
 
 const optionToString = (option?: ClearChapterOption) => option?.name ?? '';
+const compareValues = (a?: ClearChapterOption, b?: ClearChapterOption) =>
+  Boolean(a && b && a.id === b.id);
 const fuseOptions: IFuseOptions<ClearChapterOption> = {
   keys: ['name'],
 };
@@ -221,6 +223,7 @@ const ClearChapterInput = () => {
             fuseOptions={fuseOptions}
             onChange={(value) => field.onChange(value.id)}
             valueToString={optionToString}
+            compareValues={compareValues}
           >
             {({ value }) => (
               <div className={classes.menuitem}>{value.name}</div>

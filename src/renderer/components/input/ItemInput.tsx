@@ -1,12 +1,21 @@
 import {
   Field,
+  Image,
   Input,
+  Portal,
+  Text,
   makeStyles,
   shorthands,
   tokens,
 } from '@fluentui/react-components';
 import { IFuseOptions } from 'fuse.js';
-import { useCallback, useMemo, useRef } from 'react';
+import {
+  ReactEventHandler,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { Item, ItemCategory } from '../../../common/type';
 import { ygoItems, ygoItemsMap } from '../../data';
@@ -30,6 +39,22 @@ const useStyles = makeStyles({
   },
   menuitem: {
     ...shorthands.padding(tokens.spacingVerticalM),
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    columnGap: tokens.spacingHorizontalM,
+  },
+  menuitemThumbnail: {
+    height: '32px',
+  },
+  menuitemPortal: {
+    zIndex: 2000000,
+  },
+  menuitemImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    maxWidth: '240px',
   },
 });
 
@@ -47,6 +72,8 @@ interface ItemInputProps<T extends ItemCategory> {
   value: Item<T>;
   categories?: T[];
   onChange: (item: Item<T>) => void;
+  getThumbnailPath?: (category: string, id: string) => string;
+  getImagePath?: (category: string, id: string) => string;
 }
 
 const defaultCategories: ItemCategory[] = Object.values(ItemCategory);
@@ -62,21 +89,46 @@ const categoryDefaultIdMap = {
 
 const categoryOptionToString = (option?: CategoryOption<ItemCategory>) =>
   option?.name ?? '';
+const categoryCompareValues = (
+  a?: CategoryOption<ItemCategory>,
+  b?: CategoryOption<ItemCategory>,
+) => Boolean(a && b && a.category === b.category);
 const categoryFuseOptions: IFuseOptions<CategoryOption<ItemCategory>> = {
   keys: ['name'],
 };
 
 const idOptionToString = (option?: IdOption) => option?.name ?? '';
+const idCompareValues = (a?: IdOption, b?: IdOption) =>
+  Boolean(a && b && a.id === b.id);
 const idFuseOptions: IFuseOptions<IdOption> = {
   keys: ['name'],
+};
+
+const defaultGetThumbnailPath = (category: string, id: string) =>
+  `static://item-thumbnails/${category}/${id}.webp`;
+const defaultGetImagePath = (category: string, id: string) =>
+  `static://item-images/${category}/${id}.webp`;
+
+// Show empty image for missing assets
+const handleImageError: ReactEventHandler<HTMLImageElement> = (e) => {
+  e.currentTarget.src =
+    'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 };
 
 export const ItemInput = <T extends ItemCategory>({
   value,
   categories = defaultCategories as T[],
   onChange,
+  getThumbnailPath = defaultGetThumbnailPath,
+  getImagePath = defaultGetImagePath,
 }: ItemInputProps<T>) => {
   const classes = useStyles();
+
+  const [highlightedId, setHighlightedId] = useState<string>();
+  const [highlightedPosition, setHighlightedPosition] = useState<{
+    x: number;
+    y: number;
+  }>();
 
   const valueRef = useRef<Item<T>>(value);
   valueRef.current = value;
@@ -107,6 +159,22 @@ export const ItemInput = <T extends ItemCategory>({
         onChange({ ...valueRef.current, counts }),
       ),
     [onChange],
+  );
+
+  const handleHighlightChange = useCallback(
+    (change?: { value: IdOption; node: HTMLDivElement }) => {
+      if (!change) {
+        setHighlightedId(undefined);
+        setHighlightedPosition(undefined);
+        return;
+      }
+
+      const { x, y } = change.node.getBoundingClientRect();
+
+      setHighlightedId(change.value.id);
+      setHighlightedPosition({ x, y });
+    },
+    [],
   );
 
   const categoryValue = useMemo<CategoryOption<T>>(
@@ -140,6 +208,17 @@ export const ItemInput = <T extends ItemCategory>({
     [value.category],
   );
 
+  const shouldShowImage = useMemo(
+    () =>
+      ![
+        ItemCategory.NONE,
+        ItemCategory.PROFILE_TAG,
+        ItemCategory.STRUCTURE,
+        ItemCategory.CARD,
+      ].includes(categoryValue.category),
+    [categoryValue.category],
+  );
+
   return (
     <div className={classes.container}>
       <div className={classes.categoryInput}>
@@ -150,6 +229,7 @@ export const ItemInput = <T extends ItemCategory>({
           fuseOptions={categoryFuseOptions}
           onChange={handleCategoryOptionChange}
           valueToString={categoryOptionToString}
+          compareValues={categoryCompareValues}
         >
           {({ value }) => <div className={classes.menuitem}>{value.name}</div>}
         </ComboboxInput>
@@ -161,10 +241,39 @@ export const ItemInput = <T extends ItemCategory>({
           options={idOptions}
           fuseOptions={idFuseOptions}
           onChange={handleIdOptionChange}
+          onChangeHighlight={
+            shouldShowImage ? handleHighlightChange : undefined
+          }
           valueToString={idOptionToString}
+          compareValues={idCompareValues}
         >
-          {({ value }) => <div className={classes.menuitem}>{value.name}</div>}
+          {({ value }) => (
+            <div className={classes.menuitem}>
+              <Text>{value.name}</Text>
+              {shouldShowImage && (
+                <Image
+                  className={classes.menuitemThumbnail}
+                  src={getThumbnailPath(categoryValue.name, value.id)}
+                  onError={handleImageError}
+                />
+              )}
+            </div>
+          )}
         </ComboboxInput>
+        {highlightedId && (
+          <Portal mountNode={{ className: classes.menuitemPortal }}>
+            <Image
+              className={classes.menuitemImage}
+              style={{
+                transform:
+                  highlightedPosition &&
+                  `translate(calc(${highlightedPosition.x - 12}px - 100%), ${highlightedPosition.y}px)`,
+              }}
+              src={getImagePath(categoryValue.name, highlightedId)}
+              onError={handleImageError}
+            />
+          </Portal>
+        )}
       </div>
       <Field label="counts">
         <Input

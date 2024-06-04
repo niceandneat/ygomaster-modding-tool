@@ -1,6 +1,7 @@
-import { BrowserWindow, app, dialog } from 'electron';
+import { BrowserWindow, Session, app, dialog, net, protocol } from 'electron';
 import log from 'electron-log/main';
 import path from 'path';
+import { pathToFileURL } from 'url';
 
 import { handleIpc } from './ipc';
 
@@ -8,6 +9,48 @@ import { handleIpc } from './ipc';
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
+
+// Static file serve for `static://` protocol
+// https://github.com/electron/electron/issues/23393#issuecomment-1937592773
+// https://www.electronjs.org/docs/latest/api/protocol#protocolhandlescheme-handler
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'static',
+    privileges: {
+      secure: true,
+      supportFetchAPI: true,
+      bypassCSP: true,
+    },
+  },
+]);
+const handleStaticProtocol = (session: Session) => {
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    session.protocol.handle('static', (req) => {
+      const { host, pathname } = new URL(req.url);
+      const filePath = path.join(host, pathname);
+
+      // Relay requests to dev server
+      return net.fetch(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}/${filePath}`, {
+        method: req.method,
+        headers: req.headers,
+        body: req.body,
+      });
+    });
+  } else {
+    session.protocol.handle('static', (req) => {
+      const { host, pathname } = new URL(req.url);
+      const filePath = path.join(
+        __dirname,
+        `../renderer/${MAIN_WINDOW_VITE_NAME}`,
+        host,
+        pathname,
+      );
+
+      // Access post-build static files
+      return net.fetch(pathToFileURL(filePath).toString());
+    });
+  }
+};
 
 const createWindow = () => {
   // Create the browser window.
@@ -47,7 +90,8 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createWindow();
+  const mainWindow = createWindow();
+  handleStaticProtocol(mainWindow.webContents.session);
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

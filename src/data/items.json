@@ -27,10 +27,6 @@
       "name": "CP-UR"
     },
     {
-      "id": "7",
-      "name": "ORB"
-    },
-    {
       "id": "8",
       "name": "ORB-DARK"
     },
@@ -552,7 +548,7 @@
     },
     {
       "id": "1010058",
-      "name": "Blue-Eyes White Dragon"
+      "name": "Blue-Eyes White Dragon 2"
     },
     {
       "id": "1010059",
@@ -2871,38 +2867,6 @@
     {
       "id": "1130041",
       "name": "Number 41: Bagooska the Terribly Tired Tapir"
-    }
-  ],
-  "PACK_TICKET": [
-    {
-      "id": "1140001",
-      "name": "Legacy Pack ticket"
-    },
-    {
-      "id": "1140002",
-      "name": "Tournament Pack ticket 1"
-    },
-    {
-      "id": "1141001",
-      "name": "Xyz Reward Ticket"
-    },
-    {
-      "id": "1141002",
-      "name": "Fusion Reward Ticket"
-    },
-    {
-      "id": "1141003",
-      "name": "Synchro Reward Ticket"
-    },
-    {
-      "id": "1141004",
-      "name": "Duelist Cup Reward Tickets"
-    }
-  ],
-  "DECK_LIMIT": [
-    {
-      "id": "1150001",
-      "name": "Deck Slot"
     }
   ]
 }
