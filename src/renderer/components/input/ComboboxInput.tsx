@@ -94,6 +94,7 @@ interface ComboboxInputProps<T> {
   label: string;
   fuseOptions?: IFuseOptions<T>;
   required?: boolean;
+  placeholder?: string;
   validationMessage?: string;
   onChange: (value: T) => void;
   onChangeHighlight?: (change?: { value: T; node: HTMLDivElement }) => void;
@@ -117,6 +118,7 @@ export const ComboboxInput = <T,>({
   label,
   fuseOptions,
   required,
+  placeholder,
   validationMessage,
   onChange,
   onChangeHighlight,
@@ -219,7 +221,7 @@ export const ComboboxInput = <T,>({
           <Input
             {...getInputProps()}
             required={false}
-            placeholder={valueToString(value) ? undefined : 'Category'}
+            placeholder={valueToString(value) ? undefined : placeholder}
             className={classes.input}
             // https://github.com/downshift-js/downshift/issues/1108#issuecomment-842407759
             value={inputValue}

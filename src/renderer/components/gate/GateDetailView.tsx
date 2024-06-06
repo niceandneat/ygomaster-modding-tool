@@ -216,6 +216,7 @@ const ClearChapterInput = () => {
         return (
           <ComboboxInput
             label="clear chapter"
+            placeholder="Select chapter"
             required
             validationMessage={error?.toString()}
             value={selectedOption}
