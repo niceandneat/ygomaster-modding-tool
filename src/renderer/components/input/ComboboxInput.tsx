@@ -12,17 +12,14 @@ import {
   ArrowCircleDown24Regular,
   ArrowCircleUp24Regular,
 } from '@fluentui/react-icons';
-import {
-  UseComboboxHighlightedIndexChange,
-  UseComboboxStateChange,
-  useCombobox,
-} from 'downshift';
+import { UseComboboxStateChange, useCombobox } from 'downshift';
 import Fuse, { IFuseOptions } from 'fuse.js';
 import {
   ChangeEvent,
   ReactNode,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -129,7 +126,7 @@ export const ComboboxInput = <T,>({
   const classes = useStyles();
   const optionsContainerRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState(() => options.slice(0, 100));
-  const [inputValue, setInputValue] = useState<string>('');
+  const [inputValue, setInputValue] = useState('');
 
   const handleItemToString = useCallback(
     (item: T | null) => (item ? valueToString(item) : ''),
@@ -137,9 +134,11 @@ export const ComboboxInput = <T,>({
   );
 
   const handleSelectedItemChange = useCallback(
-    ({ selectedItem }: UseComboboxStateChange<T>) =>
-      selectedItem && onChange(selectedItem),
-    [onChange],
+    ({ selectedItem }: UseComboboxStateChange<T>) => {
+      selectedItem && onChange(selectedItem);
+      onChangeHighlight?.(undefined);
+    },
+    [onChange, onChangeHighlight],
   );
 
   const handleIsOpenChange = useCallback(
@@ -147,33 +146,10 @@ export const ComboboxInput = <T,>({
     [],
   );
 
-  const handleHighlightIndexChange = useCallback(
-    ({ highlightedIndex }: UseComboboxHighlightedIndexChange<T>) => {
-      if (!onChangeHighlight || !optionsContainerRef.current) return;
-      if (highlightedIndex < 0) return onChangeHighlight(undefined);
-
-      onChangeHighlight({
-        value: items[highlightedIndex],
-        node: optionsContainerRef.current.children[
-          highlightedIndex
-        ] as HTMLDivElement,
-      });
-    },
-    [onChangeHighlight, items],
+  const handleInputValueChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value),
+    [],
   );
-
-  const applyInputChange = useMemo(() => {
-    const fuse = new Fuse(options, fuseOptions);
-
-    return debounce((inputValue = '') => {
-      if (!inputValue) return setItems(options.slice(0, 100));
-      setItems(fuse.search(inputValue, { limit: 20 }).map(({ item }) => item));
-    }, 100);
-  }, [options, fuseOptions]);
-
-  useEffect(() => {
-    applyInputChange(inputValue);
-  }, [options, inputValue, applyInputChange]);
 
   const {
     isOpen,
@@ -183,7 +159,6 @@ export const ComboboxInput = <T,>({
     getMenuProps,
     getInputProps,
     getItemProps,
-    openMenu,
   } = useCombobox({
     inputValue,
     items,
@@ -191,17 +166,56 @@ export const ComboboxInput = <T,>({
     selectedItem: value,
     onSelectedItemChange: handleSelectedItemChange,
     onIsOpenChange: handleIsOpenChange,
-    onHighlightedIndexChange: handleHighlightIndexChange,
     defaultHighlightedIndex: 0,
   });
 
-  const handleInputValueChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setInputValue(e.target.value);
-      openMenu();
-    },
-    [openMenu],
+  const updateItems = useMemo(() => {
+    const fuse = new Fuse(options, fuseOptions);
+
+    return (inputValue = '') => {
+      const items = inputValue
+        ? fuse.search(inputValue, { limit: 20 }).map(({ item }) => item)
+        : options.slice(0, 100);
+
+      setItems(items);
+    };
+  }, [fuseOptions, options]);
+
+  const debouncedUpdateItems = useMemo(
+    () => debounce(updateItems, 100),
+    [updateItems],
   );
+
+  // Prevent blink of previous items list on first input change.
+  const prevIsOpened = useRef(false);
+  useLayoutEffect(() => {
+    if (!prevIsOpened.current) {
+      updateItems(inputValue);
+    } else {
+      debouncedUpdateItems(inputValue);
+    }
+
+    prevIsOpened.current = isOpen;
+  }, [isOpen, inputValue, updateItems, debouncedUpdateItems]);
+
+  // Sync states with props change.
+  useEffect(() => {
+    updateItems();
+  }, [updateItems]);
+
+  useEffect(() => {
+    if (!onChangeHighlight || !optionsContainerRef.current) return;
+    if (highlightedIndex < 0 || items.length === 0)
+      return onChangeHighlight(undefined);
+
+    const node = optionsContainerRef.current.children[highlightedIndex] as
+      | HTMLDivElement
+      | undefined;
+
+    if (!node) return onChangeHighlight(undefined);
+
+    onChangeHighlight({ value: items[highlightedIndex], node });
+  }, [highlightedIndex, items, onChangeHighlight]);
 
   const render: OptionRenderFunction<T> =
     children ||
@@ -219,13 +233,11 @@ export const ComboboxInput = <T,>({
       >
         <div className={classes.inputContainer}>
           <Input
-            {...getInputProps()}
+            // https://github.com/downshift-js/downshift/issues/1108#issuecomment-842407759
+            {...getInputProps({ onChange: handleInputValueChange })}
             required={false}
             placeholder={valueToString(value) ? undefined : placeholder}
             className={classes.input}
-            // https://github.com/downshift-js/downshift/issues/1108#issuecomment-842407759
-            value={inputValue}
-            onChange={handleInputValueChange}
             contentAfter={
               <Button
                 appearance="transparent"

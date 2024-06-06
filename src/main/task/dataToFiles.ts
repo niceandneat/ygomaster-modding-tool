@@ -378,7 +378,7 @@ const createReward = (gateData: GateData, rewardId: number): Reward[] => {
   return Object.entries(rewardData).flatMap(([category, idCountsMap]) => {
     return Object.entries(idCountsMap).map(([id, counts]) => {
       return {
-        category: category as ItemCategory,
+        category: Number(category) as ItemCategory,
         id,
         counts,
       } satisfies Reward;

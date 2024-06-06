@@ -1,6 +1,5 @@
 import {
   Field,
-  Image,
   Input,
   Portal,
   Text,
@@ -9,17 +8,12 @@ import {
   tokens,
 } from '@fluentui/react-components';
 import { IFuseOptions } from 'fuse.js';
-import {
-  ReactEventHandler,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { Item, ItemCategory } from '../../../common/type';
 import { ygoItems, ygoItemsMap } from '../../data';
 import { handleNumberInput } from '../../utils/handleNumberInput';
+import { AssetImage } from '../common/AssetImage';
 import { ComboboxInput } from './ComboboxInput';
 
 const useStyles = makeStyles({
@@ -72,11 +66,13 @@ interface ItemInputProps<T extends ItemCategory> {
   value: Item<T>;
   categories?: T[];
   onChange: (item: Item<T>) => void;
-  getThumbnailPath?: (category: string, id: string) => string;
-  getImagePath?: (category: string, id: string) => string;
+  getThumbnailSrc?: (category: string, id: string) => string;
+  getImageSrc?: (category: string, id: string) => string;
 }
 
-const defaultCategories: ItemCategory[] = Object.values(ItemCategory);
+const defaultCategories: ItemCategory[] = Object.values(ItemCategory).filter(
+  (value): value is ItemCategory => !Number.isNaN(Number(value)),
+);
 const categoryNameMap = Object.fromEntries(
   Object.entries(ItemCategory).map(([name, category]) => [category, name]),
 ) as Record<ItemCategory, string>;
@@ -104,23 +100,12 @@ const idFuseOptions: IFuseOptions<IdOption> = {
   keys: ['name'],
 };
 
-const defaultGetThumbnailPath = (category: string, id: string) =>
-  `static://item-thumbnails/${category}/${id}.webp`;
-const defaultGetImagePath = (category: string, id: string) =>
-  `static://item-images/${category}/${id}.webp`;
-
-// Show empty image for missing assets
-const handleImageError: ReactEventHandler<HTMLImageElement> = (e) => {
-  e.currentTarget.src =
-    'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
-};
-
 export const ItemInput = <T extends ItemCategory>({
   value,
   categories = defaultCategories as T[],
   onChange,
-  getThumbnailPath = defaultGetThumbnailPath,
-  getImagePath = defaultGetImagePath,
+  getThumbnailSrc,
+  getImageSrc,
 }: ItemInputProps<T>) => {
   const classes = useStyles();
 
@@ -251,10 +236,12 @@ export const ItemInput = <T extends ItemCategory>({
             <div className={classes.menuitem}>
               <Text>{value.name}</Text>
               {shouldShowImage && (
-                <Image
+                <AssetImage
+                  thumbnail
                   className={classes.menuitemThumbnail}
-                  src={getThumbnailPath(categoryValue.name, value.id)}
-                  onError={handleImageError}
+                  category={categoryValue.category}
+                  item={value.id}
+                  getSrc={getThumbnailSrc}
                 />
               )}
             </div>
@@ -262,15 +249,16 @@ export const ItemInput = <T extends ItemCategory>({
         </ComboboxInput>
         {highlightedId && (
           <Portal mountNode={{ className: classes.menuitemPortal }}>
-            <Image
+            <AssetImage
               className={classes.menuitemImage}
               style={{
                 transform:
                   highlightedPosition &&
                   `translate(calc(${highlightedPosition.x - 12}px - 100%), ${highlightedPosition.y}px)`,
               }}
-              src={getImagePath(categoryValue.name, highlightedId)}
-              onError={handleImageError}
+              category={categoryValue.category}
+              item={highlightedId}
+              getSrc={getImageSrc}
             />
           </Portal>
         )}

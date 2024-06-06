@@ -135,19 +135,3 @@ export enum DataUnlockType {
   CHAPTER_AND = '4',
   HAS_ITEM = '5',
 }
-
-export enum DataConsumeItemValue {
-  None = '0',
-  Gem = '1',
-  GemAlt = '2',
-  CpN = '3',
-  CpR = '4',
-  CpSR = '5',
-  CpUR = '6',
-  OrbDark = '8',
-  OrbLight = '9',
-  OrbEarth = '10',
-  OrbWater = '11',
-  OrbFire = '12',
-  OrbWind = '13',
-}

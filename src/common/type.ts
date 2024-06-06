@@ -58,22 +58,22 @@ export interface Item<T extends ItemCategory = ItemCategory> {
 }
 
 export enum ItemCategory {
-  NONE = '0',
-  CONSUME = '1',
-  CARD = '2',
-  AVATAR = '3',
-  ICON = '4',
-  PROFILE_TAG = '5',
-  ICON_FRAME = '6',
-  PROTECTOR = '7',
-  DECK_CASE = '8',
-  FIELD = '9',
-  FIELD_OBJ = '10',
-  AVATAR_HOME = '11',
-  STRUCTURE = '12',
-  WALLPAPER = '13',
-  // PACK_TICKET = '14',
-  // DECK_LIMIT = '15',
+  NONE = 0,
+  CONSUME = 1,
+  CARD = 2,
+  AVATAR = 3,
+  ICON = 4,
+  PROFILE_TAG = 5,
+  ICON_FRAME = 6,
+  PROTECTOR = 7,
+  DECK_CASE = 8,
+  FIELD = 9,
+  FIELD_OBJ = 10,
+  AVATAR_HOME = 11,
+  STRUCTURE = 12,
+  WALLPAPER = 13,
+  // PACK_TICKET = 14,
+  // DECK_LIMIT = 15,
 }
 
 export interface Settings {

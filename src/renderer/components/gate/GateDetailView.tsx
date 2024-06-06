@@ -190,6 +190,7 @@ const ClearChapterInput = () => {
       chapters
         .filter(isDuelChapter)
         .map(({ id, cpu_deck }) => ({ id, name: cpu_deck })),
+    // TODO Improve memo rule
     [chapters],
   );
 

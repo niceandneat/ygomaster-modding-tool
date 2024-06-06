@@ -1,4 +1,6 @@
 import {
+  Text,
+  Tooltip,
   makeStyles,
   mergeClasses,
   shorthands,
@@ -8,7 +10,15 @@ import { Add16Regular } from '@fluentui/react-icons';
 import { Handle, Node, NodeProps, Position } from '@xyflow/react';
 import { memo } from 'react';
 
-import { ChapterType, DuelChapter, GateChapter } from '../../../common/type';
+import {
+  ChapterType,
+  DuelChapter,
+  GateChapter,
+  Item,
+  ItemCategory,
+} from '../../../common/type';
+import { ygoItemsMap } from '../../data';
+import { AssetImage } from '../common/AssetImage';
 import { NodeType } from './useChaptersFlow';
 
 export const ChapterColor: Record<ChapterType, string> = {
@@ -21,8 +31,7 @@ const useStyles = makeStyles({
     ...shorthands.border('1px', 'solid', tokens.colorNeutralForeground1),
     borderRadius: '10px',
     backgroundColor: tokens.colorNeutralBackground2,
-    minWidth: '120px',
-    maxWidth: '240px',
+    width: '180px',
     columnGap: tokens.spacingHorizontalS,
     overflow: 'hidden',
   },
@@ -55,11 +64,41 @@ const useStyles = makeStyles({
     backgroundColor: ChapterColor.Gate,
   },
   contents: {
-    ...shorthands.padding('16px'),
+    ...shorthands.padding(tokens.spacingHorizontalL),
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign: 'center',
+    rowGap: tokens.spacingHorizontalL,
+  },
+});
+
+const useItemListStyles = makeStyles({
+  container: {
+    width: '100%',
+  },
+  title: {
+    paddingTop: tokens.spacingHorizontalXXS,
+    paddingBottom: tokens.spacingHorizontalXXS,
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: tokens.colorPalettePlatinumBackground2,
+  },
+  listItem: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: tokens.spacingVerticalS,
+  },
+  iconContainer: {
+    width: '24px',
+    height: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon: {
+    height: '24px',
   },
 });
 
@@ -111,7 +150,15 @@ const DuelChapterNodeContents = ({
       className={mergeClasses(classes.container, selected && classes.selected)}
     >
       <div className={mergeClasses(classes.tag, classes.duelTag)}>Duel</div>
-      <div className={classes.contents}>{data.cpu_deck || 'Edit Chapter'}</div>
+      <div className={classes.contents}>
+        <Text align="center">{data.cpu_deck || 'Edit Chapter'}</Text>
+        {data.mydeck_reward.length ? (
+          <NodeItemList title="mydeck reward" items={data.mydeck_reward} />
+        ) : null}
+        {data.rental_reward?.length ? (
+          <NodeItemList title="rental reward" items={data.rental_reward} />
+        ) : null}
+      </div>
     </div>
   );
 };
@@ -127,7 +174,58 @@ const GateChapterNodeContents = ({
       className={mergeClasses(classes.container, selected && classes.selected)}
     >
       <div className={mergeClasses(classes.tag, classes.gateTag)}>Gate</div>
-      <div className={classes.contents}>{data.id}</div>
+      <div className={classes.contents}>
+        <Text align="center">{data.id}</Text>
+        {data.unlock.length ? (
+          <NodeItemList title="unlock" items={data.unlock} />
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
+const NodeItemList = ({ items, title }: { items: Item[]; title: string }) => {
+  const classes = useItemListStyles();
+
+  return (
+    <div className={classes.container}>
+      <div className={classes.title}>
+        <Text>{title}</Text>
+      </div>
+      {items.map((item, index) => {
+        const shouldShowText = [
+          ItemCategory.NONE,
+          ItemCategory.PROFILE_TAG,
+        ].includes(item.category);
+
+        const name =
+          ygoItemsMap.get(item.category)?.get(item.id)?.name ?? item.id;
+
+        return (
+          <div key={index} className={classes.listItem}>
+            {shouldShowText ? (
+              <Text>{ItemCategory[item.category]}</Text>
+            ) : (
+              <div className={classes.iconContainer}>
+                <Tooltip
+                  content={name}
+                  relationship="description"
+                  positioning="before"
+                >
+                  <AssetImage
+                    thumbnail
+                    alt={name}
+                    className={classes.icon}
+                    category={item.category}
+                    item={item.id}
+                  />
+                </Tooltip>
+              </div>
+            )}
+            <Text>{item.counts}</Text>
+          </div>
+        );
+      })}
     </div>
   );
 };

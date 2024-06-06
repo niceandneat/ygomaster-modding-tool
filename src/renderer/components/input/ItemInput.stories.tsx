@@ -12,9 +12,9 @@ const meta = {
   tags: ['autodocs'],
   args: {
     onChange: fn(),
-    getThumbnailPath: (category, id) =>
-      `/item-thumbnails/${category}/${id}.webp`,
-    getImagePath: (category, id) => `/item-images/${category}/${id}.webp`,
+    getThumbnailSrc: (category, item) =>
+      `/item-thumbnails/${category}/${item}.webp`,
+    getImageSrc: (category, item) => `/item-images/${category}/${item}.webp`,
   },
 } satisfies Meta<typeof ItemInput>;
 
