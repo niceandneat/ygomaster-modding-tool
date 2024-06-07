@@ -108,7 +108,6 @@ export const useChapterContextMenu = (
       y: currentNode.position.y + (currentNode.measured?.height ?? 0) + 10,
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...dataWithoutId } = currentNode.data;
 
     addChapter({
@@ -116,9 +115,9 @@ export const useChapterContextMenu = (
       data: {
         ...dataWithoutId,
         cpu_deck: dataWithoutId.rental_deck,
-        mydeck_reward: dataWithoutId.rental_reward,
         rental_deck: dataWithoutId.cpu_deck,
-        rental_reward: dataWithoutId.mydeck_reward,
+        cpu_name: dataWithoutId.rental_deck?.replace(/\.json$/, '') ?? 'CPU',
+        parent_id: id,
       },
     });
     closeMenu();
