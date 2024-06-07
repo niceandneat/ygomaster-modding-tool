@@ -123,7 +123,8 @@ export const useChaptersFlow = ({
     const newNodes = chapters.map((chapter) => {
       return {
         id: `${chapter.id}`,
-        position: { x: -100, y: -100 },
+        // Hide before layout
+        position: { x: 10000, y: 10000 },
         type: 'chapter' as const,
         targetPosition,
         sourcePosition,
