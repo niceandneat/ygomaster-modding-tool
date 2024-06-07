@@ -143,6 +143,9 @@ const DuelChapterNodeContents = ({
   selected,
 }: NodeProps<Node<DuelChapter>>) => {
   const classes = useStyles();
+  const name = data.cpu_deck
+    ? data.cpu_deck.replace(/\.json$/, '')
+    : 'Edit Chapter';
 
   return (
     <div
@@ -150,7 +153,7 @@ const DuelChapterNodeContents = ({
     >
       <div className={mergeClasses(classes.tag, classes.duelTag)}>Duel</div>
       <div className={classes.contents}>
-        <Text align="center">{data.cpu_deck || 'Edit Chapter'}</Text>
+        <Text align="center">{name}</Text>
         {data.mydeck_reward.length ? (
           <NodeItemList title="mydeck reward" items={data.mydeck_reward} />
         ) : null}
@@ -174,7 +177,7 @@ const GateChapterNodeContents = ({
     >
       <div className={mergeClasses(classes.tag, classes.gateTag)}>Gate</div>
       <div className={classes.contents}>
-        <Text align="center">{data.id}</Text>
+        <Text align="center">{data.description}</Text>
         {data.unlock.length ? (
           <NodeItemList title="unlock" items={data.unlock} />
         ) : null}
