@@ -1,10 +1,4 @@
-import {
-  Button,
-  Title1,
-  makeStyles,
-  shorthands,
-  tokens,
-} from '@fluentui/react-components';
+import { Button, Title1, makeStyles, tokens } from '@fluentui/react-components';
 import { SaveRegular } from '@fluentui/react-icons';
 import { IFuseOptions } from 'fuse.js';
 import { useCallback, useMemo } from 'react';
@@ -67,7 +61,7 @@ const useStyles = makeStyles({
     backgroundColor: tokens.colorNeutralBackground2,
   },
   menuitem: {
-    ...shorthands.padding(tokens.spacingVerticalM),
+    padding: tokens.spacingVerticalM,
   },
 });
 

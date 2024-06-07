@@ -1,9 +1,4 @@
-import {
-  Toaster,
-  makeStyles,
-  shorthands,
-  tokens,
-} from '@fluentui/react-components';
+import { Toaster, makeStyles, tokens } from '@fluentui/react-components';
 import { useCallback } from 'react';
 
 import { Gate } from '../../../common/type';
@@ -15,7 +10,7 @@ const useStyles = makeStyles({
   container: {
     height: '100vh',
     overflowY: 'auto',
-    ...shorthands.padding(tokens.spacingHorizontalL),
+    padding: tokens.spacingHorizontalL,
   },
 });
 

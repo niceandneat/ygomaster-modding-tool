@@ -1,4 +1,4 @@
-import { makeStyles, shorthands, tokens } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 import { Outlet } from 'react-router-dom';
 
 import { MenuBar } from './MenuBar';
@@ -14,7 +14,7 @@ const useStyles = makeStyles({
   menu: {
     height: '100vh',
     overflowY: 'auto',
-    ...shorthands.borderRight('0.5px', 'solid', tokens.colorNeutralStroke1),
+    borderRight: `0.5px solid ${tokens.colorNeutralStroke1}`,
   },
   contents: {
     height: '100vh',

@@ -1,9 +1,4 @@
-import {
-  Toaster,
-  makeStyles,
-  shorthands,
-  tokens,
-} from '@fluentui/react-components';
+import { Toaster, makeStyles, tokens } from '@fluentui/react-components';
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -18,7 +13,7 @@ const useStyles = makeStyles({
   container: {
     height: '100vh',
     overflowY: 'auto',
-    ...shorthands.padding(tokens.spacingHorizontalL),
+    padding: tokens.spacingHorizontalL,
   },
 });
 

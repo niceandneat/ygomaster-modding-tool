@@ -1,15 +1,10 @@
-import {
-  Button,
-  Title1,
-  makeStyles,
-  shorthands,
-} from '@fluentui/react-components';
+import { Button, Title1, makeStyles } from '@fluentui/react-components';
 import { useRouteError } from 'react-router-dom';
 
 const useStyles = makeStyles({
   container: {
     height: '100vh',
-    ...shorthands.padding('10px'),
+    padding: '10px',
   },
 });
 

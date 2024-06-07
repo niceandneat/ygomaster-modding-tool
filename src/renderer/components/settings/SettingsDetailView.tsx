@@ -3,7 +3,6 @@ import {
   Field,
   Title1,
   makeStyles,
-  shorthands,
   tokens,
 } from '@fluentui/react-components';
 import { OpenRegular, SaveRegular } from '@fluentui/react-icons';
@@ -29,7 +28,7 @@ const defaultSettings: Partial<Settings> = {
 
 const useStyles = makeStyles({
   container: {
-    ...shorthands.padding(tokens.spacingHorizontalL),
+    padding: tokens.spacingHorizontalL,
   },
   header: {
     display: 'flex',

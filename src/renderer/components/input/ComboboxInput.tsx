@@ -5,7 +5,6 @@ import {
   Text,
   makeStyles,
   mergeClasses,
-  shorthands,
   tokens,
 } from '@fluentui/react-components';
 import {
@@ -48,10 +47,10 @@ const useStyles = makeStyles({
     alignItems: 'center',
     pointerEvents: 'none',
     overflow: 'hidden',
-    ...shorthands.padding(0, `calc(${tokens.spacingHorizontalMNudge} + 1px)`), // 1px for adding border width of input
+    padding: `0 calc(${tokens.spacingHorizontalMNudge} + 1px)`, // 1px for adding border width of input
   },
   inputValue: {
-    ...shorthands.padding(0, tokens.spacingHorizontalXXS),
+    padding: `0 ${tokens.spacingHorizontalXXS}`,
   },
   menu: {
     position: 'absolute',
@@ -75,7 +74,7 @@ const useStyles = makeStyles({
     backgroundColor: tokens.colorNeutralBackground1Selected,
   },
   defaultContents: {
-    ...shorthands.padding(0, tokens.spacingVerticalM),
+    padding: `0 ${tokens.spacingVerticalM}`,
   },
 });
 

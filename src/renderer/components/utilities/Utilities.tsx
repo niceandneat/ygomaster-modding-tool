@@ -9,7 +9,6 @@ import {
   Title1,
   Toaster,
   makeStyles,
-  shorthands,
   tokens,
 } from '@fluentui/react-components';
 import { useState } from 'react';
@@ -22,7 +21,7 @@ const useStyles = makeStyles({
   container: {
     height: '100vh',
     overflowY: 'auto',
-    ...shorthands.padding(tokens.spacingHorizontalL),
+    padding: tokens.spacingHorizontalL,
   },
   header: {
     display: 'flex',

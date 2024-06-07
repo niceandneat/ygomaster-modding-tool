@@ -3,7 +3,6 @@ import {
   Tooltip,
   makeStyles,
   mergeClasses,
-  shorthands,
   tokens,
 } from '@fluentui/react-components';
 import { Add16Regular } from '@fluentui/react-icons';
@@ -28,7 +27,7 @@ export const ChapterColor: Record<ChapterType, string> = {
 
 const useStyles = makeStyles({
   container: {
-    ...shorthands.border('1px', 'solid', tokens.colorNeutralForeground1),
+    border: `1px solid ${tokens.colorNeutralForeground1}`,
     borderRadius: '10px',
     backgroundColor: tokens.colorNeutralBackground2,
     width: '180px',
@@ -36,7 +35,7 @@ const useStyles = makeStyles({
     overflow: 'hidden',
   },
   selected: {
-    ...shorthands.border('1px', 'solid', tokens.colorBrandForeground1),
+    border: `1px solid ${tokens.colorBrandForeground1}`,
   },
   handle: {
     backgroundColor: tokens.colorNeutralBackground1Hover,
@@ -64,7 +63,7 @@ const useStyles = makeStyles({
     backgroundColor: ChapterColor.Gate,
   },
   contents: {
-    ...shorthands.padding(tokens.spacingHorizontalL),
+    padding: tokens.spacingHorizontalL,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',

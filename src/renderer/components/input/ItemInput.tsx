@@ -4,7 +4,6 @@ import {
   Portal,
   Text,
   makeStyles,
-  shorthands,
   tokens,
 } from '@fluentui/react-components';
 import { IFuseOptions } from 'fuse.js';
@@ -32,7 +31,7 @@ const useStyles = makeStyles({
     width: '100px',
   },
   menuitem: {
-    ...shorthands.padding(tokens.spacingVerticalM),
+    padding: tokens.spacingVerticalM,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
