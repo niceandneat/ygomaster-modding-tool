@@ -21,6 +21,7 @@ import { useWarnNavigation } from '../../hooks/useWarnNavigation';
 import { ChaptersInput } from '../chapter/ChaptersInput';
 import { ComboboxInput } from '../input/ComboboxInput';
 import { PlainInput } from '../input/PlainInput';
+import { GateTotalRewardsAndUnlocks } from './GateTotalRewardsAndUnlocks';
 
 const defaultGate: Partial<Gate> = {
   id: 0,
@@ -153,6 +154,7 @@ export const GateDetailView = ({
           <PlainInput<Gate> name="priority" number />
           <ClearChapterInput />
           <ChaptersInput />
+          <GateTotalRewardsAndUnlocks />
           <PlainInput<Gate> name="illust_id" number />
           <PlainInput<Gate> name="illust_x" number />
           <PlainInput<Gate> name="illust_y" number />
