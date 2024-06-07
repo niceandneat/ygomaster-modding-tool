@@ -147,7 +147,7 @@ const DataSyncUtility = () => {
           }}
           disabled={loading}
         >
-          {'Data -> Gate/Deck'}
+          {'Import (Data -> Gate/Deck)'}
         </Button>
         <Button
           appearance="primary"
@@ -164,7 +164,7 @@ const DataSyncUtility = () => {
           }}
           disabled={loading}
         >
-          {'Gate/Deck -> Data'}
+          {'Export (Gate/Deck -> Data)'}
         </Button>
       </CardFooter>
     </Card>
@@ -217,7 +217,7 @@ const DeckSyncUtility = () => {
           }}
           disabled={loading}
         >
-          {'Data -> Deck'}
+          {'Import (Data -> Deck)'}
         </Button>
         <Button
           appearance="primary"
@@ -233,7 +233,7 @@ const DeckSyncUtility = () => {
           }}
           disabled={loading}
         >
-          {'Deck -> Data'}
+          {'Export (Deck -> Data)'}
         </Button>
       </CardFooter>
     </Card>
