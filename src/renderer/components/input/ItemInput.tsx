@@ -9,7 +9,7 @@ import {
 import { IFuseOptions } from 'fuse.js';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
-import { Item, ItemCategory } from '../../../common/type';
+import { Item, ItemCategory, itemCategories } from '../../../common/type';
 import { ygoItems, ygoItemsMap } from '../../data';
 import { handleNumberInput } from '../../utils/handleNumberInput';
 import { AssetImage } from '../common/AssetImage';
@@ -69,9 +69,6 @@ interface ItemInputProps<T extends ItemCategory> {
   getImageSrc?: (category: string, id: string) => string;
 }
 
-const defaultCategories: ItemCategory[] = Object.values(ItemCategory).filter(
-  (value): value is ItemCategory => !Number.isNaN(Number(value)),
-);
 const categoryNameMap = Object.fromEntries(
   Object.entries(ItemCategory).map(([name, category]) => [category, name]),
 ) as Record<ItemCategory, string>;
@@ -101,7 +98,7 @@ const idFuseOptions: IFuseOptions<IdOption> = {
 
 export const ItemInput = <T extends ItemCategory>({
   value,
-  categories = defaultCategories as T[],
+  categories = itemCategories as T[],
   onChange,
   getThumbnailSrc,
   getImageSrc,

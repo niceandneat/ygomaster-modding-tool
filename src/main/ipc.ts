@@ -168,6 +168,7 @@ const handleReadGates = async (
     readJson<Gate>(gatePath).then(
       (gate): GateSummary => ({
         id: gate.id,
+        parent_id: gate.parent_id,
         path: gatePath,
         name: gate.name,
         priority: gate.priority,

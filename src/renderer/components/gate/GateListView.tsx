@@ -9,6 +9,7 @@ import {
   DataGridRow,
   TableCellLayout,
   TableColumnDefinition,
+  Tag,
   Title1,
   createTableColumn,
   makeStyles,
@@ -44,6 +45,9 @@ const useStyles = makeStyles({
   gap: {
     display: 'flex',
     columnGap: tokens.spacingVerticalS,
+  },
+  columnHeader: {
+    userSelect: 'none',
   },
 });
 
@@ -93,6 +97,22 @@ export const GateListView = ({
         },
         renderCell: (gate) => {
           return <TableCellLayout truncate>{gate.id}</TableCellLayout>;
+        },
+      }),
+      createTableColumn<GateSummary>({
+        columnId: 'parent_id',
+        compare: (a, b) => {
+          return a.parent_id - b.parent_id;
+        },
+        renderHeaderCell: () => {
+          return 'Parent ID';
+        },
+        renderCell: (gate) => {
+          return (
+            <TableCellLayout truncate>
+              {gate.parent_id || <Tag size="small">parent</Tag>}
+            </TableCellLayout>
+          );
         },
       }),
       createTableColumn<GateSummary>({
@@ -176,7 +196,9 @@ export const GateListView = ({
         <DataGridHeader>
           <DataGridRow>
             {({ renderHeaderCell }) => (
-              <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
+              <DataGridHeaderCell className={classes.columnHeader}>
+                {renderHeaderCell()}
+              </DataGridHeaderCell>
             )}
           </DataGridRow>
         </DataGridHeader>

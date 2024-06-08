@@ -13,7 +13,9 @@ import {
 
 import {
   Chapter,
+  DuelChapter,
   Gate,
+  GateChapter,
   isDuelChapter,
   isGateChapter,
 } from '../../../common/type';
@@ -68,44 +70,33 @@ const useStyles = makeStyles({
 
 const extractOnlyRelevantFields = (chapter: Chapter): Chapter => {
   if (isGateChapter(chapter)) {
-    const { id, parent_id, description, type, unlock } = chapter;
-    return { id, parent_id, description, type, unlock };
+    return {
+      id: chapter.id,
+      parent_id: chapter.parent_id,
+      description: chapter.description,
+      type: chapter.type,
+      unlock: chapter.unlock,
+    } satisfies GateChapter;
   }
 
-  const {
-    id,
-    parent_id,
-    description,
-    type,
-    cpu_deck,
-    rental_deck,
-    mydeck_reward,
-    rental_reward,
-    cpu_hand,
-    player_hand,
-    cpu_life,
-    player_life,
-    cpu_name,
-    cpu_flag,
-    cpu_value,
-  } = chapter;
+  // if isDuelChapter(chapter)
   return {
-    id,
-    parent_id,
-    description,
-    type,
-    cpu_deck,
-    rental_deck,
-    mydeck_reward,
-    rental_reward,
-    cpu_hand,
-    player_hand,
-    cpu_life,
-    player_life,
-    cpu_name,
-    cpu_flag,
-    cpu_value,
-  };
+    id: chapter.id,
+    parent_id: chapter.parent_id,
+    description: chapter.description,
+    type: chapter.type,
+    cpu_deck: chapter.cpu_deck,
+    rental_deck: chapter.rental_deck,
+    mydeck_reward: chapter.mydeck_reward,
+    rental_reward: chapter.rental_reward,
+    cpu_hand: chapter.cpu_hand,
+    player_hand: chapter.player_hand,
+    cpu_life: chapter.cpu_life,
+    player_life: chapter.player_life,
+    cpu_name: chapter.cpu_name,
+    cpu_flag: chapter.cpu_flag,
+    cpu_value: chapter.cpu_value,
+  } satisfies DuelChapter;
 };
 
 interface GateDetailViewProps {
