@@ -26,7 +26,7 @@ export const GateDetail = () => {
   const params = useParams();
 
   const [gate, setGate] = useState<Gate>();
-  const [gates, setGates] = useState<GateSummary[]>([]);
+  const [gates, setGates] = useState<GateSummary[]>();
 
   const fileName = params['*'] || 'UNKNOWN_PATH';
   const filePath = toAbsolutePath(fileName, gatePath);
@@ -44,7 +44,7 @@ export const GateDetail = () => {
 
   const handleLoadChapters = useCallback(
     async (gateId: number) => {
-      const gateSummary = gates.find(({ id }) => id === gateId);
+      const gateSummary = gates?.find(({ id }) => id === gateId);
       if (!gateSummary) return [];
 
       const { gate } = await window.electron.readGate({
@@ -72,7 +72,7 @@ export const GateDetail = () => {
     main();
   }, [filePath, gatePath]);
 
-  if (!gate) return null;
+  if (!gate || !gates) return null;
 
   return (
     <>

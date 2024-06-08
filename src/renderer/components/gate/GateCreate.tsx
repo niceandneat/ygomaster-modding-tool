@@ -21,7 +21,7 @@ export const GateCreate = () => {
   const loadGates = useAppStore((s) => s.loadGates);
   const { toasterId, withToast } = useToast('Success Save', 'Fail Save');
 
-  const [gates, setGates] = useState<GateSummary[]>([]);
+  const [gates, setGates] = useState<GateSummary[]>();
 
   const handleSubmit = useCallback(
     (gate: Gate) =>
@@ -39,7 +39,7 @@ export const GateCreate = () => {
 
   const handleLoadChapters = useCallback(
     async (gateId: number) => {
-      const gateSummary = gates.find(({ id }) => id === gateId);
+      const gateSummary = gates?.find(({ id }) => id === gateId);
       if (!gateSummary) return [];
 
       const { gate } = await window.electron.readGate({
@@ -62,6 +62,8 @@ export const GateCreate = () => {
   }, [gatePath]);
 
   const title = 'Create Gate';
+
+  if (!gates) return null;
 
   return (
     <>

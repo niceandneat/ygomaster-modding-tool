@@ -12,6 +12,7 @@ import {
   SaveRegular,
   Subtract16Regular,
 } from '@fluentui/react-icons';
+import { IFuseOptions } from 'fuse.js';
 import { useCallback, useMemo } from 'react';
 import {
   Controller,
@@ -36,6 +37,7 @@ import {
 import { useWarnNavigation } from '../../hooks/useWarnNavigation';
 import { getChapterName } from '../../utils/getChapterName';
 import { ChaptersInput } from '../chapter/ChaptersInput';
+import { ComboboxInput } from '../input/ComboboxInput';
 import { PlainInput } from '../input/PlainInput';
 import { GateChapterInput } from './GateChapterInput';
 import { GateTotalRewardsAndUnlocks } from './GateTotalRewardsAndUnlocks';
@@ -78,6 +80,9 @@ const useStyles = makeStyles({
     alignItems: 'flex-end',
     marginBottom: tokens.spacingVerticalM,
     backgroundColor: tokens.colorNeutralBackground2,
+  },
+  menuitem: {
+    padding: tokens.spacingVerticalM,
   },
 });
 
@@ -144,7 +149,20 @@ export const GateDetailView = ({
   onSubmit,
 }: GateDetailViewProps) => {
   const classes = useStyles();
-  const methods = useForm<Gate>({ defaultValues: { ...defaultGate, ...gate } });
+  const defaultValues = useMemo(() => {
+    const id = Math.max(...gates.map(({ id }) => id), 0) + 1;
+    const priority = Math.max(...gates.map(({ priority }) => priority), 0) + 1;
+    const clear_chapter = { gateId: id, chapterId: 0 };
+
+    return { ...defaultGate, id, priority, clear_chapter };
+  }, [gates]);
+  const methods = useForm<Gate>({
+    defaultValues: {
+      ...defaultValues,
+      id: Math.max(...gates.map(({ id }) => id), 0) + 1,
+      ...gate,
+    },
+  });
   const { handleSubmit, reset, formState } = methods;
 
   useWarnNavigation(formState.isDirty);
@@ -171,7 +189,7 @@ export const GateDetailView = ({
         </div>
         <div className={classes.stack}>
           <PlainInput<Gate> name="id" number />
-          <PlainInput<Gate> name="parent_id" number />
+          <ParentIdInput gates={gates} />
           <PlainInput<Gate> name="name" />
           <PlainInput<Gate> name="description" multiline />
           <PlainInput<Gate> name="priority" number />
@@ -185,6 +203,70 @@ export const GateDetailView = ({
         </div>
       </form>
     </FormProvider>
+  );
+};
+
+interface ParentIdInputProps {
+  gates: GateSummary[];
+}
+
+interface ParentIdOption {
+  id: number;
+  name: string;
+}
+
+const optionToString = (option?: ParentIdOption) => option?.name ?? '';
+const compareValues = (a?: ParentIdOption, b?: ParentIdOption) =>
+  Boolean(a && b && a.id === b.id);
+const fuseOptions: IFuseOptions<ParentIdOption> = {
+  keys: ['name'],
+};
+
+const ParentIdInput = ({ gates }: ParentIdInputProps) => {
+  const classes = useStyles();
+  const { control, formState, getValues } = useFormContext<Gate>();
+
+  const options = useMemo<ParentIdOption[]>(
+    () =>
+      gates
+        .filter((gate) => gate.id !== getValues('id'))
+        .map(({ id, name }) => ({ id, name: `${name} (${id})` })),
+    [gates, getValues],
+  );
+
+  const error = formState.errors.clear_chapter?.message;
+
+  return (
+    <Controller
+      control={control}
+      name="parent_id"
+      render={({ field }) => {
+        const selectedOption = options.find(({ id }) => id === field.value);
+
+        return (
+          <ComboboxInput
+            label="parent gate"
+            placeholder="Select gate"
+            validationMessage={error?.toString()}
+            value={{
+              id: field.value,
+              name: selectedOption
+                ? `${selectedOption.name} (${selectedOption.id})`
+                : '',
+            }}
+            options={options}
+            fuseOptions={fuseOptions}
+            onChange={(value) => field.onChange(value.id)}
+            valueToString={optionToString}
+            compareValues={compareValues}
+          >
+            {({ value }) => (
+              <div className={classes.menuitem}>{value.name}</div>
+            )}
+          </ComboboxInput>
+        );
+      }}
+    />
   );
 };
 
