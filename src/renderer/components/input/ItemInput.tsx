@@ -30,6 +30,9 @@ const useStyles = makeStyles({
   countsInput: {
     width: '100px',
   },
+  inputIcon: {
+    height: '20px',
+  },
   menuitem: {
     padding: tokens.spacingVerticalM,
     display: 'flex',
@@ -69,6 +72,7 @@ interface ItemInputProps<T extends ItemCategory> {
   getImageSrc?: (category: string, id: string) => string;
 }
 
+const defaultCategories = itemCategories.filter((c) => c !== ItemCategory.NONE);
 const categoryDefaultIdMap = {
   ...Object.fromEntries(
     [...ygoItems.entries()].map(([category, [{ id }]]) => [category, id]),
@@ -95,7 +99,7 @@ const idFuseOptions: IFuseOptions<IdOption> = {
 
 export const ItemInput = <T extends ItemCategory>({
   value,
-  categories = itemCategories as T[],
+  categories = defaultCategories as T[],
   onChange,
   getThumbnailSrc,
   getImageSrc,
@@ -224,6 +228,17 @@ export const ItemInput = <T extends ItemCategory>({
           }
           valueToString={idOptionToString}
           compareValues={idCompareValues}
+          icon={
+            shouldShowImage && (
+              <AssetImage
+                thumbnail
+                className={classes.inputIcon}
+                category={categoryValue.category}
+                item={value.id}
+                getSrc={getThumbnailSrc}
+              />
+            )
+          }
         >
           {({ value }) => (
             <div className={classes.menuitem}>

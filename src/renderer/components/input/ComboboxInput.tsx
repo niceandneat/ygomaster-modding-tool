@@ -11,7 +11,11 @@ import {
   ArrowCircleDown24Regular,
   ArrowCircleUp24Regular,
 } from '@fluentui/react-icons';
-import { UseComboboxStateChange, useCombobox } from 'downshift';
+import {
+  UseComboboxHighlightedIndexChange,
+  UseComboboxStateChange,
+  useCombobox,
+} from 'downshift';
 import Fuse, { IFuseOptions } from 'fuse.js';
 import {
   ChangeEvent,
@@ -41,10 +45,11 @@ const useStyles = makeStyles({
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '90%',
+    width: `calc(100% - 24px - 2px)`, // give space for input component's contentAfter
     height: '100%',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'space-between',
     pointerEvents: 'none',
     overflow: 'hidden',
     padding: `0 calc(${tokens.spacingHorizontalMNudge} + 1px)`, // 1px for adding border width of input
@@ -92,6 +97,7 @@ interface ComboboxInputProps<T> {
   required?: boolean;
   placeholder?: string;
   validationMessage?: string;
+  icon?: ReactNode;
   onChange: (value: T) => void;
   onChangeHighlight?: (change?: { value: T; node: HTMLDivElement }) => void;
   valueToString?: (value?: T) => string;
@@ -116,6 +122,7 @@ export const ComboboxInput = <T,>({
   required,
   placeholder,
   validationMessage,
+  icon,
   onChange,
   onChangeHighlight,
   valueToString = defaultValueToString,
@@ -126,6 +133,7 @@ export const ComboboxInput = <T,>({
   const optionsContainerRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState(() => options.slice(0, 100));
   const [inputValue, setInputValue] = useState('');
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   const handleItemToString = useCallback(
     (item: T | null) => (item ? valueToString(item) : ''),
@@ -150,9 +158,17 @@ export const ComboboxInput = <T,>({
     [],
   );
 
+  const handleHighlightIndexChange = useCallback(
+    ({ highlightedIndex, isOpen }: UseComboboxHighlightedIndexChange<T>) => {
+      // Prevent default un-highlight logic
+      if (isOpen && highlightedIndex < 0) return;
+      setHighlightedIndex(highlightedIndex);
+    },
+    [],
+  );
+
   const {
     isOpen,
-    highlightedIndex,
     getLabelProps,
     getToggleButtonProps,
     getMenuProps,
@@ -161,11 +177,12 @@ export const ComboboxInput = <T,>({
   } = useCombobox({
     inputValue,
     items,
+    highlightedIndex,
     itemToString: handleItemToString,
     selectedItem: value,
     onSelectedItemChange: handleSelectedItemChange,
     onIsOpenChange: handleIsOpenChange,
-    defaultHighlightedIndex: 0,
+    onHighlightedIndexChange: handleHighlightIndexChange,
   });
 
   const updateItems = useMemo(() => {
@@ -175,8 +192,10 @@ export const ComboboxInput = <T,>({
       const items = inputValue
         ? fuse.search(inputValue, { limit: 20 }).map(({ item }) => item)
         : options.slice(0, 100);
-
       setItems(items);
+
+      // Highlight first item when typing
+      setHighlightedIndex(inputValue && items.length ? 0 : -1);
     };
   }, [fuseOptions, options]);
 
@@ -257,6 +276,7 @@ export const ComboboxInput = <T,>({
               <Text className={classes.inputValue} wrap={false} truncate>
                 {valueToString(value)}
               </Text>
+              {icon}
             </div>
           )}
         </div>
