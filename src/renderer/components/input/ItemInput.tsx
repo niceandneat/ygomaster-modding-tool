@@ -69,9 +69,6 @@ interface ItemInputProps<T extends ItemCategory> {
   getImageSrc?: (category: string, id: string) => string;
 }
 
-const categoryNameMap = Object.fromEntries(
-  Object.entries(ItemCategory).map(([name, category]) => [category, name]),
-) as Record<ItemCategory, string>;
 const categoryDefaultIdMap = {
   ...Object.fromEntries(
     [...ygoItems.entries()].map(([category, [{ id }]]) => [category, id]),
@@ -161,7 +158,7 @@ export const ItemInput = <T extends ItemCategory>({
   const categoryValue = useMemo<CategoryOption<T>>(
     () => ({
       category: value.category,
-      name: categoryNameMap[value.category],
+      name: ItemCategory[value.category],
     }),
     [value.category],
   );

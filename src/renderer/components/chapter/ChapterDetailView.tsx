@@ -82,6 +82,9 @@ const useStyles = makeStyles({
   title: {
     marginBottom: tokens.spacingVerticalL,
   },
+});
+
+const useItemListStyle = makeStyles({
   label: {
     display: 'block',
     marginBottom: tokens.spacingVerticalS,
@@ -233,7 +236,7 @@ interface ItemInputProps {
 }
 
 const ItemListInput = ({ name, categories, disabled }: ItemInputProps) => {
-  const classes = useStyles();
+  const classes = useItemListStyle();
   const { control } = useFormContext<Chapter>();
   const { fields, append, remove } = useFieldArray<Chapter>({ name });
 
@@ -255,7 +258,7 @@ const ItemListInput = ({ name, categories, disabled }: ItemInputProps) => {
               />
             )}
           />
-          <Tooltip content="Remove reward item" relationship="label">
+          <Tooltip content="Remove item" relationship="label">
             <Button
               icon={<Subtract16Regular />}
               onClick={() => remove(index)}

@@ -7,12 +7,14 @@ export interface Gate {
   illust_x: number; // 일러스트 x offset
   illust_y: number; // 일러스트 y offset
   priority: number; // 노출 우선순위
-  clear_chapter?: number;
+  clear_chapter: ChapterReference;
   chapters: Chapter[];
+  unlock: ChapterUnlock[];
 }
 
 export interface GateSummary {
   id: number;
+  parent_id: number;
   path: string;
   name: string;
   priority: number;
@@ -29,7 +31,7 @@ export type BaseChapter = {
 
 export type GateChapter = BaseChapter & {
   type: 'Gate';
-  unlock: Unlock[]; // 이 필드가 존재할경우 듀얼하는 솔로가 아니며 아래 아이템을 필요로 함.
+  unlock: ItemUnlock[]; // 이 필드가 존재할경우 듀얼하는 솔로가 아니며 아래 아이템을 필요로 함.
 };
 
 export type DuelChapter = BaseChapter & {
@@ -47,9 +49,6 @@ export type DuelChapter = BaseChapter & {
   cpu_value: number; // cpu의 성능. 100보다 98,97 이 더 뛰어나다는 커뮤니티 의견이 있다.
   // TODO 장식 요소 추가
 };
-
-export type Unlock = Item<ItemCategory.CONSUME>;
-export type Reward = Item<ItemCategory>;
 
 export interface Item<T extends ItemCategory = ItemCategory> {
   category: T;
@@ -76,6 +75,30 @@ export enum ItemCategory {
   // DECK_LIMIT = 15,
 }
 
+export interface ChapterReference {
+  gateId: number;
+  chapterId: number;
+}
+
+export enum UnlockType {
+  // USER_LEVEL = 1, // Even official master duel does not use this
+  CHAPTER_OR = 2,
+  ITEM = 3,
+  CHAPTER_AND = 4,
+  HAS_ITEM = 5,
+}
+
+export type ChapterUnlock = ChapterReference & {
+  type: UnlockType.CHAPTER_AND | UnlockType.CHAPTER_OR;
+};
+
+export type ItemUnlock = Item<ItemCategory> & {
+  type: UnlockType.ITEM | UnlockType.HAS_ITEM;
+};
+
+export type Unlock = ChapterUnlock | ItemUnlock;
+export type Reward = Item<ItemCategory>;
+
 export interface Settings {
   gatePath: string;
   deckPath: string;
@@ -86,6 +109,30 @@ export const isGateChapter = (chapter: BaseChapter): chapter is GateChapter =>
   Boolean((chapter as GateChapter).type === 'Gate');
 export const isDuelChapter = (chapter: BaseChapter): chapter is DuelChapter =>
   Boolean((chapter as DuelChapter).type === 'Duel');
+
+export const isChapterUnlockType = (
+  type: UnlockType,
+): type is ChapterUnlock['type'] =>
+  Boolean(type === UnlockType.CHAPTER_AND || type === UnlockType.CHAPTER_OR);
+export const isItemUnlockType = (
+  type: UnlockType,
+): type is ItemUnlock['type'] =>
+  Boolean(type === UnlockType.ITEM || type === UnlockType.HAS_ITEM);
+export const isChapterUnlock = (unlock: Unlock): unlock is ChapterUnlock =>
+  isChapterUnlockType(unlock.type);
+export const isItemUnlock = (unlock: Unlock): unlock is ItemUnlock =>
+  isItemUnlockType(unlock.type);
+
+export const itemCategories: ItemCategory[] = Object.values(
+  ItemCategory,
+).filter((value): value is ItemCategory => typeof value === 'number');
+export const unlockTypes: UnlockType[] = Object.values(UnlockType).filter(
+  (value): value is UnlockType => typeof value === 'number',
+);
+export const chapterUnlockTypes: ChapterUnlock['type'][] =
+  unlockTypes.filter(isChapterUnlockType);
+export const itemUnlockTypes: ItemUnlock['type'][] =
+  unlockTypes.filter(isItemUnlockType);
 
 /**
  * DTO

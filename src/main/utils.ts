@@ -90,9 +90,11 @@ export const batchPromiseAll = async <T, R>(
 export const toPosix = (filePath: string) =>
   filePath.split(path.sep).join(path.posix.sep);
 
+export const dataChapterIdToFileGateId = (chapterId: number) =>
+  Math.floor(chapterId / 10000);
 export const dataChapterIdToFileChapterId = (chapterId: number) =>
   chapterId % 10000;
 export const fileChapterIdToDataChapterId = (
-  chapterId: number,
   gateId: number,
+  chapterId: number,
 ) => gateId * 10000 + chapterId;

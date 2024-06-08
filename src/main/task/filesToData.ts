@@ -3,15 +3,16 @@ import { glob } from 'glob';
 import path from 'node:path';
 
 import {
+  ChapterUnlock,
   DuelChapter,
   Gate,
+  ItemUnlock,
   Reward,
-  Unlock,
   isDuelChapter,
   isGateChapter,
 } from '../../common/type';
 import ygoItems from '../../data/items.json';
-import { DataUnlockType, DeckData, DuelData, GateData } from '../type';
+import { DeckData, DuelData, GateData } from '../type';
 import {
   backupFiles,
   batchPromiseAll,
@@ -55,10 +56,10 @@ const loadGates = async (gatePath: string): Promise<Gate[]> => {
       ...gate,
       chapters: gate.chapters.map((chapter) => ({
         ...chapter,
-        id: fileChapterIdToDataChapterId(chapter.id, gate.id),
+        id: fileChapterIdToDataChapterId(gate.id, chapter.id),
         parent_id:
           chapter.parent_id &&
-          fileChapterIdToDataChapterId(chapter.parent_id, gate.id),
+          fileChapterIdToDataChapterId(gate.id, chapter.parent_id),
       })),
     }))
     .sort((a, b) => a.id - b.id);
@@ -153,8 +154,8 @@ const createSingleGateData = (
     view_gate: 0,
     unlock_id: 0,
     clear_chapter: fileChapterIdToDataChapterId(
-      gate.clear_chapter || gate.chapters.at(-1)?.id || 0,
-      gate.id,
+      gate.clear_chapter.gateId,
+      gate.clear_chapter.chapterId,
     ),
   };
 
@@ -163,6 +164,14 @@ const createSingleGateData = (
   const unlockItemField: GateData['unlock_item'] = {};
   const rewardField: GateData['reward'] = {};
   const ids = { ...initialIds };
+
+  if (gate.unlock.length) {
+    const unlock = createChapterUnlock(gate.unlock);
+
+    gateField.unlock_id = ids.unlockId;
+    unlockField[ids.unlockId] = unlock;
+    ids.unlockId += 1;
+  }
 
   gate.chapters.forEach((chapter) => {
     const chapterData: GateData['chapter'][string][string] = {
@@ -174,8 +183,8 @@ const createSingleGateData = (
       npc_id: 1,
     };
 
-    if (isGateChapter(chapter)) {
-      const { unlock, unlockItem } = createUnlock(
+    if (isGateChapter(chapter) && chapter.unlock.length) {
+      const { unlock, unlockItem } = createItemUnlock(
         chapter.unlock,
         ids.unlockItemId,
       );
@@ -225,15 +234,34 @@ const createReward = (chapterRewards: Reward[]) => {
   return reward;
 };
 
-const createUnlock = (chapterUnlocks: Unlock[], unlockItemId: number) => {
+const createChapterUnlock = (gateUnlocks: ChapterUnlock[]) => {
+  const unlock: GateData['unlock'][string] = {};
+  gateUnlocks.forEach(({ type, gateId, chapterId }) => {
+    unlock[type] = [
+      ...(unlock[type] ?? []),
+      fileChapterIdToDataChapterId(gateId, chapterId),
+    ];
+  });
+
+  return unlock;
+};
+
+const createItemUnlock = (
+  chapterUnlocks: ItemUnlock[],
+  unlockItemId: number,
+) => {
+  const firstUnlockType = chapterUnlocks[0].type;
   const unlock: GateData['unlock'][string] = {
-    [DataUnlockType.ITEM]: [unlockItemId],
+    [firstUnlockType]: [unlockItemId],
   };
 
   const unlockItem: GateData['unlock_item'][string] = {};
-  chapterUnlocks.forEach(({ category, id, counts }) => {
-    unlockItem[category] = { ...unlockItem[category], [id]: counts };
-  });
+  chapterUnlocks
+    // Only consider single type
+    .filter(({ type }) => type === firstUnlockType)
+    .forEach(({ category, id, counts }) => {
+      unlockItem[category] = { ...unlockItem[category], [id]: counts };
+    });
 
   return { unlock, unlockItem };
 };

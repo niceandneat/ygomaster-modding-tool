@@ -1,9 +1,10 @@
 import { Toaster, makeStyles, tokens } from '@fluentui/react-components';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { Gate } from '../../../common/type';
+import { Gate, GateSummary } from '../../../common/type';
 import { useToast } from '../../hooks/useToast';
 import { useAppStore } from '../../store';
+import { getChapterName } from '../../utils/getChapterName';
 import { GateDetailView } from './GateDetailView';
 
 const useStyles = makeStyles({
@@ -20,6 +21,8 @@ export const GateCreate = () => {
   const loadGates = useAppStore((s) => s.loadGates);
   const { toasterId, withToast } = useToast('Success Save', 'Fail Save');
 
+  const [gates, setGates] = useState<GateSummary[]>([]);
+
   const handleSubmit = useCallback(
     (gate: Gate) =>
       withToast(async () => {
@@ -34,12 +37,41 @@ export const GateCreate = () => {
     [withToast, loadGates, gatePath],
   );
 
+  const handleLoadChapters = useCallback(
+    async (gateId: number) => {
+      const gateSummary = gates.find(({ id }) => id === gateId);
+      if (!gateSummary) return [];
+
+      const { gate } = await window.electron.readGate({
+        filePath: gateSummary.path,
+      });
+      return gate.chapters.map((chapter) => ({
+        id: chapter.id,
+        name: getChapterName(chapter),
+      }));
+    },
+    [gates],
+  );
+
+  useEffect(() => {
+    const main = async () => {
+      const { gates } = await window.electron.readGates({ gatePath });
+      setGates(gates);
+    };
+    main();
+  }, [gatePath]);
+
   const title = 'Create Gate';
 
   return (
     <>
       <div className={classes.container}>
-        <GateDetailView title={title} onSubmit={handleSubmit} />
+        <GateDetailView
+          title={title}
+          gates={gates}
+          loadChapters={handleLoadChapters}
+          onSubmit={handleSubmit}
+        />
       </div>
       <Toaster toasterId={toasterId} />
     </>

@@ -1,4 +1,4 @@
-import { ItemCategory } from '../common/type';
+import { ItemCategory, UnlockType } from '../common/type';
 
 export interface DeckData {
   name: string;
@@ -105,7 +105,7 @@ export interface GateData {
   };
   unlock: {
     [unlockId in string]: {
-      [unlockType in DataUnlockType]?: number[]; // unlock item id
+      [unlockType in UnlockType]?: number[]; // unlock item id
     };
   };
   unlock_item: {
@@ -126,12 +126,4 @@ export interface GateData {
 
 export interface GateDataFile {
   Master: { Solo: GateData };
-}
-
-export enum DataUnlockType {
-  USER_LEVEL = '1',
-  CHAPTER_OR = '2',
-  ITEM = '3',
-  CHAPTER_AND = '4',
-  HAS_ITEM = '5',
 }

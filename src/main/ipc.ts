@@ -181,7 +181,7 @@ const handleReadGates = async (
 
 const handleReadGate = async (
   _event: IpcMainInvokeEvent,
-  { filePath: filePath }: ReadGateRequest,
+  { filePath }: ReadGateRequest,
 ): Promise<ReadGateResponse> => {
   return { gate: await readJson(filePath) };
 };

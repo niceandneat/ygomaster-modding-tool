@@ -1,11 +1,23 @@
-import { Button, Title1, makeStyles, tokens } from '@fluentui/react-components';
-import { SaveRegular } from '@fluentui/react-icons';
-import { IFuseOptions } from 'fuse.js';
+import {
+  Button,
+  Card,
+  Text,
+  Title1,
+  Tooltip,
+  makeStyles,
+  tokens,
+} from '@fluentui/react-components';
+import {
+  Add16Regular,
+  SaveRegular,
+  Subtract16Regular,
+} from '@fluentui/react-icons';
 import { useCallback, useMemo } from 'react';
 import {
   Controller,
   FormProvider,
   SubmitHandler,
+  useFieldArray,
   useForm,
   useFormContext,
   useWatch,
@@ -16,13 +28,16 @@ import {
   DuelChapter,
   Gate,
   GateChapter,
+  GateSummary,
+  UnlockType,
   isDuelChapter,
   isGateChapter,
 } from '../../../common/type';
 import { useWarnNavigation } from '../../hooks/useWarnNavigation';
+import { getChapterName } from '../../utils/getChapterName';
 import { ChaptersInput } from '../chapter/ChaptersInput';
-import { ComboboxInput } from '../input/ComboboxInput';
 import { PlainInput } from '../input/PlainInput';
+import { GateChapterInput } from './GateChapterInput';
 import { GateTotalRewardsAndUnlocks } from './GateTotalRewardsAndUnlocks';
 
 const defaultGate: Partial<Gate> = {
@@ -34,7 +49,8 @@ const defaultGate: Partial<Gate> = {
   illust_x: 0.03,
   illust_y: 0,
   priority: 0,
-  clear_chapter: 0,
+  clear_chapter: { gateId: 0, chapterId: 0 },
+  unlock: [],
   chapters: [],
 };
 
@@ -63,8 +79,19 @@ const useStyles = makeStyles({
     marginBottom: tokens.spacingVerticalM,
     backgroundColor: tokens.colorNeutralBackground2,
   },
-  menuitem: {
-    padding: tokens.spacingVerticalM,
+});
+
+const useGateChapterListStyle = makeStyles({
+  label: {
+    display: 'block',
+    marginBottom: tokens.spacingVerticalS,
+  },
+  card: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginBottom: tokens.spacingVerticalM,
+    overflow: 'visible',
   },
 });
 
@@ -75,7 +102,9 @@ const extractOnlyRelevantFields = (chapter: Chapter): Chapter => {
       parent_id: chapter.parent_id,
       description: chapter.description,
       type: chapter.type,
-      unlock: chapter.unlock,
+      // Make sure all unlocks are UnlockType.ITEM
+      // NOTE Should we consider UnlockType.HAS_ITEM too?
+      unlock: chapter.unlock.map((u) => ({ ...u, type: UnlockType.ITEM })),
     } satisfies GateChapter;
   }
 
@@ -102,13 +131,16 @@ const extractOnlyRelevantFields = (chapter: Chapter): Chapter => {
 interface GateDetailViewProps {
   title: string;
   gate?: Gate;
-  chapterIds?: number[];
+  gates: GateSummary[];
+  loadChapters: (gateId: number) => Promise<{ id: number; name: string }[]>;
   onSubmit: SubmitHandler<Gate>;
 }
 
 export const GateDetailView = ({
   title,
   gate,
+  gates,
+  loadChapters,
   onSubmit,
 }: GateDetailViewProps) => {
   const classes = useStyles();
@@ -143,7 +175,8 @@ export const GateDetailView = ({
           <PlainInput<Gate> name="name" />
           <PlainInput<Gate> name="description" multiline />
           <PlainInput<Gate> name="priority" number />
-          <ClearChapterInput />
+          <ClearChapterInput gates={gates} loadChapters={loadChapters} />
+          <GateChapterListInput gates={gates} loadChapters={loadChapters} />
           <ChaptersInput />
           <GateTotalRewardsAndUnlocks />
           <PlainInput<Gate> name="illust_id" number />
@@ -155,71 +188,134 @@ export const GateDetailView = ({
   );
 };
 
-interface ClearChapterOption {
-  id: number;
-  name?: string;
+interface ClearChapterInputProps {
+  gates: GateSummary[];
+  loadChapters: (gateId: number) => Promise<{ id: number; name: string }[]>;
 }
 
-const optionToString = (option?: ClearChapterOption) => option?.name ?? '';
-const compareValues = (a?: ClearChapterOption, b?: ClearChapterOption) =>
-  Boolean(a && b && a.id === b.id);
-const fuseOptions: IFuseOptions<ClearChapterOption> = {
-  keys: ['name'],
-};
-
-const ClearChapterInput = () => {
-  const classes = useStyles();
-  const { control, formState } = useFormContext<Gate>();
+const ClearChapterInput = ({ gates, loadChapters }: ClearChapterInputProps) => {
+  const classes = useGateChapterListStyle();
+  const { control, formState, getValues } = useFormContext<Gate>();
   const chapters = useWatch<Gate, 'chapters'>({ name: 'chapters' });
 
-  const options = useMemo(
+  const sameGateOptions = useMemo(
     () =>
       chapters
         .filter(isDuelChapter)
-        .map(({ id, cpu_deck }) => ({ id, name: cpu_deck })),
+        .map((chapter) => ({ id: chapter.id, name: getChapterName(chapter) })),
     // TODO Improve memo rule
     [chapters],
   );
 
-  const error = formState.errors.clear_chapter?.message;
+  const handleLoadSameGateChapters = useCallback(
+    async () => sameGateOptions,
+    [sameGateOptions],
+  );
+
+  const error = formState.errors.clear_chapter;
 
   return (
-    <Controller
-      control={control}
-      name="clear_chapter"
-      rules={{
-        validate: {
-          required: (value = 0) => value > 0 || 'This field is required',
-          exist: (value = 0) =>
-            options.some(({ id }) => id === value) ||
-            'This chapter is not exist',
-        },
-      }}
-      render={({ field }) => {
-        const selectedOption = options.find(({ id }) => id === field.value) ?? {
-          id: 0,
-          name: '',
-        }; // for empty selected option input
+    <div>
+      <Text className={classes.label}>clear chapter</Text>
+      <Card className={classes.card}>
+        <Controller
+          control={control}
+          name="clear_chapter"
+          rules={{
+            validate: {
+              required: (value) =>
+                value.chapterId > 0 || 'This field is required',
+              exist: (value) =>
+                value.gateId !== getValues('id') ||
+                sameGateOptions.some(({ id }) => id === value.chapterId) ||
+                'This chapter is not exist',
+            },
+          }}
+          render={({ field }) => {
+            return (
+              <GateChapterInput
+                value={field.value}
+                gates={gates}
+                validationMessage={error?.message}
+                loadChapters={
+                  field.value.gateId === getValues('id')
+                    ? handleLoadSameGateChapters
+                    : loadChapters
+                }
+                onChange={field.onChange}
+              />
+            );
+          }}
+        />
+      </Card>
+    </div>
+  );
+};
 
-        return (
-          <ComboboxInput
-            label="clear chapter"
-            placeholder="Select chapter"
-            required
-            validationMessage={error?.toString()}
-            value={selectedOption}
-            options={options}
-            fuseOptions={fuseOptions}
-            onChange={(value) => field.onChange(value.id)}
-            valueToString={optionToString}
-            compareValues={compareValues}
-          >
-            {({ value }) => (
-              <div className={classes.menuitem}>{value.name}</div>
+interface GateChapterListInputProps {
+  gates: GateSummary[];
+  loadChapters: (gateId: number) => Promise<{ id: number; name: string }[]>;
+}
+
+const GateChapterListInput = ({
+  gates,
+  loadChapters,
+}: GateChapterListInputProps) => {
+  const classes = useGateChapterListStyle();
+  const { control, formState } = useFormContext<Gate>();
+  const { fields, append, remove } = useFieldArray<Gate, 'unlock'>({
+    name: 'unlock',
+  });
+
+  const currentGateId = useWatch<Gate, 'id'>({ name: 'id' });
+  const externalGates = gates.filter((gate) => gate.id !== currentGateId);
+
+  const error = formState.errors.unlock;
+
+  return (
+    <div>
+      <Text className={classes.label}>unlock</Text>
+      {fields.map((item, index) => (
+        <Card key={item.id} className={classes.card}>
+          <Controller
+            control={control}
+            name={`unlock.${index}`}
+            rules={{
+              validate: {
+                required: (value) =>
+                  value.chapterId > 0 || 'This field is required',
+              },
+            }}
+            render={({ field }) => (
+              <GateChapterInput
+                value={field.value}
+                gates={externalGates}
+                validationMessage={error?.[index]?.message}
+                loadChapters={loadChapters}
+                onChange={field.onChange}
+              />
             )}
-          </ComboboxInput>
-        );
-      }}
-    />
+          />
+          <Tooltip content="Remove unlock chapter" relationship="label">
+            <Button
+              icon={<Subtract16Regular />}
+              onClick={() => remove(index)}
+            />
+          </Tooltip>
+        </Card>
+      ))}
+      <Button
+        icon={<Add16Regular />}
+        onClick={() =>
+          append({
+            type: UnlockType.CHAPTER_AND,
+            gateId: externalGates[0].id,
+            chapterId: 0,
+          })
+        }
+      >
+        Add Unlock Chapter
+      </Button>
+    </div>
   );
 };

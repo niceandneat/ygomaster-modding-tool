@@ -273,7 +273,7 @@ export const ComboboxInput = <T,>({
 
             return (
               <div
-                key={valueToString(item)}
+                key={index}
                 className={mergeClasses(
                   classes.menuitem,
                   highlighted && classes.menuitemHighlight,
