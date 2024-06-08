@@ -66,6 +66,7 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     rowGap: tokens.spacingVerticalL,
+    marginBottom: '64px',
   },
   split: {
     display: 'flex',

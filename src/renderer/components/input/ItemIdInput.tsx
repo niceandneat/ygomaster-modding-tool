@@ -1,6 +1,6 @@
 import { Portal, Text, makeStyles, tokens } from '@fluentui/react-components';
 import { IFuseOptions } from 'fuse.js';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ItemCategory } from '../../../common/type';
 import { ygoItems, ygoItemsMap } from '../../data';
@@ -65,6 +65,7 @@ export const ItemIdInput = <T extends ItemCategory>({
 }: ItemIdInputProps<T>) => {
   const classes = useStyles();
 
+  const highlightImageRef = useRef<HTMLImageElement>(null);
   const [highlightedId, setHighlightedId] = useState<number>();
   const [highlightedPosition, setHighlightedPosition] = useState<{
     x: number;
@@ -86,6 +87,21 @@ export const ItemIdInput = <T extends ItemCategory>({
     },
     [],
   );
+
+  // TODO Fix delay of getting size when highlightedId changes too fast
+  useEffect(() => {
+    if (!highlightImageRef.current || !highlightedPosition) return;
+
+    const rect = highlightImageRef.current.getBoundingClientRect();
+
+    const xOffset = highlightedPosition.x - 12;
+    const yOffset =
+      highlightedPosition.y + rect.height > window.innerHeight - 12
+        ? window.innerHeight - rect.height - 12
+        : highlightedPosition.y;
+
+    highlightImageRef.current.style.transform = `translate(calc(${xOffset}px - 100%), ${yOffset}px)`;
+  }, [highlightedPosition]);
 
   const handleChange = useCallback(
     ({ id }: ItemIdOption) => onChange(id),
@@ -161,12 +177,8 @@ export const ItemIdInput = <T extends ItemCategory>({
       {highlightedId && (
         <Portal mountNode={{ className: classes.menuitemPortal }}>
           <AssetImage
+            ref={highlightImageRef}
             className={classes.menuitemImage}
-            style={{
-              transform:
-                highlightedPosition &&
-                `translate(calc(${highlightedPosition.x - 12}px - 100%), ${highlightedPosition.y}px)`,
-            }}
             category={category}
             item={highlightedId}
             getSrc={getImageSrc}
