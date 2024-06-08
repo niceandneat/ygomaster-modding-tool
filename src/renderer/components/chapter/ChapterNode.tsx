@@ -200,8 +200,9 @@ const NodeItemList = ({ items, title }: { items: Item[]; title: string }) => {
           ItemCategory.PROFILE_TAG,
         ].includes(item.category);
 
-        const name =
-          ygoItemsMap.get(item.category)?.get(item.id)?.name ?? item.id;
+        const name = String(
+          ygoItemsMap.get(item.category)?.get(item.id)?.name ?? item.id,
+        );
 
         return (
           <div key={index} className={classes.listItem}>

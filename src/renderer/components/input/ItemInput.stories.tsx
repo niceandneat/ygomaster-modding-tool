@@ -23,7 +23,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Base: Story = {
   args: {
-    value: { category: ItemCategory.CONSUME, id: '1', counts: 100 },
+    value: { category: ItemCategory.CONSUME, id: 1, counts: 100 },
   },
   render: function Render(args) {
     const [{ onChange }, updateArgs] = useArgs<typeof args>();

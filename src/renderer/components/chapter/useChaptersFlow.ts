@@ -21,37 +21,16 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { Chapter, DuelChapter, Gate, GateChapter } from '../../../common/type';
+import {
+  Chapter,
+  Gate,
+  defaultDuelChapter,
+  defaultGateChapter,
+} from '../../../common/type';
 
 type LayoutDirection = 'LR' | 'TB';
 export type NodeType = Node<Chapter, 'chapter'>;
 export type EdgeType = Edge<Chapter>;
-
-const defaultDuelChapter: DuelChapter = {
-  id: 0,
-  parent_id: 0,
-  description: '',
-  type: 'Duel',
-  cpu_deck: '',
-  rental_deck: '',
-  mydeck_reward: [],
-  rental_reward: [],
-  cpu_hand: 5,
-  player_hand: 5,
-  cpu_life: 8000,
-  player_life: 8000,
-  cpu_name: 'CPU',
-  cpu_flag: 'None',
-  cpu_value: 98,
-};
-
-const defaultGateChapter: GateChapter = {
-  id: 0,
-  parent_id: 0,
-  description: '',
-  type: 'Gate',
-  unlock: [],
-};
 
 const DATA_CHANGES = ['remove', 'add', 'replace'];
 

@@ -1,12 +1,12 @@
 export interface Gate {
-  id: number; // 솔로 게이트 id
-  parent_id: number; // 부모 솔로게이트 그룹 id (솔로게이트간 선행관계가 아님)
+  id: number; // Solo gate id
+  parent_id: number; // Parent solo gate group id (not the order of gates)
   name: string;
   description: string;
-  illust_id: number; // 일러스트 카드 konami_id
-  illust_x: number; // 일러스트 x offset
-  illust_y: number; // 일러스트 y offset
-  priority: number; // 노출 우선순위
+  illust_id: number; // konami_id of a card for main image
+  illust_x: number; // x offset of image above
+  illust_y: number; // y offset of image above
+  priority: number; // List order priority
   clear_chapter: ChapterReference;
   chapters: Chapter[];
   unlock: ChapterUnlock[];
@@ -24,35 +24,48 @@ export type Chapter = DuelChapter | GateChapter;
 export type ChapterType = 'Duel' | 'Gate';
 
 export type BaseChapter = {
-  id: number; // 솔로 id
-  parent_id: number; // 0 이면 시작 솔로 / 0 이외이면 완료해야할 솔로 id
-  description: string; // 솔로 description
+  id: number; // Solo id
+  parent_id: number; // 0: this solo is the first one / other than 0: solo that needs to clear before this one
+  description: string; // Solo description
 };
 
 export type GateChapter = BaseChapter & {
   type: 'Gate';
-  unlock: ItemUnlock[]; // 이 필드가 존재할경우 듀얼하는 솔로가 아니며 아래 아이템을 필요로 함.
+  unlock: ItemUnlock[]; // Items to unlock
 };
 
 export type DuelChapter = BaseChapter & {
   type: 'Duel';
-  cpu_deck: string; // 상대방 덱. /data/solo 내의 모든 폴더에서 이름이 일치하는 덱을 찾기
-  rental_deck?: string; // 렌탈 덱, 이 키값이 존재하지 않는 경우 렌탈덱 듀얼이 불가
+  cpu_deck: string; // Opponent deck. Search every deck files in /data/solo directory recursively
+  rental_deck?: string; // Needs to be set to enable rental deck match
   mydeck_reward: Reward[];
   rental_reward?: Reward[];
-  cpu_hand: number; // 시작시 상대 손패 매수
-  player_hand: number; // 시작시 플레이어 손패 매수
-  cpu_life: number; // 시작시 상대 라이프 포인트
-  player_life: number; // 시작시 플레이어 라이프 포인트
-  cpu_name: string; // 상대방 이름
-  cpu_flag: string; // cpuflag (ai 관련)
-  cpu_value: number; // cpu의 성능. 100보다 98,97 이 더 뛰어나다는 커뮤니티 의견이 있다.
-  // TODO 장식 요소 추가
+  cpu_name: string; // Opponent name
+  cpu_flag: string; // cpuflag (ai relative)
+  cpu_value: number; // cpu performance
+  player_hand: number; // Player start hand size
+  cpu_hand: number; // Opponent start hand size
+  player_life: number; // Player start life points
+  cpu_life: number; // Opponent start life points
+  player_mat: number;
+  cpu_mat: number;
+  player_sleeve: number;
+  cpu_sleeve: number;
+  player_icon: number;
+  cpu_icon: number;
+  player_icon_frame: number;
+  cpu_icon_frame: number;
+  player_avatar: number;
+  cpu_avatar: number;
+  player_avatar_home: number;
+  cpu_avatar_home: number;
+  player_duel_object: number;
+  cpu_duel_object: number;
 };
 
 export interface Item<T extends ItemCategory = ItemCategory> {
   category: T;
-  id: string;
+  id: number;
   counts: number;
 }
 
@@ -133,6 +146,46 @@ export const chapterUnlockTypes: ChapterUnlock['type'][] =
   unlockTypes.filter(isChapterUnlockType);
 export const itemUnlockTypes: ItemUnlock['type'][] =
   unlockTypes.filter(isItemUnlockType);
+
+export const defaultDuelChapter: DuelChapter = {
+  id: 0,
+  parent_id: 0,
+  description: '',
+  type: 'Duel',
+  cpu_deck: '',
+  rental_deck: '',
+  mydeck_reward: [],
+  rental_reward: [],
+  cpu_name: 'CPU',
+  cpu_flag: 'None',
+  cpu_value: 98,
+  player_hand: 5,
+  cpu_hand: 5,
+  player_life: 8000,
+  cpu_life: 8000,
+  player_mat: 0,
+  cpu_mat: 0,
+  player_sleeve: 0,
+  cpu_sleeve: 0,
+  player_icon: 0,
+  cpu_icon: 0,
+  player_icon_frame: 0,
+  cpu_icon_frame: 0,
+  player_avatar: 0,
+  cpu_avatar: 0,
+  player_avatar_home: 0,
+  cpu_avatar_home: 0,
+  player_duel_object: 0,
+  cpu_duel_object: 0,
+};
+
+export const defaultGateChapter: GateChapter = {
+  id: 0,
+  parent_id: 0,
+  description: '',
+  type: 'Gate',
+  unlock: [],
+};
 
 /**
  * DTO

@@ -67,6 +67,14 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     rowGap: tokens.spacingVerticalL,
   },
+  split: {
+    display: 'flex',
+    alignItems: 'center',
+    columnGap: tokens.spacingHorizontalM,
+    '& > *': {
+      flexGrow: '1',
+    },
+  },
   title: {
     marginBottom: tokens.spacingVerticalL,
   },
@@ -123,13 +131,27 @@ const extractOnlyRelevantFields = (chapter: Chapter): Chapter => {
     rental_deck: chapter.rental_deck,
     mydeck_reward: chapter.mydeck_reward,
     rental_reward: chapter.rental_reward,
-    cpu_hand: chapter.cpu_hand,
-    player_hand: chapter.player_hand,
-    cpu_life: chapter.cpu_life,
-    player_life: chapter.player_life,
     cpu_name: chapter.cpu_name,
     cpu_flag: chapter.cpu_flag,
     cpu_value: chapter.cpu_value,
+    player_hand: chapter.player_hand,
+    cpu_hand: chapter.cpu_hand,
+    player_life: chapter.player_life,
+    cpu_life: chapter.cpu_life,
+    player_mat: chapter.player_mat,
+    cpu_mat: chapter.cpu_mat,
+    player_sleeve: chapter.player_sleeve,
+    cpu_sleeve: chapter.cpu_sleeve,
+    player_icon: chapter.player_icon,
+    cpu_icon: chapter.cpu_icon,
+    player_icon_frame: chapter.player_icon_frame,
+    cpu_icon_frame: chapter.cpu_icon_frame,
+    player_avatar: chapter.player_avatar,
+    cpu_avatar: chapter.cpu_avatar,
+    player_avatar_home: chapter.player_avatar_home,
+    cpu_avatar_home: chapter.cpu_avatar_home,
+    player_duel_object: chapter.player_duel_object,
+    cpu_duel_object: chapter.cpu_duel_object,
   } satisfies DuelChapter;
 };
 
@@ -197,9 +219,11 @@ export const GateDetailView = ({
           <GateChapterListInput gates={gates} loadChapters={loadChapters} />
           <ChaptersInput />
           <GateTotalRewardsAndUnlocks />
-          <PlainInput<Gate> name="illust_id" number />
-          <PlainInput<Gate> name="illust_x" number />
-          <PlainInput<Gate> name="illust_y" number />
+          <div className={classes.split}>
+            <PlainInput<Gate> name="illust_id" number />
+            <PlainInput<Gate> name="illust_x" number />
+            <PlainInput<Gate> name="illust_y" number />
+          </div>
         </div>
       </form>
     </FormProvider>

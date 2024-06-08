@@ -47,7 +47,7 @@ const getTotalItems = (items: Item[]) => {
 
   return results.sort((a, b) => {
     if (a.category !== b.category) return a.category - b.category;
-    if (a.id !== b.id) return a.id.localeCompare(b.id);
+    if (a.id !== b.id) return a.id - b.id;
     return 0;
   });
 };
@@ -78,7 +78,7 @@ const GateTotalItems = ({ items }: GateTotalItemsProps) => {
   return (
     <div className={classes.container}>
       {items.map(({ category, id, counts }, index) => {
-        const name = ygoItemsMap.get(category)?.get(id)?.name ?? id;
+        const name = String(ygoItemsMap.get(category)?.get(id)?.name ?? id);
         return (
           <Tooltip key={index} content={name} relationship="description">
             <Tag

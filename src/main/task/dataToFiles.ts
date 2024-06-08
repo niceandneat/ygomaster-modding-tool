@@ -320,7 +320,7 @@ const createItemUnlock = (data: {
           unlocks.push({
             type: unlockType,
             category: itemCategory,
-            id: itemId,
+            id: Number(itemId),
             counts,
           } satisfies ItemUnlock),
         );
@@ -373,14 +373,27 @@ const createDuelChapter = (data: {
     rental_deck: rentalDeckName && `${rentalDeckName}.json`,
     mydeck_reward: myDeckReward,
     rental_reward: rentalDeckReward,
-    cpu_hand: duelData.hnum?.[1] ?? 5,
-    player_hand: duelData.hnum?.[0] ?? 5,
-    cpu_life: duelData.life?.[1] ?? 8000,
-    player_life: duelData.life?.[0] ?? 8000,
     cpu_name: duelData.name[1],
     cpu_flag: duelData.cpuflag ?? 'None',
     cpu_value: duelData.cpu ?? 98,
-    // TODO accessories
+    player_hand: duelData.hnum?.[0] ?? 5,
+    cpu_hand: duelData.hnum?.[1] ?? 5,
+    player_life: duelData.life?.[0] ?? 8000,
+    cpu_life: duelData.life?.[1] ?? 8000,
+    player_mat: duelData.mat[0],
+    cpu_mat: duelData.mat[1],
+    player_sleeve: duelData.sleeve[0],
+    cpu_sleeve: duelData.sleeve[1],
+    player_icon: duelData.icon[0],
+    cpu_icon: duelData.icon[1],
+    player_icon_frame: duelData.icon_frame[0],
+    cpu_icon_frame: duelData.icon_frame[1],
+    player_avatar: duelData.avatar[0],
+    cpu_avatar: duelData.avatar[1],
+    player_avatar_home: duelData.avatar_home[0],
+    cpu_avatar_home: duelData.avatar_home[1],
+    player_duel_object: duelData.duel_object[0],
+    cpu_duel_object: duelData.duel_object[1],
   };
 
   return { chapter, decks };
@@ -419,7 +432,7 @@ const createReward = (gateData: GateData, rewardId: number): Reward[] => {
     return Object.entries(idCountsMap).map(([id, counts]) => {
       return {
         category: Number(category) as ItemCategory,
-        id,
+        id: Number(id),
         counts,
       } satisfies Reward;
     });

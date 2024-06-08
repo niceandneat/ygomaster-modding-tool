@@ -1,19 +1,12 @@
-import {
-  Field,
-  Input,
-  Portal,
-  Text,
-  makeStyles,
-  tokens,
-} from '@fluentui/react-components';
+import { Field, Input, makeStyles, tokens } from '@fluentui/react-components';
 import { IFuseOptions } from 'fuse.js';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { Item, ItemCategory, itemCategories } from '../../../common/type';
-import { ygoItems, ygoItemsMap } from '../../data';
+import { ygoItems } from '../../data';
 import { handleNumberInput } from '../../utils/handleNumberInput';
-import { AssetImage } from '../common/AssetImage';
 import { ComboboxInput } from './ComboboxInput';
+import { ItemIdInput } from './ItemIdInput';
 
 const useStyles = makeStyles({
   container: {
@@ -59,17 +52,12 @@ interface CategoryOption<T extends ItemCategory> {
   name: string;
 }
 
-interface IdOption {
-  id: string;
-  name: string;
-}
-
 interface ItemInputProps<T extends ItemCategory> {
   value: Item<T>;
   categories?: T[];
   onChange: (item: Item<T>) => void;
-  getThumbnailSrc?: (category: string, id: string) => string;
-  getImageSrc?: (category: string, id: string) => string;
+  getThumbnailSrc?: (category: string, id: number) => string;
+  getImageSrc?: (category: string, id: number) => string;
 }
 
 const defaultCategories = itemCategories.filter((c) => c !== ItemCategory.NONE);
@@ -77,8 +65,8 @@ const categoryDefaultIdMap = {
   ...Object.fromEntries(
     [...ygoItems.entries()].map(([category, [{ id }]]) => [category, id]),
   ),
-  [ItemCategory.CARD]: '4007', // Blue-Eyes White Dragon
-} as Record<ItemCategory, string>;
+  [ItemCategory.CARD]: 4007, // Blue-Eyes White Dragon
+} as Record<ItemCategory, number>;
 
 const categoryOptionToString = (option?: CategoryOption<ItemCategory>) =>
   option?.name ?? '';
@@ -90,13 +78,6 @@ const categoryFuseOptions: IFuseOptions<CategoryOption<ItemCategory>> = {
   keys: ['name'],
 };
 
-const idOptionToString = (option?: IdOption) => option?.name ?? '';
-const idCompareValues = (a?: IdOption, b?: IdOption) =>
-  Boolean(a && b && a.id === b.id);
-const idFuseOptions: IFuseOptions<IdOption> = {
-  keys: ['name'],
-};
-
 export const ItemInput = <T extends ItemCategory>({
   value,
   categories = defaultCategories as T[],
@@ -105,12 +86,6 @@ export const ItemInput = <T extends ItemCategory>({
   getImageSrc,
 }: ItemInputProps<T>) => {
   const classes = useStyles();
-
-  const [highlightedId, setHighlightedId] = useState<string>();
-  const [highlightedPosition, setHighlightedPosition] = useState<{
-    x: number;
-    y: number;
-  }>();
 
   const valueRef = useRef<Item<T>>(value);
   valueRef.current = value;
@@ -127,8 +102,8 @@ export const ItemInput = <T extends ItemCategory>({
     [onChange],
   );
 
-  const handleIdOptionChange = useCallback(
-    ({ id }: IdOption) => {
+  const handleIdChange = useCallback(
+    (id: number) => {
       if (valueRef.current.id === id) return;
       onChange({ ...valueRef.current, id });
     },
@@ -141,22 +116,6 @@ export const ItemInput = <T extends ItemCategory>({
         onChange({ ...valueRef.current, counts }),
       ),
     [onChange],
-  );
-
-  const handleHighlightChange = useCallback(
-    (change?: { value: IdOption; node: HTMLDivElement }) => {
-      if (!change) {
-        setHighlightedId(undefined);
-        setHighlightedPosition(undefined);
-        return;
-      }
-
-      const { x, y } = change.node.getBoundingClientRect();
-
-      setHighlightedId(change.value.id);
-      setHighlightedPosition({ x, y });
-    },
-    [],
   );
 
   const categoryValue = useMemo<CategoryOption<T>>(
@@ -177,30 +136,6 @@ export const ItemInput = <T extends ItemCategory>({
     [categories],
   );
 
-  const idValue = useMemo<IdOption>(
-    () => ({
-      id: value.id,
-      name: ygoItemsMap.get(value.category)?.get(value.id)?.name ?? '',
-    }),
-    [value.category, value.id],
-  );
-
-  const idOptions = useMemo<IdOption[]>(
-    () => ygoItems.get(value.category) ?? [],
-    [value.category],
-  );
-
-  const shouldShowImage = useMemo(
-    () =>
-      ![
-        ItemCategory.NONE,
-        ItemCategory.PROFILE_TAG,
-        ItemCategory.STRUCTURE,
-        ItemCategory.CARD,
-      ].includes(categoryValue.category),
-    [categoryValue.category],
-  );
-
   return (
     <div className={classes.container}>
       <div className={classes.categoryInput}>
@@ -217,59 +152,14 @@ export const ItemInput = <T extends ItemCategory>({
         </ComboboxInput>
       </div>
       <div className={classes.idInput}>
-        <ComboboxInput
+        <ItemIdInput
           label="id"
-          value={idValue}
-          options={idOptions}
-          fuseOptions={idFuseOptions}
-          onChange={handleIdOptionChange}
-          onChangeHighlight={
-            shouldShowImage ? handleHighlightChange : undefined
-          }
-          valueToString={idOptionToString}
-          compareValues={idCompareValues}
-          icon={
-            shouldShowImage && (
-              <AssetImage
-                thumbnail
-                className={classes.inputIcon}
-                category={categoryValue.category}
-                item={value.id}
-                getSrc={getThumbnailSrc}
-              />
-            )
-          }
-        >
-          {({ value }) => (
-            <div className={classes.menuitem}>
-              <Text>{value.name}</Text>
-              {shouldShowImage && (
-                <AssetImage
-                  thumbnail
-                  className={classes.menuitemThumbnail}
-                  category={categoryValue.category}
-                  item={value.id}
-                  getSrc={getThumbnailSrc}
-                />
-              )}
-            </div>
-          )}
-        </ComboboxInput>
-        {highlightedId && (
-          <Portal mountNode={{ className: classes.menuitemPortal }}>
-            <AssetImage
-              className={classes.menuitemImage}
-              style={{
-                transform:
-                  highlightedPosition &&
-                  `translate(calc(${highlightedPosition.x - 12}px - 100%), ${highlightedPosition.y}px)`,
-              }}
-              category={categoryValue.category}
-              item={highlightedId}
-              getSrc={getImageSrc}
-            />
-          </Portal>
-        )}
+          category={value.category}
+          value={value.id}
+          onChange={handleIdChange}
+          getImageSrc={getImageSrc}
+          getThumbnailSrc={getThumbnailSrc}
+        />
       </div>
       <Field label="counts">
         <Input

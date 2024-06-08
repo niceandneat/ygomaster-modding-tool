@@ -9,8 +9,12 @@ import {
   makeStyles,
   tokens,
 } from '@fluentui/react-components';
-import { Add16Regular, Subtract16Regular } from '@fluentui/react-icons';
-import { useEffect } from 'react';
+import {
+  Add16Regular,
+  ArrowShuffle16Regular,
+  Subtract16Regular,
+} from '@fluentui/react-icons';
+import { useCallback, useEffect } from 'react';
 import {
   Controller,
   FieldArrayPath,
@@ -26,39 +30,16 @@ import {
   Chapter,
   ChapterType,
   DuelChapter,
-  GateChapter,
   ItemCategory,
+  defaultDuelChapter,
+  defaultGateChapter,
 } from '../../../common/type';
+import { ygoItems } from '../../data';
 import { debounce } from '../../utils/debounce';
 import { FileInput } from '../input/FileInput';
+import { ItemIdInput } from '../input/ItemIdInput';
 import { ItemInput } from '../input/ItemInput';
 import { PlainInput } from '../input/PlainInput';
-
-const defaultDuelChapter: Partial<DuelChapter> = {
-  id: 0,
-  parent_id: 0,
-  description: '',
-  type: 'Duel',
-  cpu_deck: '',
-  rental_deck: '',
-  mydeck_reward: [],
-  rental_reward: [],
-  cpu_hand: 5,
-  player_hand: 5,
-  cpu_life: 8000,
-  player_life: 8000,
-  cpu_name: 'CPU',
-  cpu_flag: 'None',
-  cpu_value: 98,
-};
-
-const defaultGateChapter: Partial<GateChapter> = {
-  id: 0,
-  parent_id: 0,
-  description: '',
-  type: 'Gate',
-  unlock: [],
-};
 
 const useStyles = makeStyles({
   header: {
@@ -98,6 +79,9 @@ const useItemListStyle = makeStyles({
   },
 });
 
+const getRandomItem = (items?: { id: number }[]) =>
+  items ? Number(items[Math.floor(items.length * Math.random())].id) : 0;
+
 interface ChapterDetailViewProps {
   chapter?: Chapter;
   deckPath?: string;
@@ -115,6 +99,34 @@ export const ChapterDetailView = ({
     defaultValues: { ...defaultGateChapter, ...defaultDuelChapter, ...chapter },
   });
   const { watch, control, trigger, setValue } = methods;
+
+  const randomizeAccessories = useCallback(() => {
+    const field = getRandomItem(ygoItems.get(ItemCategory.FIELD));
+
+    setValue('player_mat', field);
+    setValue('cpu_mat', field);
+    setValue('player_duel_object', field + 10000);
+    setValue('cpu_duel_object', field + 10000);
+    setValue('player_avatar_home', field + 20000);
+    setValue('cpu_avatar_home', field + 20000);
+    setValue(
+      'player_sleeve',
+      getRandomItem(ygoItems.get(ItemCategory.PROTECTOR)),
+    );
+    setValue('cpu_sleeve', getRandomItem(ygoItems.get(ItemCategory.PROTECTOR)));
+    setValue('player_icon', getRandomItem(ygoItems.get(ItemCategory.ICON)));
+    setValue('cpu_icon', getRandomItem(ygoItems.get(ItemCategory.ICON)));
+    setValue(
+      'player_icon_frame',
+      getRandomItem(ygoItems.get(ItemCategory.ICON_FRAME)),
+    );
+    setValue(
+      'cpu_icon_frame',
+      getRandomItem(ygoItems.get(ItemCategory.ICON_FRAME)),
+    );
+    setValue('player_avatar', getRandomItem(ygoItems.get(ItemCategory.AVATAR)));
+    setValue('cpu_avatar', getRandomItem(ygoItems.get(ItemCategory.AVATAR)));
+  }, [setValue]);
 
   useEffect(() => {
     if (!onChange) return;
@@ -169,17 +181,83 @@ export const ChapterDetailView = ({
             <FileNameInput name="rental_deck" path={deckPath} optional />
             <MydeckRewardInput />
             <RentalRewardInput />
-            <div className={classes.split}>
-              <PlainInput<Chapter> name="cpu_hand" number />
-              <PlainInput<Chapter> name="player_hand" number />
-            </div>
-            <div className={classes.split}>
-              <PlainInput<Chapter> name="cpu_life" number />
-              <PlainInput<Chapter> name="player_life" number />
-            </div>
-            <PlainInput<Chapter> name="cpu_flag" />
             <PlainInput<Chapter> name="cpu_name" />
-            <PlainInput<Chapter> name="cpu_value" number />
+            <div className={classes.split}>
+              <PlainInput<Chapter> name="cpu_flag" />
+              <PlainInput<Chapter> name="cpu_value" number />
+            </div>
+            <div className={classes.split}>
+              <PlainInput<Chapter> name="player_hand" number />
+              <PlainInput<Chapter> name="cpu_hand" number />
+            </div>
+            <div className={classes.split}>
+              <PlainInput<Chapter> name="player_life" number />
+              <PlainInput<Chapter> name="cpu_life" number />
+            </div>
+            <div className={classes.split}>
+              <AccessoryInput name="player_mat" category={ItemCategory.FIELD} />
+              <AccessoryInput name="cpu_mat" category={ItemCategory.FIELD} />
+            </div>
+            <div className={classes.split}>
+              <AccessoryInput
+                name="player_sleeve"
+                category={ItemCategory.PROTECTOR}
+              />
+              <AccessoryInput
+                name="cpu_sleeve"
+                category={ItemCategory.PROTECTOR}
+              />
+            </div>
+            <div className={classes.split}>
+              <AccessoryInput name="player_icon" category={ItemCategory.ICON} />
+              <AccessoryInput name="cpu_icon" category={ItemCategory.ICON} />
+            </div>
+            <div className={classes.split}>
+              <AccessoryInput
+                name="player_icon_frame"
+                category={ItemCategory.ICON_FRAME}
+              />
+              <AccessoryInput
+                name="cpu_icon_frame"
+                category={ItemCategory.ICON_FRAME}
+              />
+            </div>
+            <div className={classes.split}>
+              <AccessoryInput
+                name="player_avatar"
+                category={ItemCategory.AVATAR}
+              />
+              <AccessoryInput
+                name="cpu_avatar"
+                category={ItemCategory.AVATAR}
+              />
+            </div>
+            <div className={classes.split}>
+              <AccessoryInput
+                name="player_avatar_home"
+                category={ItemCategory.AVATAR_HOME}
+              />
+              <AccessoryInput
+                name="cpu_avatar_home"
+                category={ItemCategory.AVATAR_HOME}
+              />
+            </div>
+            <div className={classes.split}>
+              <AccessoryInput
+                name="player_duel_object"
+                category={ItemCategory.FIELD_OBJ}
+              />
+              <AccessoryInput
+                name="cpu_duel_object"
+                category={ItemCategory.FIELD_OBJ}
+              />
+            </div>
+            <Button
+              icon={<ArrowShuffle16Regular />}
+              onClick={randomizeAccessories}
+            >
+              Randomize accessories
+            </Button>
           </>
         )}
         {type === 'Gate' && <UnlockInput />}
@@ -270,7 +348,7 @@ const ItemListInput = ({ name, categories, disabled }: ItemInputProps) => {
         icon={<Add16Regular />}
         disabled={disabled}
         onClick={() =>
-          append({ category: ItemCategory.CONSUME, id: '1', counts: 100 })
+          append({ category: ItemCategory.CONSUME, id: 1, counts: 100 })
         }
       >
         Add Item
@@ -294,4 +372,45 @@ const unlockCategories = [ItemCategory.CONSUME];
 
 const UnlockInput = () => {
   return <ItemListInput name="unlock" categories={unlockCategories} />;
+};
+
+interface AccessoryInputProps {
+  name:
+    | 'player_mat'
+    | 'cpu_mat'
+    | 'player_sleeve'
+    | 'cpu_sleeve'
+    | 'player_icon'
+    | 'cpu_icon'
+    | 'player_icon_frame'
+    | 'cpu_icon_frame'
+    | 'player_avatar'
+    | 'cpu_avatar'
+    | 'player_avatar_home'
+    | 'cpu_avatar_home'
+    | 'player_duel_object'
+    | 'cpu_duel_object';
+  category: ItemCategory;
+}
+
+const AccessoryInput = ({ name, category }: AccessoryInputProps) => {
+  const { control } = useFormContext<DuelChapter>();
+
+  const label = name.replaceAll('_', ' ');
+
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <ItemIdInput
+          required
+          label={label}
+          category={category}
+          value={field.value}
+          onChange={field.onChange}
+        />
+      )}
+    />
+  );
 };

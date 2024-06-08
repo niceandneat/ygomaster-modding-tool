@@ -3,7 +3,7 @@ import { ReactEventHandler, forwardRef } from 'react';
 
 import { ItemCategory } from '../../../common/type';
 
-type GetSrc = (category: string, item: string) => string;
+type GetSrc = (category: string, item: number) => string;
 
 const getThumbnailSrc: GetSrc = (category, item) =>
   `static://item-thumbnails/${category}/${item}.webp`;
@@ -18,14 +18,14 @@ const handleImageError: ReactEventHandler<HTMLImageElement> = (e) => {
 
 const getValidItemInfo = (
   category: ItemCategory,
-  item: string,
-): { category: ItemCategory; item: string } => {
+  item: number,
+): { category: ItemCategory; item: number } => {
   if (category === ItemCategory.CARD) {
-    return { category: ItemCategory.PROTECTOR, item: '1070001' };
+    return { category: ItemCategory.PROTECTOR, item: 1070001 };
   }
 
   if (category === ItemCategory.STRUCTURE) {
-    return { category: ItemCategory.DECK_CASE, item: '1080001' };
+    return { category: ItemCategory.DECK_CASE, item: 1080001 };
   }
 
   return { category, item };
@@ -33,7 +33,7 @@ const getValidItemInfo = (
 
 interface AssetImageProps extends ImageProps {
   category: ItemCategory;
-  item: string;
+  item: number;
   getSrc?: GetSrc;
   thumbnail?: boolean;
 }
