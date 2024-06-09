@@ -13,11 +13,10 @@ import {
   Subtract16Regular,
 } from '@fluentui/react-icons';
 import { IFuseOptions } from 'fuse.js';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Controller,
   FormProvider,
-  SubmitHandler,
   useFieldArray,
   useForm,
   useFormContext,
@@ -161,7 +160,7 @@ interface GateDetailViewProps {
   gate?: Gate;
   gates: GateSummary[];
   loadChapters: (gateId: number) => Promise<{ id: number; name: string }[]>;
-  onSubmit: SubmitHandler<Gate>;
+  onSubmit: (settings: Gate) => Promise<boolean>;
 }
 
 export const GateDetailView = ({
@@ -172,7 +171,8 @@ export const GateDetailView = ({
   onSubmit,
 }: GateDetailViewProps) => {
   const classes = useStyles();
-  const defaultValues = useMemo(() => {
+
+  const defaultValuesForCreation = useMemo(() => {
     const id = Math.max(...gates.map(({ id }) => id), 0) + 1;
     const priority = Math.max(...gates.map(({ priority }) => priority), 0) + 1;
     const clear_chapter = { gateId: id, chapterId: 0 };
@@ -180,14 +180,11 @@ export const GateDetailView = ({
     return { ...defaultGate, id, priority, clear_chapter };
   }, [gates]);
   const methods = useForm<Gate>({
-    defaultValues: {
-      ...defaultValues,
-      id: Math.max(...gates.map(({ id }) => id), 0) + 1,
-      ...gate,
-    },
+    defaultValues: { ...defaultValuesForCreation, ...gate },
   });
-  const { handleSubmit, reset, formState } = methods;
+  const { handleSubmit, reset, getValues, formState } = methods;
 
+  const [succeed, setSucceed] = useState(false);
   useWarnNavigation(formState.isDirty);
 
   const handleGateSubmit = useCallback(
@@ -196,10 +193,20 @@ export const GateDetailView = ({
         ...gate,
         chapters: gate.chapters.map(extractOnlyRelevantFields),
       });
-      if (succeed) reset({ ...defaultGate, ...gate });
+      setSucceed(succeed);
     },
-    [onSubmit, reset],
+    [onSubmit],
   );
+
+  // https://react-hook-form.com/docs/useform/reset
+  // Avoid calling reset before useForm's useEffect is invoked,
+  // this is because useForm's subscription needs to be ready before reset can send a signal to flush form state update.
+  useEffect(() => {
+    if (!succeed) return;
+
+    reset({ ...defaultGate, ...getValues() });
+    setSucceed(false);
+  }, [getValues, reset, succeed]);
 
   return (
     <FormProvider {...methods}>

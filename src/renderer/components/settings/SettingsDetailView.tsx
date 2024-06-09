@@ -6,12 +6,11 @@ import {
   tokens,
 } from '@fluentui/react-components';
 import { OpenRegular, SaveRegular } from '@fluentui/react-icons';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Controller,
   FormProvider,
   Path,
-  SubmitHandler,
   useForm,
   useFormContext,
 } from 'react-hook-form';
@@ -51,7 +50,7 @@ const useStyles = makeStyles({
 
 interface SettingsDetailViewProps {
   settings?: Settings;
-  onSubmit: SubmitHandler<Settings>;
+  onSubmit: (settings: Settings) => Promise<boolean>;
   onClickOpenSettingsFile: () => void;
   onClickOpenLogFile: () => void;
 }
@@ -66,17 +65,25 @@ export const SettingsDetailView = ({
   const methods = useForm<Settings>({
     defaultValues: { ...defaultSettings, ...settings },
   });
-  const { handleSubmit, reset, formState } = methods;
+  const { handleSubmit, reset, getValues, formState } = methods;
 
+  const [succeed, setSucceed] = useState(false);
   useWarnNavigation(formState.isDirty);
 
   const handleSettingsSubmit = useCallback(
-    async (settings: Settings) => {
-      const succeed = await onSubmit(settings);
-      if (succeed) reset({ ...defaultSettings, ...settings });
-    },
-    [onSubmit, reset],
+    async (settings: Settings) => setSucceed(await onSubmit(settings)),
+    [onSubmit],
   );
+
+  // https://react-hook-form.com/docs/useform/reset
+  // Avoid calling reset before useForm's useEffect is invoked,
+  // this is because useForm's subscription needs to be ready before reset can send a signal to flush form state update.
+  useEffect(() => {
+    if (!succeed) return;
+
+    reset({ ...defaultSettings, ...getValues() });
+    setSucceed(false);
+  }, [getValues, reset, succeed]);
 
   return (
     <div className={classes.container}>

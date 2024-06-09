@@ -1,5 +1,6 @@
 import { Toaster, makeStyles, tokens } from '@fluentui/react-components';
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Gate, GateSummary } from '../../../common/type';
 import { useToast } from '../../hooks/useToast';
@@ -19,6 +20,7 @@ export const GateCreate = () => {
   const classes = useStyles();
   const { gatePath } = useAppStore((s) => s.settings);
   const loadGates = useAppStore((s) => s.loadGates);
+  const navigate = useNavigate();
   const { toasterId, withToast } = useToast('Success Save', 'Fail Save');
 
   const [gates, setGates] = useState<GateSummary[]>();
@@ -32,9 +34,11 @@ export const GateCreate = () => {
         });
 
         if (!filePath) return true; // skip toast
-        return await loadGates();
+
+        // Exit page after useWarnNavigation check passed
+        loadGates().then(() => navigate('/gates'));
       }),
-    [withToast, loadGates, gatePath],
+    [withToast, gatePath, loadGates, navigate],
   );
 
   const handleLoadChapters = useCallback(

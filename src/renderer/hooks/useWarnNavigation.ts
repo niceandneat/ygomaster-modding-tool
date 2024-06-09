@@ -1,18 +1,21 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { BlockerFunction, useBlocker } from 'react-router-dom';
 
 export const useWarnNavigation = (shouldBlock: boolean) => {
-  const handleBlock = useCallback<BlockerFunction>(
-    ({ currentLocation, nextLocation }) => {
-      return currentLocation.pathname !== nextLocation.pathname && shouldBlock;
-    },
+  const handleBlock = useMemo<boolean | BlockerFunction>(
+    () =>
+      shouldBlock &&
+      (({ currentLocation, nextLocation }) =>
+        currentLocation.pathname !== nextLocation.pathname),
     [shouldBlock],
   );
 
   const blocker = useBlocker(handleBlock);
 
   useEffect(() => {
-    if (blocker.state !== 'blocked') return;
+    if (!shouldBlock || blocker.state !== 'blocked') {
+      return blocker.proceed?.();
+    }
 
     const run = async () => {
       const response = await window.electron.showMessageBox({
@@ -24,13 +27,16 @@ export const useWarnNavigation = (shouldBlock: boolean) => {
 
       if (response === 0) {
         blocker.proceed();
+      } else {
+        blocker.reset();
       }
     };
 
     run();
-  }, [blocker]);
+  }, [blocker, shouldBlock]);
 
   useEffect(() => {
+    console.log('shouldBlock effect', shouldBlock);
     if (!shouldBlock) return;
 
     const handler = (event: BeforeUnloadEvent) => {

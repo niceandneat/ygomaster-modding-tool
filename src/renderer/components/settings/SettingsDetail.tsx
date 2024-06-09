@@ -21,12 +21,13 @@ export const SettingsDetail = () => {
   const { toasterId, withToast } = useToast('Success Save', 'Fail Save');
 
   const handleSubmit = useCallback(
-    async (settings: Settings) => {
-      setSettings(settings);
-      await withToast(() => window.electron.saveSettings(settings));
-      // TODO needs global loading(status) indicator?
-      await loadGates();
-    },
+    (settings: Settings) =>
+      withToast(async () => {
+        setSettings(settings);
+        await window.electron.saveSettings(settings);
+        // TODO needs global loading(status) indicator?
+        await loadGates();
+      }),
     [loadGates, setSettings, withToast],
   );
 
