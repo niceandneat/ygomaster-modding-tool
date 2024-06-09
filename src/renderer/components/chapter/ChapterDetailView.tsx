@@ -185,15 +185,15 @@ export const ChapterDetailView = ({
             <PlainInput<Chapter> name="cpu_name" />
             <div className={classes.split}>
               <PlainInput<Chapter> name="cpu_flag" />
-              <PlainInput<Chapter> name="cpu_value" number />
+              <PlainInput<Chapter> name="cpu_value" number integer />
             </div>
             <div className={classes.split}>
-              <PlainInput<Chapter> name="player_hand" number />
-              <PlainInput<Chapter> name="cpu_hand" number />
+              <PlainInput<Chapter> name="player_hand" number integer />
+              <PlainInput<Chapter> name="cpu_hand" number integer />
             </div>
             <div className={classes.split}>
-              <PlainInput<Chapter> name="player_life" number />
-              <PlainInput<Chapter> name="cpu_life" number />
+              <PlainInput<Chapter> name="player_life" number integer />
+              <PlainInput<Chapter> name="cpu_life" number integer />
             </div>
             <div className={classes.split}>
               <AccessoryInput name="player_mat" category={ItemCategory.FIELD} />

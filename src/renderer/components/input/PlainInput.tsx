@@ -1,5 +1,11 @@
 import { Field, Input, Textarea, makeStyles } from '@fluentui/react-components';
-import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form';
+import {
+  Controller,
+  ControllerProps,
+  FieldValues,
+  Path,
+  useFormContext,
+} from 'react-hook-form';
 
 import { handleNumberInput } from '../../utils/handleNumberInput';
 
@@ -16,7 +22,9 @@ interface PlainInputProps<T extends FieldValues> {
   label?: string;
   optional?: boolean;
   number?: boolean;
+  integer?: boolean;
   multiline?: boolean;
+  rules?: ControllerProps<T>['rules'];
 }
 
 export const PlainInput = <T extends FieldValues>({
@@ -24,7 +32,9 @@ export const PlainInput = <T extends FieldValues>({
   label: labelInput,
   optional,
   number,
+  integer,
   multiline,
+  rules,
 }: PlainInputProps<T>) => {
   const classes = useStyles();
   const { control, formState } = useFormContext<T>();
@@ -37,7 +47,13 @@ export const PlainInput = <T extends FieldValues>({
     <Controller
       control={control}
       name={name}
-      rules={{ required: !optional && 'This field is required' }}
+      rules={{
+        required: !optional && 'This field is required',
+        validate: integer
+          ? (v) => Number.isInteger(v) || 'Only integers are allowed'
+          : undefined,
+        ...rules,
+      }}
       render={({ field }) => (
         <Field
           className={classes.container}

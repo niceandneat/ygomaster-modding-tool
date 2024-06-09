@@ -194,6 +194,7 @@ const createSingleGateData = (
       unlockItemField[ids.unlockItemId] = unlockItem;
       ids.unlockId += 1;
       ids.unlockItemId += 1;
+      chapterData.npc_id = 0;
     }
 
     if (isDuelChapter(chapter)) {
@@ -207,6 +208,7 @@ const createSingleGateData = (
         chapterData.set_id = ids.rewardId;
         rewardField[ids.rewardId] = reward;
         ids.rewardId += 1;
+        chapterData.npc_id = 1;
       }
     }
 

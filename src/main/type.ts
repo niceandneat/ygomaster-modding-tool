@@ -99,7 +99,7 @@ export interface GateData {
         set_id: number;
         unlock_id: number;
         begin_sn: string; // ''
-        npc_id: number; // above 0
+        npc_id: number; // 0 for gates & rewards / above 0 for duels
       };
     };
   };

@@ -36,7 +36,6 @@ export const useWarnNavigation = (shouldBlock: boolean) => {
   }, [blocker, shouldBlock]);
 
   useEffect(() => {
-    console.log('shouldBlock effect', shouldBlock);
     if (!shouldBlock) return;
 
     const handler = (event: BeforeUnloadEvent) => {

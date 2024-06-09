@@ -173,7 +173,8 @@ export const GateDetailView = ({
   const classes = useStyles();
 
   const defaultValuesForCreation = useMemo(() => {
-    const id = Math.max(...gates.map(({ id }) => id), 0) + 1;
+    // Gate IDs should be larger than 3(or some number around it). So make IDs start with 11 to make them more manageable.
+    const id = Math.max(...gates.map(({ id }) => id), 10) + 1;
     const priority = Math.max(...gates.map(({ priority }) => priority), 0) + 1;
     const clear_chapter = { gateId: id, chapterId: 0 };
 
@@ -238,17 +239,24 @@ export const GateDetailView = ({
           </Button>
         </div>
         <div className={classes.stack}>
-          <PlainInput<Gate> name="id" number />
+          <PlainInput<Gate>
+            name="id"
+            number
+            integer
+            rules={{
+              min: { value: 11, message: 'id should be larger than 10' },
+            }}
+          />
           <ParentIdInput gates={gates} />
           <PlainInput<Gate> name="name" />
           <PlainInput<Gate> name="description" multiline />
-          <PlainInput<Gate> name="priority" number />
+          <PlainInput<Gate> name="priority" number integer />
           <ClearChapterInput gates={gates} loadChapters={loadChapters} />
           <GateChapterListInput gates={gates} loadChapters={loadChapters} />
           <ChaptersInput />
           <GateTotalRewardsAndUnlocks />
           <div className={classes.split}>
-            <PlainInput<Gate> name="illust_id" number />
+            <PlainInput<Gate> name="illust_id" number integer />
             <PlainInput<Gate> name="illust_x" number />
             <PlainInput<Gate> name="illust_y" number />
           </div>
