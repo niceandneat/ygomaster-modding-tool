@@ -41,7 +41,7 @@ import { PlainInput } from '../input/PlainInput';
 import { GateChapterInput } from './GateChapterInput';
 import { GateTotalRewardsAndUnlocks } from './GateTotalRewardsAndUnlocks';
 
-const defaultGate: Partial<Gate> = {
+const defaultGate: Gate = {
   id: 0,
   parent_id: 0,
   name: '',
@@ -182,7 +182,9 @@ export const GateDetailView = ({
   const methods = useForm<Gate>({
     defaultValues: { ...defaultValuesForCreation, ...gate },
   });
-  const { handleSubmit, reset, getValues, formState } = methods;
+  const { handleSubmit, reset, getValues, setValue, watch, formState } =
+    methods;
+  const [initialGateId] = useState(getValues('id'));
 
   const [succeed, setSucceed] = useState(false);
   useWarnNavigation(formState.isDirty);
@@ -207,6 +209,24 @@ export const GateDetailView = ({
     reset({ ...defaultGate, ...getValues() });
     setSucceed(false);
   }, [getValues, reset, succeed]);
+
+  // Reset self clear_chapter when id gets changed
+  useEffect(() => {
+    let prevId = initialGateId;
+
+    const subscription = watch((value, { name }) => {
+      if (
+        name === 'id' &&
+        value.id !== undefined &&
+        value.clear_chapter?.gateId === prevId
+      ) {
+        setValue('clear_chapter.gateId', value.id);
+        prevId = value.id;
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [initialGateId, setValue, watch]);
 
   return (
     <FormProvider {...methods}>
@@ -307,10 +327,22 @@ interface ClearChapterInputProps {
 
 const ClearChapterInput = ({ gates, loadChapters }: ClearChapterInputProps) => {
   const classes = useGateChapterListStyle();
-  const { control, formState, getValues } = useFormContext<Gate>();
+  const { control, formState } = useFormContext<Gate>();
   const chapters = useWatch<Gate, 'chapters'>({ name: 'chapters' });
+  const currentGateId = useWatch<Gate, 'id'>({ name: 'id' });
+  const [initialGateId] = useState(currentGateId);
 
-  const sameGateOptions = useMemo(
+  // Ensure current gate is one the options
+  // When creating new gate, there is no gate file. So `gates` does not have current gate as elements.
+  const gateOptions = useMemo<{ id: number; name: string }[]>(
+    () => [
+      { id: currentGateId, name: 'This gate' },
+      ...gates.filter((gate) => gate.id !== initialGateId),
+    ],
+    [currentGateId, gates, initialGateId],
+  );
+
+  const sameGateChapters = useMemo(
     () =>
       chapters
         .filter(isDuelChapter)
@@ -320,8 +352,8 @@ const ClearChapterInput = ({ gates, loadChapters }: ClearChapterInputProps) => {
   );
 
   const handleLoadSameGateChapters = useCallback(
-    async () => sameGateOptions,
-    [sameGateOptions],
+    async () => sameGateChapters,
+    [sameGateChapters],
   );
 
   const error = formState.errors.clear_chapter;
@@ -338,8 +370,8 @@ const ClearChapterInput = ({ gates, loadChapters }: ClearChapterInputProps) => {
               required: (value) =>
                 value.chapterId > 0 || 'This field is required',
               exist: (value) =>
-                value.gateId !== getValues('id') ||
-                sameGateOptions.some(({ id }) => id === value.chapterId) ||
+                value.gateId !== currentGateId ||
+                sameGateChapters.some(({ id }) => id === value.chapterId) ||
                 'This chapter is not exist',
             },
           }}
@@ -347,10 +379,10 @@ const ClearChapterInput = ({ gates, loadChapters }: ClearChapterInputProps) => {
             return (
               <GateChapterInput
                 value={field.value}
-                gates={gates}
+                gates={gateOptions}
                 validationMessage={error?.message}
                 loadChapters={
-                  field.value.gateId === getValues('id')
+                  field.value.gateId === currentGateId
                     ? handleLoadSameGateChapters
                     : loadChapters
                 }
@@ -374,13 +406,16 @@ const GateChapterListInput = ({
   loadChapters,
 }: GateChapterListInputProps) => {
   const classes = useGateChapterListStyle();
-  const { control, formState } = useFormContext<Gate>();
+  const { control, formState, getValues } = useFormContext<Gate>();
   const { fields, append, remove } = useFieldArray<Gate, 'unlock'>({
     name: 'unlock',
   });
 
-  const currentGateId = useWatch<Gate, 'id'>({ name: 'id' });
-  const externalGates = gates.filter((gate) => gate.id !== currentGateId);
+  const [initialGateId] = useState(getValues('id'));
+  const externalGates = useMemo(
+    () => gates.filter((gate) => gate.id !== initialGateId),
+    [initialGateId, gates],
+  );
 
   const error = formState.errors.unlock;
 
