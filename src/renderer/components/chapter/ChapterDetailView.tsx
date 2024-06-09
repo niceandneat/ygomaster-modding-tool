@@ -406,6 +406,7 @@ const AccessoryInput = ({ name, category }: AccessoryInputProps) => {
       render={({ field }) => (
         <ItemIdInput
           required
+          includeNone
           label={label}
           category={category}
           value={field.value}

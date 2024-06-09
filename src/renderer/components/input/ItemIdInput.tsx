@@ -37,6 +37,9 @@ interface ItemIdOption {
   name: string;
 }
 
+const getValidIdForImage = (category: ItemCategory, id: number) =>
+  id > 0 ? id : ygoItems.get(category)?.at(0)?.id ?? 0;
+
 const optionToString = (option?: ItemIdOption) => option?.name ?? '';
 const compareValues = (a?: ItemIdOption, b?: ItemIdOption) =>
   Boolean(a && b && a.id === b.id);
@@ -49,6 +52,7 @@ interface ItemIdInputProps<T extends ItemCategory> {
   value: number;
   label: string;
   required?: boolean;
+  includeNone?: boolean;
   onChange: (value: number) => void;
   getThumbnailSrc?: (category: string, id: number) => string;
   getImageSrc?: (category: string, id: number) => string;
@@ -59,6 +63,7 @@ export const ItemIdInput = <T extends ItemCategory>({
   value,
   label,
   required,
+  includeNone,
   onChange,
   getThumbnailSrc,
   getImageSrc,
@@ -95,6 +100,7 @@ export const ItemIdInput = <T extends ItemCategory>({
     const rect = highlightImageRef.current.getBoundingClientRect();
 
     const xOffset = highlightedPosition.x - 12;
+    // Prevent images from being cropped when the option position is too low
     const yOffset =
       highlightedPosition.y + rect.height > window.innerHeight - 12
         ? window.innerHeight - rect.height - 12
@@ -108,20 +114,23 @@ export const ItemIdInput = <T extends ItemCategory>({
     [onChange],
   );
 
-  const itemOptions = useMemo<ItemIdOption[]>(
-    () => ygoItems.get(category) ?? [],
-    [category],
-  );
+  const itemOptions = useMemo<ItemIdOption[]>(() => {
+    const options = ygoItems.get(category) ?? [];
+
+    if (includeNone) {
+      return [{ id: 0, name: 'None' }, ...options];
+    }
+
+    return options;
+  }, [category, includeNone]);
 
   const itemValue = useMemo<ItemIdOption>(
-    () =>
-      value > 0
-        ? {
-            id: value,
-            name: ygoItemsMap.get(category)?.get(value)?.name ?? '',
-          }
-        : itemOptions[0],
-    [category, itemOptions, value],
+    () => ({
+      id: value,
+      name:
+        value > 0 ? ygoItemsMap.get(category)?.get(value)?.name ?? '' : 'None',
+    }),
+    [category, value],
   );
 
   const shouldShowImage = useMemo(
@@ -153,7 +162,7 @@ export const ItemIdInput = <T extends ItemCategory>({
               thumbnail
               className={classes.inputIcon}
               category={category}
-              item={itemValue.id}
+              item={getValidIdForImage(category, value)}
               getSrc={getThumbnailSrc}
             />
           )
@@ -167,20 +176,20 @@ export const ItemIdInput = <T extends ItemCategory>({
                 thumbnail
                 className={classes.menuitemThumbnail}
                 category={category}
-                item={value.id}
+                item={getValidIdForImage(category, value.id)}
                 getSrc={getThumbnailSrc}
               />
             )}
           </div>
         )}
       </ComboboxInput>
-      {highlightedId && (
+      {highlightedId !== undefined && (
         <Portal mountNode={{ className: classes.menuitemPortal }}>
           <AssetImage
             ref={highlightImageRef}
             className={classes.menuitemImage}
             category={category}
-            item={highlightedId}
+            item={getValidIdForImage(category, highlightedId)}
             getSrc={getImageSrc}
           />
         </Portal>

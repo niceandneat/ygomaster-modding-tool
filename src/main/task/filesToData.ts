@@ -11,7 +11,6 @@ import {
   isDuelChapter,
   isGateChapter,
 } from '../../common/type';
-import ygoItems from '../../data/items.json';
 import { DeckData, DuelData, GateData } from '../type';
 import {
   backupFiles,
@@ -84,18 +83,16 @@ const createDuelData = async (
     ? await readJson<DeckData>(pathMap[chapter.rental_deck])
     : cpuDeck;
 
-  const field = getRandomItem(ygoItems.FIELD);
-
   return {
     chapter: chapter.id,
     name: ['', chapter.cpu_name],
-    mat: repeat(field),
-    duel_object: repeat(field + 10000),
-    avatar_home: repeat(field + 20000),
-    avatar: [0, getRandomItem(ygoItems.AVATAR)],
-    sleeve: [0, getRandomItem(ygoItems.PROTECTOR)],
-    icon: [0, getRandomItem(ygoItems.ICON)],
-    icon_frame: [0, getRandomItem(ygoItems.ICON_FRAME)],
+    mat: [chapter.player_mat, chapter.cpu_mat],
+    sleeve: [chapter.player_sleeve, chapter.cpu_sleeve],
+    icon: [chapter.player_icon, chapter.cpu_icon],
+    icon_frame: [chapter.player_icon_frame, chapter.cpu_icon_frame],
+    avatar: [chapter.player_avatar, chapter.cpu_avatar],
+    avatar_home: [chapter.player_avatar_home, chapter.cpu_avatar_home],
+    duel_object: [chapter.player_duel_object, chapter.cpu_duel_object],
     hnum: [chapter.player_hand, chapter.cpu_hand],
     life: [chapter.player_life, chapter.cpu_life],
     cpu: chapter.cpu_value,
@@ -330,11 +327,3 @@ const saveData = async (data: {
   );
   log.info('Created IDS_SOLO.txt');
 };
-
-/**
- * Utilities
- */
-
-const repeat = (id: number): [number, number] => [id, id];
-const getRandomItem = (items: { id: string; name: string }[]) =>
-  Number(items[Math.floor(items.length * Math.random())].id);

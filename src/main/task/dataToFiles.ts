@@ -186,11 +186,11 @@ const createGates = (data: {
 
     const gate: Gate = {
       id: gateId,
-      name: gateNames.get(gateId) || '',
-      description: gateDescriptions.get(gateId) || '',
-      illust_id: gateIllustrations.get(gateId)?.illust_id || 4027, // Exordia
-      illust_x: gateIllustrations.get(gateId)?.illust_x || 0,
-      illust_y: gateIllustrations.get(gateId)?.illust_y || 0,
+      name: gateNames.get(gateId) ?? '',
+      description: gateDescriptions.get(gateId) ?? '',
+      illust_id: gateIllustrations.get(gateId)?.illust_id ?? 4027, // Exordia
+      illust_x: gateIllustrations.get(gateId)?.illust_x ?? 0,
+      illust_y: gateIllustrations.get(gateId)?.illust_y ?? 0,
       priority: gateData.gate[gateId].priority,
       parent_id: gateData.gate[gateId].parent_gate,
       clear_chapter: {
