@@ -294,7 +294,7 @@ const ParentIdInput = ({ gates }: ParentIdInputProps) => {
     () => [
       { id: 0, name: '' },
       ...gates
-        .filter((gate) => gate.id !== getValues('id'))
+        .filter((gate) => gate.id !== getValues('id') && gate.parent_id === 0)
         .map(({ id, name }) => ({ id, name: `${name} (${id})` })),
     ],
     [gates, getValues],
