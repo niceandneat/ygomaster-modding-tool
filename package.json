@@ -1,7 +1,7 @@
 {
   "name": "ygomaster-modding-tool",
   "productName": "ygomaster-modding-tool",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "YgoMaster LE mod modding tool",
   "main": ".vite/build/main.js",
   "scripts": {
