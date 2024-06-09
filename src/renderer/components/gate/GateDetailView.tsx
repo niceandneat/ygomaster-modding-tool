@@ -247,7 +247,11 @@ interface ParentIdOption {
   name: string;
 }
 
-const optionToString = (option?: ParentIdOption) => option?.name ?? '';
+const optionToString = (option?: ParentIdOption) => {
+  if (!option) return '';
+  if (option.id === 0) return 'Make this gate a parent';
+  return option.name;
+};
 const compareValues = (a?: ParentIdOption, b?: ParentIdOption) =>
   Boolean(a && b && a.id === b.id);
 const fuseOptions: IFuseOptions<ParentIdOption> = {
@@ -256,17 +260,17 @@ const fuseOptions: IFuseOptions<ParentIdOption> = {
 
 const ParentIdInput = ({ gates }: ParentIdInputProps) => {
   const classes = useStyles();
-  const { control, formState, getValues } = useFormContext<Gate>();
+  const { control, getValues } = useFormContext<Gate>();
 
   const options = useMemo<ParentIdOption[]>(
-    () =>
-      gates
+    () => [
+      { id: 0, name: '' },
+      ...gates
         .filter((gate) => gate.id !== getValues('id'))
         .map(({ id, name }) => ({ id, name: `${name} (${id})` })),
+    ],
     [gates, getValues],
   );
-
-  const error = formState.errors.clear_chapter?.message;
 
   return (
     <Controller
@@ -279,13 +283,7 @@ const ParentIdInput = ({ gates }: ParentIdInputProps) => {
           <ComboboxInput
             label="parent gate"
             placeholder="Select gate"
-            validationMessage={error?.toString()}
-            value={{
-              id: field.value,
-              name: selectedOption
-                ? `${selectedOption.name} (${selectedOption.id})`
-                : '',
-            }}
+            value={selectedOption}
             options={options}
             fuseOptions={fuseOptions}
             onChange={(value) => field.onChange(value.id)}
@@ -293,7 +291,7 @@ const ParentIdInput = ({ gates }: ParentIdInputProps) => {
             compareValues={compareValues}
           >
             {({ value }) => (
-              <div className={classes.menuitem}>{value.name}</div>
+              <div className={classes.menuitem}>{optionToString(value)}</div>
             )}
           </ComboboxInput>
         );

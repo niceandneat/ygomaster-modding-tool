@@ -279,7 +279,7 @@ const FileNameInput = ({ name, path, optional, onChange }: FileInputProps) => {
   const { control, formState } = useFormContext<DuelChapter>();
 
   const label = name.replaceAll('_', ' ');
-  const error = formState.errors[name]?.message;
+  const error = formState.errors[name];
 
   return (
     <Controller
@@ -290,7 +290,7 @@ const FileNameInput = ({ name, path, optional, onChange }: FileInputProps) => {
         <Field
           label={label}
           required={!optional}
-          validationMessage={error?.toString()}
+          validationMessage={error?.message}
         >
           <FileInput
             onChange={(filePath) => {

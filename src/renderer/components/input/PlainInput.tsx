@@ -29,7 +29,7 @@ export const PlainInput = <T extends FieldValues>({
   const classes = useStyles();
   const { control, formState } = useFormContext<T>();
 
-  const error = formState.errors[name]?.message;
+  const error = formState.errors[name];
   const label = labelInput || name.replaceAll('_', ' ');
   const Component = multiline ? Textarea : Input;
 
@@ -43,7 +43,7 @@ export const PlainInput = <T extends FieldValues>({
           className={classes.container}
           label={label}
           required={!optional}
-          validationMessage={error?.toString()}
+          validationMessage={error?.message?.toString()}
         >
           <Component
             resize="vertical"
