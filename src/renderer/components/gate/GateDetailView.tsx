@@ -173,8 +173,9 @@ export const GateDetailView = ({
   const classes = useStyles();
 
   const defaultValuesForCreation = useMemo(() => {
-    // Gate IDs should be larger than 3(or some number around it). So make IDs start with 11 to make them more manageable.
-    const id = Math.max(...gates.map(({ id }) => id), 10) + 1;
+    // Gate IDs should be larger than default MD's gates not to use default background images.
+    // TODO Lower this min to be just above tutorial gates (ex. 3) when there is background setting feature.
+    const id = Math.max(...gates.map(({ id }) => id), 100) + 1;
     const priority = Math.max(...gates.map(({ priority }) => priority), 0) + 1;
     const clear_chapter = { gateId: id, chapterId: 0 };
 
