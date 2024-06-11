@@ -20,8 +20,8 @@ export interface GateSummary {
   priority: number;
 }
 
-export type Chapter = DuelChapter | UnlockChapter;
-export type ChapterType = 'Duel' | 'Unlock';
+export type Chapter = DuelChapter | UnlockChapter | RewardChapter;
+export type ChapterType = 'Duel' | 'Unlock' | 'Reward';
 
 export type BaseChapter = {
   id: number; // Solo id
@@ -32,6 +32,11 @@ export type BaseChapter = {
 export type UnlockChapter = BaseChapter & {
   type: 'Unlock';
   unlock: ItemUnlock[]; // Items to unlock
+};
+
+export type RewardChapter = BaseChapter & {
+  type: 'Reward';
+  reward: Reward[];
 };
 
 export type DuelChapter = BaseChapter & {
@@ -122,6 +127,10 @@ export const isUnlockChapter = (
   chapter: BaseChapter,
 ): chapter is UnlockChapter =>
   Boolean((chapter as UnlockChapter).type === 'Unlock');
+export const isRewardChapter = (
+  chapter: BaseChapter,
+): chapter is RewardChapter =>
+  Boolean((chapter as RewardChapter).type === 'Reward');
 export const isDuelChapter = (chapter: BaseChapter): chapter is DuelChapter =>
   Boolean((chapter as DuelChapter).type === 'Duel');
 
@@ -187,6 +196,14 @@ export const defaultUnlockChapter: UnlockChapter = {
   description: '',
   type: 'Unlock',
   unlock: [],
+};
+
+export const defaultRewardChapter: RewardChapter = {
+  id: 0,
+  parent_id: 0,
+  description: '',
+  type: 'Reward',
+  reward: [],
 };
 
 /**

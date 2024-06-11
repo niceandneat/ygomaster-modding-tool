@@ -10,6 +10,7 @@ import {
   ItemCategory,
   ItemUnlock,
   Reward,
+  RewardChapter,
   UnlockChapter,
   chapterUnlockTypes,
   itemCategories,
@@ -236,6 +237,18 @@ const createChapters = (data: {
         };
       }
 
+      if (!chapterData.mydeck_set_id && !chapterData.npc_id) {
+        return {
+          chapter: createRewardChapter({
+            gateData,
+            gateId,
+            chapterId,
+            duelDescriptions,
+          }),
+          decks: [],
+        };
+      }
+
       return createDuelChapter({
         gateData,
         gateId,
@@ -271,6 +284,26 @@ const createUnlockChapter = (data: {
     description: duelDescriptions.get(chapterId) ?? '',
     type: 'Unlock',
     unlock: createItemUnlock({ gateData, gateId, chapterId }),
+  };
+};
+
+const createRewardChapter = (data: {
+  gateData: GateData;
+  gateId: number;
+  chapterId: number;
+  duelDescriptions: Map<number, string>;
+}): RewardChapter => {
+  const { gateData, gateId, chapterId, duelDescriptions } = data;
+  const chapterData = gateData.chapter[gateId][chapterId];
+
+  return {
+    id: dataChapterIdToFileChapterId(chapterId),
+    parent_id:
+      chapterData.parent_chapter &&
+      dataChapterIdToFileChapterId(chapterData.parent_chapter),
+    description: duelDescriptions.get(chapterId) ?? '',
+    type: 'Reward',
+    reward: createReward(gateData, chapterData.set_id),
   };
 };
 

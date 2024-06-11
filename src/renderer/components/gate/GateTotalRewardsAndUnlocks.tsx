@@ -8,7 +8,14 @@ import {
 import { memo } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { Chapter, Gate, Item } from '../../../common/type';
+import {
+  Chapter,
+  Gate,
+  Item,
+  isDuelChapter,
+  isRewardChapter,
+  isUnlockChapter,
+} from '../../../common/type';
 import { ygoItemsMap } from '../../data';
 import { AssetImage } from '../common/AssetImage';
 
@@ -57,11 +64,13 @@ const getTotalRewardsAndUnlocks = (chapters: Chapter[]) => {
   const unlocks: Item[] = [];
 
   chapters.forEach((chapter) => {
-    if (chapter.type === 'Duel') {
+    if (isDuelChapter(chapter)) {
       rewards.push(...chapter.mydeck_reward);
       chapter.rental_reward && rewards.push(...chapter.rental_reward);
-    } else if (chapter.type === 'Unlock') {
+    } else if (isUnlockChapter(chapter)) {
       unlocks.push(...chapter.unlock);
+    } else if (isRewardChapter(chapter)) {
+      rewards.push(...chapter.reward);
     }
   });
 

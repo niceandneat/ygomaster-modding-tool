@@ -25,6 +25,7 @@ import {
   Chapter,
   Gate,
   defaultDuelChapter,
+  defaultRewardChapter,
   defaultUnlockChapter,
 } from '../../../common/type';
 
@@ -145,6 +146,7 @@ export const useChaptersFlow = ({
         position,
         data: {
           ...defaultUnlockChapter,
+          ...defaultRewardChapter,
           ...defaultDuelChapter,
           id,
           parent_id: 0,

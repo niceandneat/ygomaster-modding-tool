@@ -32,6 +32,7 @@ import {
   DuelChapter,
   ItemCategory,
   defaultDuelChapter,
+  defaultRewardChapter,
   defaultUnlockChapter,
 } from '../../../common/type';
 import { ygoItems } from '../../data';
@@ -99,6 +100,7 @@ export const ChapterDetailView = ({
   const methods = useForm<Chapter>({
     defaultValues: {
       ...defaultUnlockChapter,
+      ...defaultRewardChapter,
       ...defaultDuelChapter,
       ...chapter,
     },
@@ -166,7 +168,7 @@ export const ChapterDetailView = ({
                   field.onChange(data.optionValue as ChapterType);
                 }}
               >
-                {(['Duel', 'Unlock'] as ChapterType[]).map((type) => (
+                {(['Duel', 'Unlock', 'Reward'] as ChapterType[]).map((type) => (
                   <Option key={type} value={type}>
                     {type}
                   </Option>
@@ -269,6 +271,7 @@ export const ChapterDetailView = ({
           </>
         )}
         {type === 'Unlock' && <UnlockInput />}
+        {type === 'Reward' && <RewardInput />}
       </div>
     </FormProvider>
   );
@@ -380,6 +383,10 @@ const unlockCategories = [ItemCategory.CONSUME];
 
 const UnlockInput = () => {
   return <ItemListInput name="unlock" categories={unlockCategories} />;
+};
+
+const RewardInput = () => {
+  return <ItemListInput name="reward" />;
 };
 
 interface AccessoryInputProps {

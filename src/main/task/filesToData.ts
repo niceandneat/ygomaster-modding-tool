@@ -9,6 +9,7 @@ import {
   ItemUnlock,
   Reward,
   isDuelChapter,
+  isRewardChapter,
   isUnlockChapter,
 } from '../../common/type';
 import { DeckData, DuelData, GateData } from '../type';
@@ -194,18 +195,26 @@ const createSingleGateData = (
       chapterData.npc_id = 0;
     }
 
+    if (isRewardChapter(chapter) && chapter.reward.length) {
+      const reward = createReward(chapter.reward);
+      chapterData.set_id = ids.rewardId;
+      rewardField[ids.rewardId] = reward;
+      ids.rewardId += 1;
+      chapterData.npc_id = 0;
+    }
+
     if (isDuelChapter(chapter)) {
       const reward = createReward(chapter.mydeck_reward);
       chapterData.mydeck_set_id = ids.rewardId;
       rewardField[ids.rewardId] = reward;
       ids.rewardId += 1;
+      chapterData.npc_id = 1;
 
       if (chapter.rental_deck && chapter.rental_reward) {
         const reward = createReward(chapter.rental_reward);
         chapterData.set_id = ids.rewardId;
         rewardField[ids.rewardId] = reward;
         ids.rewardId += 1;
-        chapterData.npc_id = 1;
       }
     }
 

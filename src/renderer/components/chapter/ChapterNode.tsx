@@ -14,7 +14,11 @@ import {
   DuelChapter,
   Item,
   ItemCategory,
+  RewardChapter,
   UnlockChapter,
+  isDuelChapter,
+  isRewardChapter,
+  isUnlockChapter,
 } from '../../../common/type';
 import { ygoItemsMap } from '../../data';
 import { AssetImage } from '../common/AssetImage';
@@ -23,6 +27,7 @@ import { NodeType } from './useChaptersFlow';
 export const ChapterColor: Record<ChapterType, string> = {
   Duel: tokens.colorPaletteLightGreenBackground2,
   Unlock: tokens.colorPaletteBlueBackground2,
+  Reward: tokens.colorPaletteMarigoldBackground2,
 };
 
 const useStyles = makeStyles({
@@ -61,6 +66,9 @@ const useStyles = makeStyles({
   },
   unlockTag: {
     backgroundColor: ChapterColor.Unlock,
+  },
+  rewardTag: {
+    backgroundColor: ChapterColor.Reward,
   },
   contents: {
     padding: tokens.spacingHorizontalL,
@@ -119,10 +127,14 @@ const ChapterNodeComponent = (props: NodeProps<NodeType>) => {
         position={targetPosition}
         isConnectable={isConnectable}
       />
-      {data.type === 'Duel' ? (
+      {isDuelChapter(data) && (
         <DuelChapterNodeContents {...props} data={data} />
-      ) : (
+      )}
+      {isUnlockChapter(data) && (
         <UnlockChapterNodeContents {...props} data={data} />
+      )}
+      {isRewardChapter(data) && (
+        <RewardChapterNodeContents {...props} data={data} />
       )}
       <Handle
         type="source"
@@ -180,6 +192,27 @@ const UnlockChapterNodeContents = ({
         <Text align="center">{data.description || data.id}</Text>
         {data.unlock.length ? (
           <NodeItemList title="unlock" items={data.unlock} />
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
+const RewardChapterNodeContents = ({
+  data,
+  selected,
+}: NodeProps<Node<RewardChapter>>) => {
+  const classes = useStyles();
+
+  return (
+    <div
+      className={mergeClasses(classes.container, selected && classes.selected)}
+    >
+      <div className={mergeClasses(classes.tag, classes.rewardTag)}>Reward</div>
+      <div className={classes.contents}>
+        <Text align="center">{data.description || data.id}</Text>
+        {data.reward.length ? (
+          <NodeItemList title="reward" items={data.reward} />
         ) : null}
       </div>
     </div>

@@ -28,8 +28,10 @@ import {
   DuelChapter,
   Gate,
   GateSummary,
+  RewardChapter,
   UnlockChapter,
   UnlockType,
+  isRewardChapter,
   isUnlockChapter,
 } from '../../../common/type';
 import { useWarnNavigation } from '../../hooks/useWarnNavigation';
@@ -118,6 +120,16 @@ const extractOnlyRelevantFields = (chapter: Chapter): Chapter => {
       // NOTE Should we consider UnlockType.HAS_ITEM too?
       unlock: chapter.unlock.map((u) => ({ ...u, type: UnlockType.ITEM })),
     } satisfies UnlockChapter;
+  }
+
+  if (isRewardChapter(chapter)) {
+    return {
+      id: chapter.id,
+      parent_id: chapter.parent_id,
+      description: chapter.description,
+      type: chapter.type,
+      reward: chapter.reward,
+    } satisfies RewardChapter;
   }
 
   // if isDuelChapter(chapter)
