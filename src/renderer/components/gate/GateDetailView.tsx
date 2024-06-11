@@ -216,18 +216,20 @@ export const GateDetailView = ({
     let prevId = initialGateId;
 
     const subscription = watch((value, { name }) => {
-      if (
-        name === 'id' &&
-        value.id !== undefined &&
-        value.clear_chapter?.gateId === prevId
-      ) {
-        setValue('clear_chapter.gateId', value.id);
+      if (name === 'id' && value.id !== undefined) {
+        if (value.clear_chapter?.gateId === prevId) {
+          // If use clear_chapter.gateId to update gateId, render function of Controller component cannot get updated gateId for clear_chapter
+          setValue('clear_chapter', {
+            ...getValues('clear_chapter'),
+            gateId: value.id,
+          });
+        }
         prevId = value.id;
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [initialGateId, setValue, watch]);
+  }, [getValues, initialGateId, setValue, watch]);
 
   return (
     <FormProvider {...methods}>

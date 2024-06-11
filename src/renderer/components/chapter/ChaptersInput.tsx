@@ -22,8 +22,8 @@ const ChaptersInputComponent = () => {
   const classes = useStyles();
   const [chapterIndex, setChapterIndex, chapterIndexRef] = useStateRef(-1);
 
-  const { getValues, setValue } = useFormContext<Gate>();
-  const { update, remove } = useFieldArray<Gate>({ name: 'chapters' });
+  const { getValues } = useFormContext<Gate>();
+  const { update, remove, replace } = useFieldArray<Gate>({ name: 'chapters' });
   const resetSelectedElements = useFlowStore((s) => s.resetSelectedElements);
 
   const handleClose = useCallback(() => {
@@ -32,11 +32,8 @@ const ChaptersInputComponent = () => {
   }, [setChapterIndex, resetSelectedElements]);
 
   const handleChangeFlow = useMemo(
-    () =>
-      debounce((chapters: Chapter[]) => {
-        setValue('chapters', chapters, { shouldDirty: true });
-      }, 100),
-    [setValue],
+    () => debounce((chapters: Chapter[]) => replace(chapters), 100),
+    [replace],
   );
 
   const handleChangeForm = useCallback(
