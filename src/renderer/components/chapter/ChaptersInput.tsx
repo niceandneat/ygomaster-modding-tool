@@ -31,13 +31,20 @@ const ChaptersInputComponent = () => {
     resetSelectedElements();
   }, [setChapterIndex, resetSelectedElements]);
 
-  const handleChangeChapter = useMemo(
+  const handleChangeFlow = useMemo(
     () =>
-      debounce((chapter: Chapter) => {
-        if (chapterIndexRef.current !== -1) {
-          update(chapterIndexRef.current, chapter);
-        }
+      debounce((chapters: Chapter[]) => {
+        setValue('chapters', chapters, { shouldDirty: true });
       }, 100),
+    [setValue],
+  );
+
+  const handleChangeForm = useCallback(
+    (chapter: Chapter) => {
+      if (chapterIndexRef.current !== -1) {
+        update(chapterIndexRef.current, chapter);
+      }
+    },
     [chapterIndexRef, update],
   );
 
@@ -48,13 +55,6 @@ const ChaptersInputComponent = () => {
       });
     }
   }, [chapterIndexRef, remove]);
-
-  const handleChangeChapters = useCallback(
-    (chapters: Chapter[]) => {
-      setValue('chapters', chapters, { shouldDirty: true });
-    },
-    [setValue],
-  );
 
   const handleChangeSelection = useCallback(
     (chapter?: Chapter) => {
@@ -80,13 +80,13 @@ const ChaptersInputComponent = () => {
         chapters
       </InfoLabel>
       <ChaptersFlow
-        onChangeChapters={handleChangeChapters}
+        onChangeChapters={handleChangeFlow}
         onChangeSelection={handleChangeSelection}
       />
       <ChapterDetail
         key={chapterIndex}
         chapter={initialChapter}
-        onChange={handleChangeChapter}
+        onChange={handleChangeForm}
         onDelete={handleDeleteChapter}
         onClose={handleClose}
       />
