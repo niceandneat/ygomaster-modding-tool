@@ -30,7 +30,6 @@ import {
   GateChapter,
   GateSummary,
   UnlockType,
-  isDuelChapter,
   isGateChapter,
 } from '../../../common/type';
 import { useWarnNavigation } from '../../hooks/useWarnNavigation';
@@ -353,9 +352,10 @@ const ClearChapterInput = ({ gates, loadChapters }: ClearChapterInputProps) => {
 
   const sameGateChapters = useMemo(
     () =>
-      chapters
-        .filter(isDuelChapter)
-        .map((chapter) => ({ id: chapter.id, name: getChapterName(chapter) })),
+      chapters.map((chapter) => ({
+        id: chapter.id,
+        name: getChapterName(chapter),
+      })),
     // TODO Improve memo rule
     [chapters],
   );
