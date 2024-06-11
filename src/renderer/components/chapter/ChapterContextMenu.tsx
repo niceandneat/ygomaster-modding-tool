@@ -13,7 +13,7 @@ import {
   useState,
 } from 'react';
 
-import { Chapter, ChapterType, isGateChapter } from '../../../common/type';
+import { Chapter, ChapterType, isUnlockChapter } from '../../../common/type';
 import { ChapterColor } from './ChapterNode';
 import { EdgeType, NodeType } from './useChaptersFlow';
 
@@ -101,7 +101,7 @@ export const useChapterContextMenu = (
   );
 
   const onCreateMirror = useCallback(() => {
-    if (!currentNode || isGateChapter(currentNode.data)) return closeMenu();
+    if (!currentNode || isUnlockChapter(currentNode.data)) return closeMenu();
 
     const position = {
       x: currentNode.position.x,
@@ -177,7 +177,7 @@ export const PaneContextMenu = ({
       style={{ top: position.y, left: position.x }}
     >
       <MenuList>
-        {(['Duel', 'Gate'] as ChapterType[]).map((type) => (
+        {(['Duel', 'Unlock'] as ChapterType[]).map((type) => (
           <MenuItem
             key={type}
             icon={<Indicator type={type} />}

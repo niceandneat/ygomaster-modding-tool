@@ -25,7 +25,7 @@ import {
   Chapter,
   Gate,
   defaultDuelChapter,
-  defaultGateChapter,
+  defaultUnlockChapter,
 } from '../../../common/type';
 
 type LayoutDirection = 'LR' | 'TB';
@@ -144,7 +144,7 @@ export const useChaptersFlow = ({
         id: `${id}`,
         position,
         data: {
-          ...defaultGateChapter,
+          ...defaultUnlockChapter,
           ...defaultDuelChapter,
           id,
           parent_id: 0,

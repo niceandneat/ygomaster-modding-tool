@@ -20,8 +20,8 @@ export interface GateSummary {
   priority: number;
 }
 
-export type Chapter = DuelChapter | GateChapter;
-export type ChapterType = 'Duel' | 'Gate';
+export type Chapter = DuelChapter | UnlockChapter;
+export type ChapterType = 'Duel' | 'Unlock';
 
 export type BaseChapter = {
   id: number; // Solo id
@@ -29,8 +29,8 @@ export type BaseChapter = {
   description: string; // Solo description
 };
 
-export type GateChapter = BaseChapter & {
-  type: 'Gate';
+export type UnlockChapter = BaseChapter & {
+  type: 'Unlock';
   unlock: ItemUnlock[]; // Items to unlock
 };
 
@@ -118,8 +118,10 @@ export interface Settings {
   dataPath: string;
 }
 
-export const isGateChapter = (chapter: BaseChapter): chapter is GateChapter =>
-  Boolean((chapter as GateChapter).type === 'Gate');
+export const isUnlockChapter = (
+  chapter: BaseChapter,
+): chapter is UnlockChapter =>
+  Boolean((chapter as UnlockChapter).type === 'Unlock');
 export const isDuelChapter = (chapter: BaseChapter): chapter is DuelChapter =>
   Boolean((chapter as DuelChapter).type === 'Duel');
 
@@ -179,11 +181,11 @@ export const defaultDuelChapter: DuelChapter = {
   cpu_duel_object: 0,
 };
 
-export const defaultGateChapter: GateChapter = {
+export const defaultUnlockChapter: UnlockChapter = {
   id: 0,
   parent_id: 0,
   description: '',
-  type: 'Gate',
+  type: 'Unlock',
   unlock: [],
 };
 

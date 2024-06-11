@@ -1,8 +1,8 @@
-import { Chapter, isDuelChapter, isGateChapter } from '../../common/type';
+import { Chapter, isDuelChapter, isUnlockChapter } from '../../common/type';
 
 export const getChapterName = (chapter: Chapter) => {
-  if (isGateChapter(chapter)) {
-    return `[Gate] ${chapter.description?.split('/n')[0] ?? chapter.id}`;
+  if (isUnlockChapter(chapter)) {
+    return `[Unlock] ${chapter.description?.split('/n')[0] ?? chapter.id}`;
   }
 
   if (isDuelChapter(chapter)) {

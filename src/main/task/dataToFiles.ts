@@ -7,10 +7,10 @@ import {
   ChapterUnlock,
   DuelChapter,
   Gate,
-  GateChapter,
   ItemCategory,
   ItemUnlock,
   Reward,
+  UnlockChapter,
   chapterUnlockTypes,
   itemCategories,
   itemUnlockTypes,
@@ -226,7 +226,7 @@ const createChapters = (data: {
 
       if (chapterData.unlock_id) {
         return {
-          chapter: createGateChapter({
+          chapter: createUnlockChapter({
             gateData,
             gateId,
             chapterId,
@@ -254,12 +254,12 @@ const createChapters = (data: {
   };
 };
 
-const createGateChapter = (data: {
+const createUnlockChapter = (data: {
   gateData: GateData;
   gateId: number;
   chapterId: number;
   duelDescriptions: Map<number, string>;
-}): GateChapter => {
+}): UnlockChapter => {
   const { gateData, gateId, chapterId, duelDescriptions } = data;
   const chapterData = gateData.chapter[gateId][chapterId];
 
@@ -269,7 +269,7 @@ const createGateChapter = (data: {
       chapterData.parent_chapter &&
       dataChapterIdToFileChapterId(chapterData.parent_chapter),
     description: duelDescriptions.get(chapterId) ?? '',
-    type: 'Gate',
+    type: 'Unlock',
     unlock: createItemUnlock({ gateData, gateId, chapterId }),
   };
 };

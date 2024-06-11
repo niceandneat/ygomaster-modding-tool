@@ -27,10 +27,10 @@ import {
   Chapter,
   DuelChapter,
   Gate,
-  GateChapter,
   GateSummary,
+  UnlockChapter,
   UnlockType,
-  isGateChapter,
+  isUnlockChapter,
 } from '../../../common/type';
 import { useWarnNavigation } from '../../hooks/useWarnNavigation';
 import { getChapterName } from '../../utils/getChapterName';
@@ -108,7 +108,7 @@ const useGateChapterListStyle = makeStyles({
 });
 
 const extractOnlyRelevantFields = (chapter: Chapter): Chapter => {
-  if (isGateChapter(chapter)) {
+  if (isUnlockChapter(chapter)) {
     return {
       id: chapter.id,
       parent_id: chapter.parent_id,
@@ -117,7 +117,7 @@ const extractOnlyRelevantFields = (chapter: Chapter): Chapter => {
       // Make sure all unlocks are UnlockType.ITEM
       // NOTE Should we consider UnlockType.HAS_ITEM too?
       unlock: chapter.unlock.map((u) => ({ ...u, type: UnlockType.ITEM })),
-    } satisfies GateChapter;
+    } satisfies UnlockChapter;
   }
 
   // if isDuelChapter(chapter)
@@ -252,7 +252,7 @@ export const GateDetailView = ({
           <PlainInput<Gate> name="description" multiline />
           <PlainInput<Gate> name="priority" number integer />
           <ClearChapterInput gates={gates} loadChapters={loadChapters} />
-          <GateChapterListInput gates={gates} loadChapters={loadChapters} />
+          <ChaptersForUnlockInput gates={gates} loadChapters={loadChapters} />
           <ChaptersInput />
           <GateTotalRewardsAndUnlocks />
           <div className={classes.split}>
@@ -350,7 +350,7 @@ const ClearChapterInput = ({ gates, loadChapters }: ClearChapterInputProps) => {
     [currentGateId, gates, initialGateId],
   );
 
-  const sameGateChapters = useMemo(
+  const chaptersInSameGates = useMemo(
     () =>
       chapters.map((chapter) => ({
         id: chapter.id,
@@ -360,9 +360,9 @@ const ClearChapterInput = ({ gates, loadChapters }: ClearChapterInputProps) => {
     [chapters],
   );
 
-  const handleLoadSameGateChapters = useCallback(
-    async () => sameGateChapters,
-    [sameGateChapters],
+  const handleLoadChaptersInSameGate = useCallback(
+    async () => chaptersInSameGates,
+    [chaptersInSameGates],
   );
 
   const error = formState.errors.clear_chapter;
@@ -380,7 +380,7 @@ const ClearChapterInput = ({ gates, loadChapters }: ClearChapterInputProps) => {
                 value.chapterId > 0 || 'This field is required',
               exist: (value) =>
                 value.gateId !== currentGateId ||
-                sameGateChapters.some(({ id }) => id === value.chapterId) ||
+                chaptersInSameGates.some(({ id }) => id === value.chapterId) ||
                 'This chapter is not exist',
             },
           }}
@@ -392,7 +392,7 @@ const ClearChapterInput = ({ gates, loadChapters }: ClearChapterInputProps) => {
                 validationMessage={error?.message}
                 loadChapters={
                   field.value.gateId === currentGateId
-                    ? handleLoadSameGateChapters
+                    ? handleLoadChaptersInSameGate
                     : loadChapters
                 }
                 onChange={field.onChange}
@@ -405,15 +405,15 @@ const ClearChapterInput = ({ gates, loadChapters }: ClearChapterInputProps) => {
   );
 };
 
-interface GateChapterListInputProps {
+interface ChaptersForUnlockProps {
   gates: GateSummary[];
   loadChapters: (gateId: number) => Promise<{ id: number; name: string }[]>;
 }
 
-const GateChapterListInput = ({
+const ChaptersForUnlockInput = ({
   gates,
   loadChapters,
-}: GateChapterListInputProps) => {
+}: ChaptersForUnlockProps) => {
   const classes = useGateChapterListStyle();
   const { control, formState, getValues } = useFormContext<Gate>();
   const { fields, append, remove } = useFieldArray<Gate, 'unlock'>({
@@ -470,7 +470,7 @@ const GateChapterListInput = ({
           })
         }
       >
-        Add Unlock Chapter
+        Add a chapter for unlock
       </Button>
     </div>
   );

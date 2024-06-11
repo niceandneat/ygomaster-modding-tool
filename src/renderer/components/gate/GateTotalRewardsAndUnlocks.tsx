@@ -60,7 +60,7 @@ const getTotalRewardsAndUnlocks = (chapters: Chapter[]) => {
     if (chapter.type === 'Duel') {
       rewards.push(...chapter.mydeck_reward);
       chapter.rental_reward && rewards.push(...chapter.rental_reward);
-    } else if (chapter.type === 'Gate') {
+    } else if (chapter.type === 'Unlock') {
       unlocks.push(...chapter.unlock);
     }
   });

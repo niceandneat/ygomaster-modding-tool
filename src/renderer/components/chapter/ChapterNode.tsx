@@ -12,9 +12,9 @@ import { memo } from 'react';
 import {
   ChapterType,
   DuelChapter,
-  GateChapter,
   Item,
   ItemCategory,
+  UnlockChapter,
 } from '../../../common/type';
 import { ygoItemsMap } from '../../data';
 import { AssetImage } from '../common/AssetImage';
@@ -22,7 +22,7 @@ import { NodeType } from './useChaptersFlow';
 
 export const ChapterColor: Record<ChapterType, string> = {
   Duel: tokens.colorPaletteLightGreenBackground2,
-  Gate: tokens.colorPaletteBlueBackground2,
+  Unlock: tokens.colorPaletteBlueBackground2,
 };
 
 const useStyles = makeStyles({
@@ -59,8 +59,8 @@ const useStyles = makeStyles({
   duelTag: {
     backgroundColor: ChapterColor.Duel,
   },
-  gateTag: {
-    backgroundColor: ChapterColor.Gate,
+  unlockTag: {
+    backgroundColor: ChapterColor.Unlock,
   },
   contents: {
     padding: tokens.spacingHorizontalL,
@@ -122,7 +122,7 @@ const ChapterNodeComponent = (props: NodeProps<NodeType>) => {
       {data.type === 'Duel' ? (
         <DuelChapterNodeContents {...props} data={data} />
       ) : (
-        <GateChapterNodeContents {...props} data={data} />
+        <UnlockChapterNodeContents {...props} data={data} />
       )}
       <Handle
         type="source"
@@ -165,19 +165,19 @@ const DuelChapterNodeContents = ({
   );
 };
 
-const GateChapterNodeContents = ({
+const UnlockChapterNodeContents = ({
   data,
   selected,
-}: NodeProps<Node<GateChapter>>) => {
+}: NodeProps<Node<UnlockChapter>>) => {
   const classes = useStyles();
 
   return (
     <div
       className={mergeClasses(classes.container, selected && classes.selected)}
     >
-      <div className={mergeClasses(classes.tag, classes.gateTag)}>Gate</div>
+      <div className={mergeClasses(classes.tag, classes.unlockTag)}>Unlock</div>
       <div className={classes.contents}>
-        <Text align="center">{data.description}</Text>
+        <Text align="center">{data.description || data.id}</Text>
         {data.unlock.length ? (
           <NodeItemList title="unlock" items={data.unlock} />
         ) : null}

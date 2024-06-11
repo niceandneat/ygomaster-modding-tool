@@ -9,7 +9,7 @@ import {
   ItemUnlock,
   Reward,
   isDuelChapter,
-  isGateChapter,
+  isUnlockChapter,
 } from '../../common/type';
 import { DeckData, DuelData, GateData } from '../type';
 import {
@@ -180,7 +180,7 @@ const createSingleGateData = (
       npc_id: 1,
     };
 
-    if (isGateChapter(chapter) && chapter.unlock.length) {
+    if (isUnlockChapter(chapter) && chapter.unlock.length) {
       const { unlock, unlockItem } = createItemUnlock(
         chapter.unlock,
         ids.unlockItemId,

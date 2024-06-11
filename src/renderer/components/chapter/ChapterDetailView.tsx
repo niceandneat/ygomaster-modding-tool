@@ -32,7 +32,7 @@ import {
   DuelChapter,
   ItemCategory,
   defaultDuelChapter,
-  defaultGateChapter,
+  defaultUnlockChapter,
 } from '../../../common/type';
 import { ygoItems } from '../../data';
 import { debounce } from '../../utils/debounce';
@@ -97,7 +97,11 @@ export const ChapterDetailView = ({
   const classes = useStyles();
 
   const methods = useForm<Chapter>({
-    defaultValues: { ...defaultGateChapter, ...defaultDuelChapter, ...chapter },
+    defaultValues: {
+      ...defaultUnlockChapter,
+      ...defaultDuelChapter,
+      ...chapter,
+    },
   });
   const { watch, control, trigger, setValue } = methods;
 
@@ -162,8 +166,11 @@ export const ChapterDetailView = ({
                   field.onChange(data.optionValue as ChapterType);
                 }}
               >
-                <Option value="Duel">Duel</Option>
-                <Option value="Gate">Gate</Option>
+                {(['Duel', 'Unlock'] as ChapterType[]).map((type) => (
+                  <Option key={type} value={type}>
+                    {type}
+                  </Option>
+                ))}
               </Dropdown>
             </Field>
           )}
@@ -261,7 +268,7 @@ export const ChapterDetailView = ({
             </Button>
           </>
         )}
-        {type === 'Gate' && <UnlockInput />}
+        {type === 'Unlock' && <UnlockInput />}
       </div>
     </FormProvider>
   );
