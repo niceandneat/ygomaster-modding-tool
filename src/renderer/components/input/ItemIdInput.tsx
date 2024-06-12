@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ItemCategory } from '../../../common/type';
 import { ygoItems, ygoItemsMap } from '../../data';
-import { AssetImage } from '../common/AssetImage';
+import { ItemImage } from '../common/ItemImage';
 import { ComboboxInput } from './ComboboxInput';
 
 const useStyles = makeStyles({
@@ -158,7 +158,7 @@ export const ItemIdInput = <T extends ItemCategory>({
         compareValues={compareValues}
         icon={
           shouldShowImage && (
-            <AssetImage
+            <ItemImage
               thumbnail
               className={classes.inputIcon}
               category={category}
@@ -172,7 +172,7 @@ export const ItemIdInput = <T extends ItemCategory>({
           <div className={classes.menuitem}>
             <Text>{value.name}</Text>
             {shouldShowImage && (
-              <AssetImage
+              <ItemImage
                 thumbnail
                 className={classes.menuitemThumbnail}
                 category={category}
@@ -185,7 +185,7 @@ export const ItemIdInput = <T extends ItemCategory>({
       </ComboboxInput>
       {highlightedId !== undefined && (
         <Portal mountNode={{ className: classes.menuitemPortal }}>
-          <AssetImage
+          <ItemImage
             ref={highlightImageRef}
             className={classes.menuitemImage}
             category={category}

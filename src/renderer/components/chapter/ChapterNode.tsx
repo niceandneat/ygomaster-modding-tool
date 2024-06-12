@@ -21,7 +21,7 @@ import {
   isUnlockChapter,
 } from '../../../common/type';
 import { ygoItemsMap } from '../../data';
-import { AssetImage } from '../common/AssetImage';
+import { ItemImage } from '../common/ItemImage';
 import { NodeType } from './useChaptersFlow';
 
 export const ChapterColor: Record<ChapterType, string> = {
@@ -248,7 +248,7 @@ const NodeItemList = ({ items, title }: { items: Item[]; title: string }) => {
                   relationship="description"
                   positioning="before"
                 >
-                  <AssetImage
+                  <ItemImage
                     thumbnail
                     alt={name}
                     className={classes.icon}

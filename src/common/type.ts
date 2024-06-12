@@ -93,6 +93,10 @@ export enum ItemCategory {
   // DECK_LIMIT = 15,
 }
 
+export enum AssetCategory {
+  CARD_PACK = 100,
+}
+
 export interface ChapterReference {
   gateId: number;
   chapterId: number;

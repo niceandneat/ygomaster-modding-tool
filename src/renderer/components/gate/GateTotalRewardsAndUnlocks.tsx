@@ -17,7 +17,7 @@ import {
   isUnlockChapter,
 } from '../../../common/type';
 import { ygoItemsMap } from '../../data';
-import { AssetImage } from '../common/AssetImage';
+import { ItemImage } from '../common/ItemImage';
 
 const useStyles = makeStyles({
   title: {
@@ -92,7 +92,7 @@ const GateTotalItems = ({ items }: GateTotalItemsProps) => {
           <Tooltip key={index} content={name} relationship="description">
             <Tag
               media={
-                <AssetImage
+                <ItemImage
                   thumbnail
                   alt={name}
                   className={classes.icon}
