@@ -1,8 +1,9 @@
 import { ItemCategory } from '../common/type';
+import cardPacksData from '../data/cardPacks.json';
 import cardsData from '../data/cards.json';
 import itemsData from '../data/items.json';
 
-export interface YgoItemData {
+interface YgoItemData {
   id: number;
   name: string;
 }
@@ -37,3 +38,19 @@ export const ygoItems = new Map<ItemCategory, YgoItemData[]>(
     [...itemsMap.values()],
   ]),
 );
+
+interface YgoPackData {
+  id: number;
+  name: string;
+  index: number;
+  release: number;
+}
+
+export const ygoPacksMap = new Map<number, YgoPackData>(
+  cardPacksData.map((card) => {
+    const id = Number(card.id);
+    return [id, { ...card, id }];
+  }),
+);
+
+export const ygoPacks: YgoPackData[] = [...ygoPacksMap.values()];

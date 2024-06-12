@@ -99,7 +99,8 @@ export interface GateData {
         set_id: number;
         unlock_id: number;
         begin_sn: string; // ''
-        npc_id: number; // 0 for gates & rewards / above 0 for duels
+        npc_id: number; // 0 for unlock & reward / above 0 for duels
+        unlock_secret?: number | number[];
       };
     };
   };
@@ -126,4 +127,13 @@ export interface GateData {
 
 export interface GateDataFile {
   Master: { Solo: GateData };
+}
+
+// Only subset of fields are listed
+export interface ShopFile {
+  PackShop: {
+    [packId in string]: {
+      unlockSecrets?: number[];
+    };
+  };
 }

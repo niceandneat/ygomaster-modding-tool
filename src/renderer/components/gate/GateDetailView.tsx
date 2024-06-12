@@ -24,6 +24,7 @@ import {
 } from 'react-hook-form';
 
 import {
+  BaseChapter,
   Chapter,
   DuelChapter,
   Gate,
@@ -110,11 +111,16 @@ const useGateChapterListStyle = makeStyles({
 });
 
 const extractOnlyRelevantFields = (chapter: Chapter): Chapter => {
+  const baseChapter: BaseChapter = {
+    id: chapter.id,
+    parent_id: chapter.parent_id,
+    description: chapter.description,
+    unlock_pack: chapter.unlock_pack,
+  };
+
   if (isUnlockChapter(chapter)) {
     return {
-      id: chapter.id,
-      parent_id: chapter.parent_id,
-      description: chapter.description,
+      ...baseChapter,
       type: chapter.type,
       // Make sure all unlocks are UnlockType.ITEM
       // NOTE Should we consider UnlockType.HAS_ITEM too?
@@ -124,9 +130,7 @@ const extractOnlyRelevantFields = (chapter: Chapter): Chapter => {
 
   if (isRewardChapter(chapter)) {
     return {
-      id: chapter.id,
-      parent_id: chapter.parent_id,
-      description: chapter.description,
+      ...baseChapter,
       type: chapter.type,
       reward: chapter.reward,
     } satisfies RewardChapter;
@@ -134,9 +138,7 @@ const extractOnlyRelevantFields = (chapter: Chapter): Chapter => {
 
   // if isDuelChapter(chapter)
   return {
-    id: chapter.id,
-    parent_id: chapter.parent_id,
-    description: chapter.description,
+    ...baseChapter,
     type: chapter.type,
     cpu_deck: chapter.cpu_deck,
     rental_deck: chapter.rental_deck,

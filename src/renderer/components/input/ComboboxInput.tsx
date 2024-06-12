@@ -131,7 +131,7 @@ export const ComboboxInput = <T,>({
 }: ComboboxInputProps<T>) => {
   const classes = useStyles();
   const optionsContainerRef = useRef<HTMLDivElement>(null);
-  const [items, setItems] = useState(() => options.slice(0, 100));
+  const [items, setItems] = useState(() => options.slice(0, 200));
   const [inputValue, setInputValue] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
@@ -191,7 +191,7 @@ export const ComboboxInput = <T,>({
     return (inputValue = '') => {
       const items = inputValue
         ? fuse.search(inputValue, { limit: 20 }).map(({ item }) => item)
-        : options.slice(0, 100);
+        : options.slice(0, 200);
       setItems(items);
 
       // Highlight first item when typing

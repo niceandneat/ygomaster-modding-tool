@@ -12,12 +12,13 @@ import {
   isRewardChapter,
   isUnlockChapter,
 } from '../../common/type';
-import { DeckData, DuelData, GateData } from '../type';
+import { DeckData, DuelData, GateData, ShopFile } from '../type';
 import {
   backupFiles,
   batchPromiseAll,
   fileChapterIdToDataChapterId,
   readJson,
+  readJsonWithCommas,
   saveJson,
   saveText,
   toPosix,
@@ -45,6 +46,7 @@ export const filesToData = async (paths: {
   );
 
   await saveData({ gates, gateData, duelDataList, dataPath });
+  await patchData({ dataPath });
 };
 
 const loadGates = async (gatePath: string): Promise<Gate[]> => {
@@ -171,6 +173,13 @@ const createSingleGateData = (
     ids.unlockId += 1;
   }
 
+  // TODO Remove this after PR merged
+  const getSafeUnlockSecret = (unlockPacks?: number[]) => {
+    if (!unlockPacks?.length) return;
+    if (unlockPacks.length === 1) return unlockPacks[0];
+    return unlockPacks;
+  };
+
   gate.chapters.forEach((chapter) => {
     const chapterData: GateData['chapter'][string][string] = {
       parent_chapter: chapter.parent_id,
@@ -179,6 +188,7 @@ const createSingleGateData = (
       unlock_id: 0,
       begin_sn: '',
       npc_id: 1,
+      unlock_secret: getSafeUnlockSecret(chapter.unlock_pack),
     };
 
     if (isUnlockChapter(chapter) && chapter.unlock.length) {
@@ -335,4 +345,21 @@ const saveData = async (data: {
     soloDescriptions,
   );
   log.info('Created IDS_SOLO.txt');
+};
+
+const patchData = async (data: { dataPath: string }) => {
+  const { dataPath } = data;
+  log.info('Start patch data');
+
+  // Modify unlock condition of card packs
+  const shop = await readJsonWithCommas<ShopFile>(
+    path.resolve(dataPath, 'Shop.json'),
+  );
+  Object.keys(shop.PackShop).map((key) => {
+    delete shop.PackShop[key].unlockSecrets;
+  });
+
+  await backupFiles(dataPath, ['Shop.json']);
+  await saveJson(path.resolve(dataPath, 'Shop.json'), shop);
+  log.info('Created Shop.json');
 };

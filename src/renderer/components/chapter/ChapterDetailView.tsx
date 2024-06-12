@@ -37,6 +37,7 @@ import {
 } from '../../../common/type';
 import { ygoItems } from '../../data';
 import { debounce } from '../../utils/debounce';
+import { CardPackInput } from '../input/CardPackInput';
 import { FileInput } from '../input/FileInput';
 import { ItemIdInput } from '../input/ItemIdInput';
 import { ItemInput } from '../input/ItemInput';
@@ -67,7 +68,7 @@ const useStyles = makeStyles({
   },
 });
 
-const useItemListStyle = makeStyles({
+const useListStyle = makeStyles({
   label: {
     display: 'block',
     marginBottom: tokens.spacingVerticalS,
@@ -78,6 +79,9 @@ const useItemListStyle = makeStyles({
     alignItems: 'flex-end',
     marginBottom: tokens.spacingVerticalM,
     overflow: 'visible',
+  },
+  fullWidth: {
+    flex: '1',
   },
 });
 
@@ -178,6 +182,7 @@ export const ChapterDetailView = ({
           )}
         />
         <PlainInput<Chapter> name="description" multiline />
+        <UnlockPackInput />
         {type === 'Duel' && (
           <>
             <FileNameInput
@@ -325,7 +330,7 @@ interface ItemInputProps {
 }
 
 const ItemListInput = ({ name, categories, disabled }: ItemInputProps) => {
-  const classes = useItemListStyle();
+  const classes = useListStyle();
   const { control } = useFormContext<Chapter>();
   const { fields, append, remove } = useFieldArray<Chapter>({ name });
 
@@ -387,6 +392,60 @@ const UnlockInput = () => {
 
 const RewardInput = () => {
   return <ItemListInput name="reward" />;
+};
+
+const UnlockPackInput = () => {
+  const classes = useListStyle();
+  const { setValue, getValues } = useFormContext<Chapter>();
+  const fields = useWatch<Chapter, 'unlock_pack'>({ name: 'unlock_pack' });
+
+  const append = useCallback(
+    (packId: number) =>
+      setValue('unlock_pack', [...(getValues('unlock_pack') || []), packId]),
+    [getValues, setValue],
+  );
+
+  const remove = useCallback(
+    (index: number) =>
+      setValue('unlock_pack', getValues('unlock_pack')?.toSpliced(index, 1)),
+    [getValues, setValue],
+  );
+
+  const update = useCallback(
+    (index: number, packId: number) =>
+      setValue(
+        'unlock_pack',
+        getValues('unlock_pack')?.toSpliced(index, 1, packId),
+      ),
+    [getValues, setValue],
+  );
+
+  return (
+    <div>
+      <Text className={classes.label}>unlock pack</Text>
+      {fields?.map((packId, index) => (
+        <Card key={index} className={classes.card}>
+          <div className={classes.fullWidth}>
+            <CardPackInput
+              required
+              label="pack"
+              value={packId}
+              onChange={(newPackId) => update(index, newPackId)}
+            />
+          </div>
+          <Tooltip content="Remove Pack" relationship="label">
+            <Button
+              icon={<Subtract16Regular />}
+              onClick={() => remove(index)}
+            />
+          </Tooltip>
+        </Card>
+      ))}
+      <Button icon={<Add16Regular />} onClick={() => append(9001)}>
+        Add Pack
+      </Button>
+    </div>
+  );
 };
 
 interface AccessoryInputProps {

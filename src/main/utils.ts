@@ -1,14 +1,24 @@
 import { cp, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
+export const readLines = async (filePath: string): Promise<string[]> => {
+  const data = await readFile(filePath, 'utf-8');
+  return data.split(/\r?\n/);
+};
+
 export const readJson = async <T>(filePath: string): Promise<T> => {
   const data = await readFile(filePath, 'utf-8');
   return JSON.parse(data);
 };
 
-export const readLines = async (filePath: string): Promise<string[]> => {
+export const readJsonWithCommas = async <T>(filePath: string): Promise<T> => {
   const data = await readFile(filePath, 'utf-8');
-  return data.split(/\r?\n/);
+  const dataWithoutCommas = data.replace(
+    /(?<=(true|false|null|["\d}\]])\s*)\s*,(?=\s*[}\]])/g,
+    '',
+  );
+
+  return JSON.parse(dataWithoutCommas);
 };
 
 export const saveJson = async (

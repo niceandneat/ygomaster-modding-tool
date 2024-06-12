@@ -27,6 +27,7 @@ export type BaseChapter = {
   id: number; // Solo id
   parent_id: number; // 0: this solo is the first one / other than 0: solo that needs to clear before this one
   description: string; // Solo description
+  unlock_pack?: number[];
 };
 
 export type UnlockChapter = BaseChapter & {

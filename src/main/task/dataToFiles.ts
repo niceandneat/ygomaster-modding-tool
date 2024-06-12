@@ -3,6 +3,7 @@ import { glob } from 'glob';
 import path from 'node:path';
 
 import {
+  BaseChapter,
   Chapter,
   ChapterUnlock,
   DuelChapter,
@@ -267,12 +268,21 @@ const createChapters = (data: {
   };
 };
 
-const createUnlockChapter = (data: {
+const createUnlockPack = (
+  unlockSecret?: number | number[],
+): number[] | undefined => {
+  if (unlockSecret === undefined) return;
+  if (typeof unlockSecret === 'number') return [unlockSecret];
+  if (!unlockSecret.length) return [];
+  return unlockSecret;
+};
+
+const createBaseChapter = (data: {
   gateData: GateData;
   gateId: number;
   chapterId: number;
   duelDescriptions: Map<number, string>;
-}): UnlockChapter => {
+}): BaseChapter => {
   const { gateData, gateId, chapterId, duelDescriptions } = data;
   const chapterData = gateData.chapter[gateId][chapterId];
 
@@ -282,6 +292,20 @@ const createUnlockChapter = (data: {
       chapterData.parent_chapter &&
       dataChapterIdToFileChapterId(chapterData.parent_chapter),
     description: duelDescriptions.get(chapterId) ?? '',
+    unlock_pack: createUnlockPack(chapterData.unlock_secret),
+  };
+};
+
+const createUnlockChapter = (data: {
+  gateData: GateData;
+  gateId: number;
+  chapterId: number;
+  duelDescriptions: Map<number, string>;
+}): UnlockChapter => {
+  const { gateData, gateId, chapterId, duelDescriptions } = data;
+
+  return {
+    ...createBaseChapter({ gateData, gateId, chapterId, duelDescriptions }),
     type: 'Unlock',
     unlock: createItemUnlock({ gateData, gateId, chapterId }),
   };
@@ -297,11 +321,7 @@ const createRewardChapter = (data: {
   const chapterData = gateData.chapter[gateId][chapterId];
 
   return {
-    id: dataChapterIdToFileChapterId(chapterId),
-    parent_id:
-      chapterData.parent_chapter &&
-      dataChapterIdToFileChapterId(chapterData.parent_chapter),
-    description: duelDescriptions.get(chapterId) ?? '',
+    ...createBaseChapter({ gateData, gateId, chapterId, duelDescriptions }),
     type: 'Reward',
     reward: createReward(gateData, chapterData.set_id),
   };
@@ -396,11 +416,7 @@ const createDuelChapter = (data: {
   if (rentalDeck) decks.push(rentalDeck);
 
   const chapter: DuelChapter = {
-    id: dataChapterIdToFileChapterId(chapterId),
-    parent_id:
-      chapterData.parent_chapter &&
-      dataChapterIdToFileChapterId(chapterData.parent_chapter),
-    description: duelDescriptions.get(chapterId) ?? '',
+    ...createBaseChapter({ gateData, gateId, chapterId, duelDescriptions }),
     type: 'Duel',
     cpu_deck: `${cpuDeckName}.json`,
     rental_deck: rentalDeckName && `${rentalDeckName}.json`,
