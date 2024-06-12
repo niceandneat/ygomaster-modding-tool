@@ -6,9 +6,9 @@ import { ItemCategory } from '../../../common/type';
 type GetSrc = (category: string, item: number) => string;
 
 const getThumbnailSrc: GetSrc = (category, item) =>
-  `static://item-thumbnails/${category}/${item}.webp`;
+  `static://thumbnails/${category}/${item}.webp`;
 const getImageSrc: GetSrc = (category, item) =>
-  `static://item-images/${category}/${item}.webp`;
+  `static://images/${category}/${item}.webp`;
 
 // Show empty image for missing assets
 const handleImageError: ReactEventHandler<HTMLImageElement> = (e) => {
