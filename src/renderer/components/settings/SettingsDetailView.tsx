@@ -1,6 +1,8 @@
 import {
   Button,
+  Dropdown,
   Field,
+  Option,
   Title1,
   makeStyles,
   tokens,
@@ -23,6 +25,7 @@ const defaultSettings: Partial<Settings> = {
   gatePath: '',
   deckPath: '',
   dataPath: '',
+  language: 'English',
 };
 
 const useStyles = makeStyles({
@@ -106,6 +109,7 @@ export const SettingsDetailView = ({
           <FileNameInput name="dataPath" />
           <FileNameInput name="gatePath" />
           <FileNameInput name="deckPath" />
+          <LanguageInput />
         </form>
       </FormProvider>
     </div>
@@ -126,13 +130,42 @@ const FileNameInput = ({ name }: FileInputProps) => {
         control={control}
         name={name}
         render={({ field }) => (
-          <Field label={name}>
+          <Field label={name} required>
             <FileInput
               onChange={field.onChange}
               value={field.value?.toString()}
               placeholder="Select a directory"
               directory
             />
+          </Field>
+        )}
+      />
+    </div>
+  );
+};
+
+const LanguageInput = () => {
+  const classes = useStyles();
+  const { control } = useFormContext<Settings>();
+
+  return (
+    <div className={classes.space}>
+      <Controller
+        control={control}
+        name="language"
+        render={({ field }) => (
+          <Field label="asset language" required>
+            <Dropdown
+              value={field.value}
+              selectedOptions={[field.value]}
+              onOptionSelect={(_, data) => field.onChange(data.optionValue)}
+            >
+              {(['English', 'Korean'] as const).map((type) => (
+                <Option key={type} value={type}>
+                  {type}
+                </Option>
+              ))}
+            </Dropdown>
           </Field>
         )}
       />

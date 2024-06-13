@@ -126,6 +126,7 @@ export interface Settings {
   gatePath: string;
   deckPath: string;
   dataPath: string;
+  language: 'English' | 'Korean';
 }
 
 export const isUnlockChapter = (

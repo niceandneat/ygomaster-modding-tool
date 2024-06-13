@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import { GateSummary, Settings } from '../common/type';
+import { dataStore } from './data';
 
 interface State {
   settings: Settings;
@@ -14,9 +15,12 @@ export const useAppStore = create<State>()((set, get) => ({
     dataPath: '',
     gatePath: '',
     deckPath: '',
+    language: 'English',
   },
-  setSettings: ({ dataPath, gatePath, deckPath }) =>
-    set({ settings: { dataPath, gatePath, deckPath } }),
+  setSettings: (inputSettings) => {
+    set((state) => ({ settings: { ...state.settings, ...inputSettings } }));
+    dataStore.setOption({ language: get().settings.language });
+  },
   loadGates: async () => {
     const { gatePath } = get().settings;
     if (!gatePath) return [];

@@ -21,7 +21,7 @@ interface PackData {
 }
 
 interface DataStoreOption {
-  language?: string;
+  language: string;
 }
 
 class DataStore {
@@ -32,13 +32,14 @@ class DataStore {
   private packMap!: Map<number, PackData>;
   private packs!: PackData[];
 
-  constructor(option: DataStoreOption = {}) {
+  constructor(option?: Partial<DataStoreOption>) {
     this.setItemData();
-    this.setCardData(option);
-    this.setPackData(option);
+    this.setOption(option);
   }
 
-  setOption(option: DataStoreOption) {
+  setOption(inputOption?: Partial<DataStoreOption>) {
+    const option = this.applyDefault(inputOption, { language: 'English' });
+
     this.setCardData(option);
     this.setPackData(option);
   }
@@ -113,6 +114,24 @@ class DataStore {
     );
 
     this.packs = [...this.packMap.values()];
+  }
+
+  private applyDefault(
+    inputOption: Partial<DataStoreOption> | undefined,
+    defaultOption: DataStoreOption,
+  ) {
+    const option = { ...defaultOption };
+
+    if (!inputOption) return option;
+
+    Object.keys(defaultOption).forEach((key) => {
+      const value = inputOption[key as keyof DataStoreOption];
+      if (value) {
+        option[key as keyof DataStoreOption] = value;
+      }
+    });
+
+    return option;
   }
 }
 
