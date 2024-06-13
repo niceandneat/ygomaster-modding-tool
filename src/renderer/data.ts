@@ -1,5 +1,5 @@
 import { ItemCategory } from '../common/type';
-import cardPacksData from '../data/cardPacks.json';
+import cardPacksData from '../data/card-packs.json';
 import cardsData from '../data/cards.json';
 import itemsData from '../data/items.json';
 
@@ -95,10 +95,17 @@ class DataStore {
   }
 
   private setCardData(option: DataStoreOption) {
+    const getName = (card: (typeof cardsData)[number]) => {
+      if (option.language === 'Korean') {
+        return card.korean.name || card.english.name;
+      }
+      return card.english.name;
+    };
+
     this.cardMap = new Map<number, CardData>(
       cardsData.map((card) => {
         const id = Number(card.id);
-        return [id, { id, name: card.name }];
+        return [id, { id, name: getName(card) }];
       }),
     );
 
@@ -106,10 +113,20 @@ class DataStore {
   }
 
   private setPackData(option: DataStoreOption) {
+    const getName = (card: (typeof cardPacksData)[number]) => {
+      if (option.language === 'Korean') {
+        return card.korean.name || card.english.name;
+      }
+      return card.english.name;
+    };
+
     this.packMap = new Map<number, PackData>(
-      cardPacksData.map((card) => {
-        const id = Number(card.id);
-        return [id, { ...card, id }];
+      cardPacksData.map((pack) => {
+        const id = Number(pack.id);
+        return [
+          id,
+          { id, index: pack.index, release: pack.release, name: getName(pack) },
+        ];
       }),
     );
 
