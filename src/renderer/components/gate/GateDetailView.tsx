@@ -260,7 +260,7 @@ export const GateDetailView = ({
             number
             integer
             rules={{
-              min: { value: 11, message: 'id should be larger than 10' },
+              min: { value: 101, message: 'id should be larger than 100' },
             }}
           />
           <ParentIdInput gates={gates} />
