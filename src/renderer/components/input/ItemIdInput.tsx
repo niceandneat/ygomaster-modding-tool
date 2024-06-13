@@ -3,7 +3,7 @@ import { IFuseOptions } from 'fuse.js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ItemCategory } from '../../../common/type';
-import { ygoItems, ygoItemsMap } from '../../data';
+import { dataStore } from '../../data';
 import { ItemImage } from '../common/ItemImage';
 import { ComboboxInput } from './ComboboxInput';
 
@@ -38,7 +38,7 @@ interface ItemIdOption {
 }
 
 const getValidIdForImage = (category: ItemCategory, id: number) =>
-  id > 0 ? id : ygoItems.get(category)?.at(0)?.id ?? 0;
+  id > 0 ? id : dataStore.getItems(category)?.at(0)?.id ?? 0;
 
 const optionToString = (option?: ItemIdOption) => option?.name ?? '';
 const compareValues = (a?: ItemIdOption, b?: ItemIdOption) =>
@@ -115,7 +115,7 @@ export const ItemIdInput = <T extends ItemCategory>({
   );
 
   const itemOptions = useMemo<ItemIdOption[]>(() => {
-    const options = ygoItems.get(category) ?? [];
+    const options = dataStore.getItems(category);
 
     if (includeNone) {
       return [{ id: 0, name: 'None' }, ...options];
@@ -127,8 +127,7 @@ export const ItemIdInput = <T extends ItemCategory>({
   const itemValue = useMemo<ItemIdOption>(
     () => ({
       id: value,
-      name:
-        value > 0 ? ygoItemsMap.get(category)?.get(value)?.name ?? '' : 'None',
+      name: value > 0 ? dataStore.getItem(category, value)?.name ?? '' : 'None',
     }),
     [category, value],
   );

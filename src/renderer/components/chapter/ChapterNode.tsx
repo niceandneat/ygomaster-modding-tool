@@ -20,7 +20,7 @@ import {
   isRewardChapter,
   isUnlockChapter,
 } from '../../../common/type';
-import { ygoItemsMap } from '../../data';
+import { dataStore } from '../../data';
 import { ItemImage } from '../common/ItemImage';
 import { NodeType } from './useChaptersFlow';
 
@@ -234,7 +234,7 @@ const NodeItemList = ({ items, title }: { items: Item[]; title: string }) => {
         ].includes(item.category);
 
         const name = String(
-          ygoItemsMap.get(item.category)?.get(item.id)?.name ?? item.id,
+          dataStore.getItem(item.category, item.id)?.name ?? item.id,
         );
 
         return (

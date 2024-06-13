@@ -3,7 +3,7 @@ import { IFuseOptions } from 'fuse.js';
 import { useCallback, useMemo, useRef } from 'react';
 
 import { Item, ItemCategory, itemCategories } from '../../../common/type';
-import { ygoItems } from '../../data';
+import { dataStore } from '../../data';
 import { handleNumberInput } from '../../utils/handleNumberInput';
 import { ComboboxInput } from './ComboboxInput';
 import { ItemIdInput } from './ItemIdInput';
@@ -63,7 +63,7 @@ interface ItemInputProps<T extends ItemCategory> {
 const defaultCategories = itemCategories.filter((c) => c !== ItemCategory.NONE);
 const categoryDefaultIdMap = {
   ...Object.fromEntries(
-    [...ygoItems.entries()].map(([category, [{ id }]]) => [category, id]),
+    itemCategories.map((c) => [c, dataStore.getItems(c)[0]]),
   ),
   [ItemCategory.CARD]: 4007, // Blue-Eyes White Dragon
 } as Record<ItemCategory, number>;

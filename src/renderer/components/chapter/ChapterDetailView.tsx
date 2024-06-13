@@ -35,7 +35,7 @@ import {
   defaultRewardChapter,
   defaultUnlockChapter,
 } from '../../../common/type';
-import { ygoItems } from '../../data';
+import { dataStore } from '../../data';
 import { debounce } from '../../utils/debounce';
 import { CardPackInput } from '../input/CardPackInput';
 import { FileInput } from '../input/FileInput';
@@ -112,7 +112,7 @@ export const ChapterDetailView = ({
   const { watch, control, trigger, setValue } = methods;
 
   const randomizeAccessories = useCallback(() => {
-    const field = getRandomItem(ygoItems.get(ItemCategory.FIELD));
+    const field = getRandomItem(dataStore.getItems(ItemCategory.FIELD));
 
     setValue('player_mat', field);
     setValue('cpu_mat', field);
@@ -122,21 +122,33 @@ export const ChapterDetailView = ({
     setValue('cpu_avatar_home', field + 20000);
     setValue(
       'player_sleeve',
-      getRandomItem(ygoItems.get(ItemCategory.PROTECTOR)),
+      getRandomItem(dataStore.getItems(ItemCategory.PROTECTOR)),
     );
-    setValue('cpu_sleeve', getRandomItem(ygoItems.get(ItemCategory.PROTECTOR)));
-    setValue('player_icon', getRandomItem(ygoItems.get(ItemCategory.ICON)));
-    setValue('cpu_icon', getRandomItem(ygoItems.get(ItemCategory.ICON)));
+    setValue(
+      'cpu_sleeve',
+      getRandomItem(dataStore.getItems(ItemCategory.PROTECTOR)),
+    );
+    setValue(
+      'player_icon',
+      getRandomItem(dataStore.getItems(ItemCategory.ICON)),
+    );
+    setValue('cpu_icon', getRandomItem(dataStore.getItems(ItemCategory.ICON)));
     setValue(
       'player_icon_frame',
-      getRandomItem(ygoItems.get(ItemCategory.ICON_FRAME)),
+      getRandomItem(dataStore.getItems(ItemCategory.ICON_FRAME)),
     );
     setValue(
       'cpu_icon_frame',
-      getRandomItem(ygoItems.get(ItemCategory.ICON_FRAME)),
+      getRandomItem(dataStore.getItems(ItemCategory.ICON_FRAME)),
     );
-    setValue('player_avatar', getRandomItem(ygoItems.get(ItemCategory.AVATAR)));
-    setValue('cpu_avatar', getRandomItem(ygoItems.get(ItemCategory.AVATAR)));
+    setValue(
+      'player_avatar',
+      getRandomItem(dataStore.getItems(ItemCategory.AVATAR)),
+    );
+    setValue(
+      'cpu_avatar',
+      getRandomItem(dataStore.getItems(ItemCategory.AVATAR)),
+    );
   }, [setValue]);
 
   useEffect(() => {

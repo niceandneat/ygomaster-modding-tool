@@ -9,7 +9,7 @@ import { IFuseOptions } from 'fuse.js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { AssetCategory } from '../../../common/type';
-import { ygoPacks, ygoPacksMap } from '../../data';
+import { dataStore } from '../../data';
 import { AssetImage } from '../common/AssetImage';
 import { ComboboxInput } from './ComboboxInput';
 
@@ -143,7 +143,7 @@ export const CardPackInput = ({
   );
 
   const inputValue = useMemo<CardPackOption>(() => {
-    const pack = ygoPacksMap.get(value);
+    const pack = dataStore.getPack(value);
 
     return {
       id: value,
@@ -153,13 +153,15 @@ export const CardPackInput = ({
     };
   }, [value]);
 
+  const inputOptions = dataStore.getPacks();
+
   return (
     <>
       <ComboboxInput
         label={label}
         required={required}
         value={inputValue}
-        options={ygoPacks}
+        options={inputOptions}
         fuseOptions={fuseOptions}
         onChange={handleChange}
         onChangeHighlight={handleHighlightChange}

@@ -16,7 +16,7 @@ import {
   isRewardChapter,
   isUnlockChapter,
 } from '../../../common/type';
-import { ygoItemsMap } from '../../data';
+import { dataStore } from '../../data';
 import { ItemImage } from '../common/ItemImage';
 
 const useStyles = makeStyles({
@@ -87,7 +87,7 @@ const GateTotalItems = ({ items }: GateTotalItemsProps) => {
   return (
     <div className={classes.container}>
       {items.map(({ category, id, counts }, index) => {
-        const name = String(ygoItemsMap.get(category)?.get(id)?.name ?? id);
+        const name = String(dataStore.getItem(category, id)?.name ?? id);
         return (
           <Tooltip key={index} content={name} relationship="description">
             <Tag

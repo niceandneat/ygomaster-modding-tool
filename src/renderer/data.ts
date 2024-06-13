@@ -3,54 +3,117 @@ import cardPacksData from '../data/cardPacks.json';
 import cardsData from '../data/cards.json';
 import itemsData from '../data/items.json';
 
-interface YgoItemData {
+interface ItemData {
   id: number;
   name: string;
 }
 
-export const ygoItemsMap = new Map<ItemCategory, Map<number, YgoItemData>>([
-  ...Object.entries(itemsData).map(
-    ([category, items]) =>
-      [
-        ItemCategory[category as keyof typeof itemsData],
-        new Map(
-          items.map((item) => {
-            const id = Number(item.id);
-            return [id, { id, name: item.name }];
-          }),
-        ),
-      ] as const,
-  ),
-  [
-    ItemCategory.CARD,
-    new Map(
-      cardsData.map((card) => {
-        const id = Number(card.id);
-        return [id, { id, name: card.name }];
-      }),
-    ),
-  ],
-]);
+interface CardData {
+  id: number;
+  name: string;
+}
 
-export const ygoItems = new Map<ItemCategory, YgoItemData[]>(
-  [...ygoItemsMap.entries()].map(([category, itemsMap]) => [
-    category,
-    [...itemsMap.values()],
-  ]),
-);
-
-interface YgoPackData {
+interface PackData {
   id: number;
   name: string;
   index: number;
   release: number;
 }
 
-export const ygoPacksMap = new Map<number, YgoPackData>(
-  cardPacksData.map((card) => {
-    const id = Number(card.id);
-    return [id, { ...card, id }];
-  }),
-);
+interface DataStoreOption {
+  language?: string;
+}
 
-export const ygoPacks: YgoPackData[] = [...ygoPacksMap.values()];
+class DataStore {
+  private itemMapByCategory!: Map<ItemCategory, Map<number, ItemData>>;
+  private itemsByCategory!: Map<ItemCategory, ItemData[]>;
+  private cardMap!: Map<number, CardData>;
+  private cards!: CardData[];
+  private packMap!: Map<number, PackData>;
+  private packs!: PackData[];
+
+  constructor(option: DataStoreOption = {}) {
+    this.setItemData();
+    this.setCardData(option);
+    this.setPackData(option);
+  }
+
+  setOption(option: DataStoreOption) {
+    this.setCardData(option);
+    this.setPackData(option);
+  }
+
+  getItem(category: ItemCategory, id: number): ItemData | undefined {
+    if (category === ItemCategory.CARD) return this.getCard(id);
+    return this.itemMapByCategory.get(category)?.get(id);
+  }
+
+  getItems(category: ItemCategory): ItemData[] {
+    if (category === ItemCategory.CARD) return this.getCards();
+    return this.itemsByCategory.get(category) ?? [];
+  }
+
+  getCard(id: number): CardData | undefined {
+    return this.cardMap.get(id);
+  }
+
+  getCards(): CardData[] {
+    return this.cards;
+  }
+
+  getPack(id: number): PackData | undefined {
+    return this.packMap.get(id);
+  }
+
+  getPacks(): PackData[] {
+    return this.packs;
+  }
+
+  private setItemData() {
+    this.itemMapByCategory = new Map<ItemCategory, Map<number, ItemData>>([
+      ...Object.entries(itemsData).map(
+        ([category, items]) =>
+          [
+            ItemCategory[category as keyof typeof itemsData],
+            new Map(
+              items.map((item) => {
+                const id = Number(item.id);
+                return [id, { id, name: item.name }];
+              }),
+            ),
+          ] as const,
+      ),
+    ]);
+
+    this.itemsByCategory = new Map<ItemCategory, ItemData[]>(
+      [...this.itemMapByCategory.entries()].map(([category, itemsMap]) => [
+        category,
+        [...itemsMap.values()],
+      ]),
+    );
+  }
+
+  private setCardData(option: DataStoreOption) {
+    this.cardMap = new Map<number, CardData>(
+      cardsData.map((card) => {
+        const id = Number(card.id);
+        return [id, { id, name: card.name }];
+      }),
+    );
+
+    this.cards = [...this.cardMap.values()];
+  }
+
+  private setPackData(option: DataStoreOption) {
+    this.packMap = new Map<number, PackData>(
+      cardPacksData.map((card) => {
+        const id = Number(card.id);
+        return [id, { ...card, id }];
+      }),
+    );
+
+    this.packs = [...this.packMap.values()];
+  }
+}
+
+export const dataStore = new DataStore();
