@@ -1,4 +1,5 @@
 import {
+  Tag,
   Text,
   Tooltip,
   makeStyles,
@@ -10,6 +11,7 @@ import { Handle, Node, NodeProps, Position } from '@xyflow/react';
 import { memo } from 'react';
 
 import {
+  AssetCategory,
   ChapterType,
   DuelChapter,
   Item,
@@ -21,6 +23,7 @@ import {
   isUnlockChapter,
 } from '../../../common/type';
 import { dataStore } from '../../data';
+import { AssetImage } from '../common/AssetImage';
 import { ItemImage } from '../common/ItemImage';
 import { NodeType } from './useChaptersFlow';
 
@@ -109,6 +112,38 @@ const useItemListStyles = makeStyles({
   },
 });
 
+const useCardPackListStyles = makeStyles({
+  container: {
+    width: '100%',
+  },
+  title: {
+    paddingTop: tokens.spacingHorizontalXXS,
+    paddingBottom: tokens.spacingHorizontalXXS,
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: tokens.colorPalettePlatinumBackground2,
+  },
+  listContainer: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr 1fr',
+    alignItems: 'center',
+    gap: tokens.spacingHorizontalS,
+    marginTop: tokens.spacingVerticalS,
+  },
+  listItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: tokens.spacingHorizontalS,
+  },
+  icon: {
+    width: '100%',
+  },
+  index: {
+    width: '100%',
+    justifyItems: 'center',
+  },
+});
+
 const ChapterNodeComponent = (props: NodeProps<NodeType>) => {
   const {
     data,
@@ -172,6 +207,9 @@ const DuelChapterNodeContents = ({
         {data.rental_reward?.length ? (
           <NodeItemList title="rental reward" items={data.rental_reward} />
         ) : null}
+        {data.unlock_pack?.length ? (
+          <NodeCardPackList title="packs unlock" packs={data.unlock_pack} />
+        ) : null}
       </div>
     </div>
   );
@@ -193,6 +231,9 @@ const UnlockChapterNodeContents = ({
         {data.unlock.length ? (
           <NodeItemList title="unlock" items={data.unlock} />
         ) : null}
+        {data.unlock_pack?.length ? (
+          <NodeCardPackList title="packs unlock" packs={data.unlock_pack} />
+        ) : null}
       </div>
     </div>
   );
@@ -213,6 +254,9 @@ const RewardChapterNodeContents = ({
         <Text align="center">{data.description || data.id}</Text>
         {data.reward.length ? (
           <NodeItemList title="reward" items={data.reward} />
+        ) : null}
+        {data.unlock_pack?.length ? (
+          <NodeCardPackList title="packs unlock" packs={data.unlock_pack} />
         ) : null}
       </div>
     </div>
@@ -262,6 +306,50 @@ const NodeItemList = ({ items, title }: { items: Item[]; title: string }) => {
           </div>
         );
       })}
+    </div>
+  );
+};
+
+const NodeCardPackList = ({
+  packs,
+  title,
+}: {
+  packs: number[];
+  title: string;
+}) => {
+  const classes = useCardPackListStyles();
+
+  return (
+    <div className={classes.container}>
+      <div className={classes.title}>
+        <Text>{title}</Text>
+      </div>
+      <div className={classes.listContainer}>
+        {packs.map((packId, index) => {
+          const pack = dataStore.getPack(packId);
+          if (!pack) return null;
+
+          return (
+            <div key={index} className={classes.listItem}>
+              <Tooltip
+                content={pack.name}
+                relationship="description"
+                positioning="below"
+              >
+                <AssetImage
+                  alt={pack.name}
+                  className={classes.icon}
+                  category={AssetCategory.CARD_PACK}
+                  item={packId}
+                />
+              </Tooltip>
+              <Tag size="small" className={classes.index}>
+                {pack.index}
+              </Tag>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
