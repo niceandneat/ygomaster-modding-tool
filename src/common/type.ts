@@ -15,7 +15,6 @@ export interface Gate {
 export interface GateSummary {
   id: number;
   parent_id: number;
-  path: string;
   name: string;
   priority: number;
 }
@@ -123,10 +122,14 @@ export type Unlock = ChapterUnlock | ItemUnlock;
 export type Reward = Item<ItemCategory>;
 
 export interface Settings {
+  dataPath: string;
+  filesPath?: string;
+  language: 'English' | 'Korean';
+}
+
+export interface SettingsPaths {
   gatePath: string;
   deckPath: string;
-  dataPath: string;
-  language: 'English' | 'Korean';
 }
 
 export const isUnlockChapter = (
@@ -225,19 +228,22 @@ export interface ShowMessageBoxRequest {
 }
 
 export interface ImportDataRequest {
-  gatePath: string;
-  deckPath: string;
   dataPath: string;
+  filesPath?: string;
 }
 
 export interface ExportDataRequest {
-  gatePath: string;
-  deckPath: string;
   dataPath: string;
+  filesPath?: string;
+}
+
+export interface LoadSettingsResponse {
+  settings?: Settings;
+  paths: SettingsPaths;
 }
 
 export interface ReadGatesRequest {
-  gatePath: string;
+  filesPath?: string;
 }
 
 export interface ReadGatesResponse {
@@ -245,7 +251,8 @@ export interface ReadGatesResponse {
 }
 
 export interface ReadGateRequest {
-  filePath: string;
+  id: number;
+  filesPath?: string;
 }
 
 export interface ReadGateResponse {
@@ -254,28 +261,34 @@ export interface ReadGateResponse {
 
 export interface CreateGateRequest {
   gate: Gate;
-  path?: string;
+  filesPath?: string;
 }
 
 export interface CreateGateResponse {
-  filePath?: string;
+  gate: Gate;
 }
 
 export interface UpdateGateRequest {
-  filePath: string;
+  gate: Gate;
+  prevId: number;
+  filesPath?: string;
+}
+
+export interface UpdateGateResponse {
   gate: Gate;
 }
 
 export interface DeleteGateRequest {
-  filePath: string;
+  id: number;
+  filesPath?: string;
 }
 
 export interface ImportDeckRequest {
-  deckPath: string;
   dataPath: string;
+  filesPath?: string;
 }
 
 export interface ExportDeckRequest {
-  deckPath: string;
   dataPath: string;
+  filesPath?: string;
 }

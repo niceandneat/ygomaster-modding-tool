@@ -2,11 +2,10 @@ import { Toaster, makeStyles, tokens } from '@fluentui/react-components';
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Gate, GateSummary } from '../../../common/type';
+import { Gate } from '../../../common/type';
 import { useToast } from '../../hooks/useToast';
 import { useAppStore } from '../../store';
 import { getChapterName } from '../../utils/getChapterName';
-import { toAbsolutePath } from '../../utils/toAbsolutePath';
 import { withMessageBox } from '../../utils/withMessageBox';
 import { GateDetailView } from './GateDetailView';
 
@@ -20,26 +19,24 @@ const useStyles = makeStyles({
 
 export const GateDetail = () => {
   const classes = useStyles();
+  const { filesPath } = useAppStore((s) => s.settings);
+  const gates = useAppStore((s) => s.gates);
   const loadGates = useAppStore((s) => s.loadGates);
-  const { gatePath } = useAppStore((s) => s.settings);
   const { toasterId, withToast } = useToast('Success Save', 'Fail Save');
-  const params = useParams();
+  const { id: idParams } = useParams();
+  const id = Number(idParams);
 
   const [gate, setGate] = useState<Gate>();
-  const [gates, setGates] = useState<GateSummary[]>();
-
-  const fileName = params['*'] || 'UNKNOWN_PATH';
-  const filePath = toAbsolutePath(fileName, gatePath);
 
   const handleSubmit = useCallback(
     (gate: Gate) =>
       withToast(() =>
         withMessageBox(async () => {
-          await window.electron.updateGate({ gate, filePath });
+          await window.electron.updateGate({ gate, filesPath, prevId: id });
           await loadGates();
         }),
       ),
-    [withToast, filePath, loadGates],
+    [withToast, id, filesPath, loadGates],
   );
 
   const handleLoadChapters = useCallback(
@@ -48,29 +45,26 @@ export const GateDetail = () => {
       if (!gateSummary) return [];
 
       const { gate } = await window.electron.readGate({
-        filePath: gateSummary.path,
+        filesPath,
+        id: gateId,
       });
+
       return gate.chapters.map((chapter) => ({
         id: chapter.id,
         name: getChapterName(chapter),
       }));
     },
-    [gates],
+    [filesPath, gates],
   );
 
   useEffect(() => {
     const main = async () => {
-      const [{ gate }, { gates }] = await Promise.all([
-        window.electron.readGate({ filePath }),
-        window.electron.readGates({ gatePath }),
-      ]);
-
+      const { gate } = await window.electron.readGate({ filesPath, id });
       setGate(gate);
-      setGates(gates);
     };
 
     main();
-  }, [filePath, gatePath]);
+  }, [filesPath, id]);
 
   if (!gate || !gates) return null;
 
@@ -78,7 +72,7 @@ export const GateDetail = () => {
     <>
       <div className={classes.container}>
         <GateDetailView
-          title={fileName}
+          title={`Gate ${gate.id}`}
           gate={gate}
           gates={gates}
           loadChapters={handleLoadChapters}

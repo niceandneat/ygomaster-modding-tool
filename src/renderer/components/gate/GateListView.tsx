@@ -24,8 +24,6 @@ import {
 import { useMemo } from 'react';
 
 import { GateSummary } from '../../../common/type';
-import { useAppStore } from '../../store';
-import { toRelativePath } from '../../utils/toRelativePath';
 
 const useStyles = makeStyles({
   header: {
@@ -71,7 +69,6 @@ export const GateListView = ({
   onClickReload,
 }: GateListViewProps) => {
   const classes = useStyles();
-  const { gatePath } = useAppStore((s) => s.settings);
 
   const columns: TableColumnDefinition<GateSummary>[] = useMemo(
     () => [
@@ -128,20 +125,6 @@ export const GateListView = ({
         },
       }),
       createTableColumn<GateSummary>({
-        columnId: 'path',
-        compare: (a, b) => {
-          return a.path.localeCompare(b.path);
-        },
-        renderHeaderCell: () => {
-          return 'Path';
-        },
-        renderCell: (gate) => {
-          const name = toRelativePath(gate.path, gatePath);
-
-          return <TableCellLayout truncate>{name}</TableCellLayout>;
-        },
-      }),
-      createTableColumn<GateSummary>({
         columnId: 'actions',
         renderHeaderCell: () => {
           return 'Actions';
@@ -166,7 +149,7 @@ export const GateListView = ({
         },
       }),
     ],
-    [onClickDelete, onClickEdit, gatePath, classes.gap],
+    [classes.gap, onClickEdit, onClickDelete],
   );
 
   return (

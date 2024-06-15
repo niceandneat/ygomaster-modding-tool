@@ -16,19 +16,18 @@ const useStyles = makeStyles({
 export const SettingsDetail = () => {
   const classes = useStyles();
   const settings = useAppStore((s) => s.settings);
-  const setSettings = useAppStore((s) => s.setSettings);
+  const saveSettings = useAppStore((s) => s.saveSettings);
   const loadGates = useAppStore((s) => s.loadGates);
   const { toasterId, withToast } = useToast('Success Save', 'Fail Save');
 
   const handleSubmit = useCallback(
     (settings: Settings) =>
       withToast(async () => {
-        setSettings(settings);
-        await window.electron.saveSettings(settings);
+        await saveSettings(settings);
         // TODO needs global loading(status) indicator?
         await loadGates();
       }),
-    [loadGates, setSettings, withToast],
+    [loadGates, saveSettings, withToast],
   );
 
   const handleClickOpenSettingsFile = useCallback(

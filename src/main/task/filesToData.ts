@@ -17,6 +17,7 @@ import {
   backupFiles,
   batchPromiseAll,
   fileChapterIdToDataChapterId,
+  getChildJsonPaths,
   readJson,
   readJsonWithCommas,
   saveJson,
@@ -50,7 +51,7 @@ export const filesToData = async (paths: {
 };
 
 const loadGates = async (gatePath: string): Promise<Gate[]> => {
-  const gatePaths = await glob(toPosix(path.resolve(gatePath, '**/*.json')));
+  const gatePaths = await getChildJsonPaths(gatePath);
   const gates = await batchPromiseAll(gatePaths, readJson<Gate>);
 
   return gates

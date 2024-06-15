@@ -20,16 +20,14 @@ export const InitGuard = ({ children }: InitGuardProps) => {
   const classes = useStyles();
   const [loading, setLoading] = useState<string | undefined>('Start');
 
-  const setSettings = useAppStore((s) => s.setSettings);
+  const loadSettings = useAppStore((s) => s.loadSettings);
   const loadGates = useAppStore((s) => s.loadGates);
 
   useEffect(() => {
     const run = async () => {
       try {
         setLoading('Settings');
-        const settings = await window.electron.loadSettings();
-        if (!settings) return;
-        setSettings(settings);
+        await loadSettings();
 
         setLoading('Gates');
         await loadGates();
@@ -39,7 +37,7 @@ export const InitGuard = ({ children }: InitGuardProps) => {
     };
 
     run();
-  }, [setSettings, loadGates]);
+  }, [loadSettings, loadGates]);
 
   if (loading) {
     return <div className={classes.container}>{`Loading ${loading}`}</div>;

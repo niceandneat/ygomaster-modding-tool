@@ -7,7 +7,6 @@ import {
   shell,
 } from 'electron';
 import log from 'electron-log/main';
-import { glob } from 'glob';
 import path from 'node:path';
 
 import {
@@ -37,6 +36,7 @@ import {
   GateSummary,
   ImportDataRequest,
   ImportDeckRequest,
+  LoadSettingsResponse,
   ReadGateRequest,
   ReadGateResponse,
   ReadGatesRequest,
@@ -47,13 +47,14 @@ import {
 } from '../common/type';
 import { dataToFiles } from './task/dataToFiles';
 import { filesToData } from './task/filesToData';
+import { getPaths, setupFilesDirectories } from './task/settings';
 import {
   batchPromiseAll,
   copyDirectory,
   deleteFile,
+  getChildJsonPaths,
   readJson,
   saveJson,
-  toPosix,
 } from './utils';
 
 const handleOpenDirectory = async (
@@ -86,18 +87,18 @@ const handleOpenFile = async (event: IpcMainInvokeEvent, path?: string) => {
   return filePaths[0];
 };
 
-const handleSaveFile = async (event: IpcMainInvokeEvent, path?: string) => {
-  const win = BrowserWindow.fromWebContents(event.sender);
-  if (!win) return;
+// const handleSaveFile = async (event: IpcMainInvokeEvent, path?: string) => {
+//   const win = BrowserWindow.fromWebContents(event.sender);
+//   if (!win) return;
 
-  const { canceled, filePath } = await dialog.showSaveDialog(win, {
-    defaultPath: path || undefined,
-    filters: [{ name: 'JSON', extensions: ['json'] }],
-  });
-  if (canceled) return;
+//   const { canceled, filePath } = await dialog.showSaveDialog(win, {
+//     defaultPath: path || undefined,
+//     filters: [{ name: 'JSON', extensions: ['json'] }],
+//   });
+//   if (canceled) return;
 
-  return filePath;
-};
+//   return filePath;
+// };
 
 const handleShowMessageBox = async (
   event: IpcMainInvokeEvent,
@@ -127,10 +128,14 @@ const handleSaveSettings =
   };
 
 const handleLoadSettings =
-  (app: App) => async (): Promise<Settings | undefined> => {
-    return await readJson<Settings>(
+  (app: App) => async (): Promise<LoadSettingsResponse> => {
+    const settings = await readJson<Settings>(
       path.resolve(app.getPath('userData'), 'settings.json'),
     ).catch(() => undefined);
+
+    await setupFilesDirectories(settings?.filesPath);
+
+    return { settings, paths: getPaths(settings?.filesPath) };
   };
 
 const handleOpenSettingsFile = (app: App) => async (): Promise<string> => {
@@ -147,29 +152,34 @@ const handleOpenLogFile = (app: App) => async (): Promise<string> => {
 
 const handleImportData = async (
   _event: IpcMainInvokeEvent,
-  { gatePath, deckPath, dataPath }: ImportDataRequest,
+  { dataPath, filesPath }: ImportDataRequest,
 ) => {
+  const { gatePath, deckPath } = getPaths(filesPath);
+
   await dataToFiles({ gatePath, deckPath, dataPath });
 };
 
 const handleExportData = async (
   _event: IpcMainInvokeEvent,
-  { gatePath, deckPath, dataPath }: ExportDataRequest,
+  { dataPath, filesPath }: ExportDataRequest,
 ) => {
+  const { gatePath, deckPath } = getPaths(filesPath);
+
   await filesToData({ gatePath, deckPath, dataPath });
 };
 
 const handleReadGates = async (
   _event: IpcMainInvokeEvent,
-  { gatePath }: ReadGatesRequest,
+  { filesPath }: ReadGatesRequest,
 ): Promise<ReadGatesResponse> => {
-  const gatePaths = await glob(toPosix(path.resolve(gatePath, '**/*.json')));
+  const { gatePath } = getPaths(filesPath);
+
+  const gatePaths = await getChildJsonPaths(gatePath);
   const gates = await batchPromiseAll(gatePaths, (gatePath) =>
     readJson<Gate>(gatePath).then(
       (gate): GateSummary => ({
         id: gate.id,
         parent_id: gate.parent_id,
-        path: gatePath,
         name: gate.name,
         priority: gate.priority,
       }),
@@ -181,50 +191,69 @@ const handleReadGates = async (
 
 const handleReadGate = async (
   _event: IpcMainInvokeEvent,
-  { filePath }: ReadGateRequest,
+  { id, filesPath }: ReadGateRequest,
 ): Promise<ReadGateResponse> => {
+  const { gatePath } = getPaths(filesPath);
+  const filePath = path.resolve(gatePath, `${id}.json`);
+
   return { gate: await readJson(filePath) };
 };
 
 const handleCreateGate = async (
-  event: IpcMainInvokeEvent,
-  { gate, path: basePath }: CreateGateRequest,
+  _event: IpcMainInvokeEvent,
+  { gate, filesPath }: CreateGateRequest,
 ): Promise<CreateGateResponse> => {
-  const defaultPath = basePath && path.resolve(basePath, `${gate.name}.json`);
-  const filePath = await handleSaveFile(event, defaultPath);
-  if (!filePath) return {};
+  const { gatePath } = getPaths(filesPath);
+  const filePath = path.resolve(gatePath, `${gate.id}.json`);
 
   await saveJson(filePath, gate);
-  return { filePath };
+  return { gate };
 };
 
 const handleUpdateGate = async (
   _event: IpcMainInvokeEvent,
-  { filePath, gate }: UpdateGateRequest,
+  { gate, prevId, filesPath }: UpdateGateRequest,
 ) => {
-  await saveJson(filePath, gate);
+  const { gatePath } = getPaths(filesPath);
+  const prevGatePath = path.resolve(gatePath, `${prevId}.json`);
+  const newFilePath = path.resolve(gatePath, `${gate.id}.json`);
+
+  // When ID changes, delete old file.
+  if (prevGatePath !== newFilePath) {
+    await deleteFile(prevGatePath);
+  }
+
+  await saveJson(newFilePath, gate);
+  return { gate };
 };
 
 const handleDeleteGate = async (
   _event: IpcMainInvokeEvent,
-  { filePath }: DeleteGateRequest,
+  { id, filesPath }: DeleteGateRequest,
 ) => {
+  const { gatePath } = getPaths(filesPath);
+  const filePath = path.resolve(gatePath, `${id}.json`);
+
   await deleteFile(filePath);
 };
 
 const handleImportDeck = async (
   _event: IpcMainInvokeEvent,
-  { deckPath, dataPath }: ImportDeckRequest,
+  { dataPath, filesPath }: ImportDeckRequest,
 ) => {
+  const { deckPath } = getPaths(filesPath);
   const deckDataPath = path.resolve(dataPath, 'Players', 'Local', 'Decks');
+
   await copyDirectory(deckDataPath, deckPath);
 };
 
 const handleExportDeck = async (
   _event: IpcMainInvokeEvent,
-  { deckPath, dataPath }: ImportDeckRequest,
+  { dataPath, filesPath }: ImportDeckRequest,
 ) => {
+  const { deckPath } = getPaths(filesPath);
   const deckDataPath = path.resolve(dataPath, 'Players', 'Local', 'Decks');
+
   await copyDirectory(deckPath, deckDataPath);
 };
 

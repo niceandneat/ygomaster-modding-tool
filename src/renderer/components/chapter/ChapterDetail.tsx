@@ -45,7 +45,7 @@ export const ChapterDetail = ({
   onClose,
 }: ChapterDetailProps) => {
   const classes = useStyles();
-  const { deckPath } = useAppStore((s) => s.settings);
+  const { deckPath } = useAppStore((s) => s.paths);
 
   return (
     <OverlayDrawer

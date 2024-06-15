@@ -169,7 +169,7 @@ const extractOnlyRelevantFields = (chapter: Chapter): Chapter => {
 };
 
 interface GateDetailViewProps {
-  title: string;
+  title?: string;
   gate?: Gate;
   gates: GateSummary[];
   loadChapters: (gateId: number) => Promise<{ id: number; name: string }[]>;
@@ -249,7 +249,7 @@ export const GateDetailView = ({
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleGateSubmit)}>
         <div className={classes.header}>
-          <Title1 className={classes.title}>{title}</Title1>
+          <Title1 className={classes.title}>{title || 'Gate'}</Title1>
           <Button icon={<SaveRegular />} type="submit" appearance="primary">
             Save
           </Button>

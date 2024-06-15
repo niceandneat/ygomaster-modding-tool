@@ -27,7 +27,7 @@ export const router = createHashRouter([
         element: <GateCreate />,
       },
       {
-        path: 'gates/*',
+        path: 'gates/:id',
         element: <GateDetail />,
       },
       {

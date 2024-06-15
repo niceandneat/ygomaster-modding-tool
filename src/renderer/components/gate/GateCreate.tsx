@@ -1,8 +1,8 @@
 import { Toaster, makeStyles, tokens } from '@fluentui/react-components';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Gate, GateSummary } from '../../../common/type';
+import { Gate } from '../../../common/type';
 import { useToast } from '../../hooks/useToast';
 import { useAppStore } from '../../store';
 import { getChapterName } from '../../utils/getChapterName';
@@ -18,27 +18,21 @@ const useStyles = makeStyles({
 
 export const GateCreate = () => {
   const classes = useStyles();
-  const { gatePath } = useAppStore((s) => s.settings);
+  const { filesPath } = useAppStore((s) => s.settings);
+  const gates = useAppStore((s) => s.gates);
   const loadGates = useAppStore((s) => s.loadGates);
   const navigate = useNavigate();
   const { toasterId, withToast } = useToast('Success Save', 'Fail Save');
 
-  const [gates, setGates] = useState<GateSummary[]>();
-
   const handleSubmit = useCallback(
     (gate: Gate) =>
       withToast(async () => {
-        const { filePath } = await window.electron.createGate({
-          gate,
-          path: gatePath,
-        });
-
-        if (!filePath) return true; // skip toast
+        await window.electron.createGate({ gate, filesPath });
 
         // Exit page after useWarnNavigation check passed
         loadGates().then(() => navigate('/gates'));
       }),
-    [withToast, gatePath, loadGates, navigate],
+    [withToast, filesPath, loadGates, navigate],
   );
 
   const handleLoadChapters = useCallback(
@@ -47,25 +41,16 @@ export const GateCreate = () => {
       if (!gateSummary) return [];
 
       const { gate } = await window.electron.readGate({
-        filePath: gateSummary.path,
+        filesPath,
+        id: gateId,
       });
       return gate.chapters.map((chapter) => ({
         id: chapter.id,
         name: getChapterName(chapter),
       }));
     },
-    [gates],
+    [filesPath, gates],
   );
-
-  useEffect(() => {
-    const main = async () => {
-      const { gates } = await window.electron.readGates({ gatePath });
-      setGates(gates);
-    };
-    main();
-  }, [gatePath]);
-
-  const title = 'Create Gate';
 
   if (!gates) return null;
 
@@ -73,7 +58,7 @@ export const GateCreate = () => {
     <>
       <div className={classes.container}>
         <GateDetailView
-          title={title}
+          title="Create Gate"
           gates={gates}
           loadChapters={handleLoadChapters}
           onSubmit={handleSubmit}

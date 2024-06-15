@@ -59,7 +59,7 @@ export const Utilities = () => {
 
 interface UtilityDirectoryInputProps {
   label: string;
-  value: string;
+  value?: string;
   onChange: (value: string) => void;
 }
 
@@ -71,7 +71,7 @@ const UtilityDirectoryInput = ({
   return (
     <Field label={label}>
       <FileInput
-        value={value}
+        value={value || ''}
         onChange={onChange}
         placeholder="Select a directory"
         directory
@@ -91,8 +91,7 @@ const DataSyncUtility = () => {
 
   const [loading, setLoading] = useState(false);
   const [dataPath, setDataPath] = useState(settings.dataPath);
-  const [gatePath, setGatePath] = useState(settings.gatePath);
-  const [deckPath, setDeckPath] = useState(settings.deckPath);
+  const [filesPath, setFilesPath] = useState(settings.filesPath);
 
   return (
     <Card className={classes.card}>
@@ -100,7 +99,7 @@ const DataSyncUtility = () => {
         header={<Body1 className={classes.cardTitle}>Data Sync</Body1>}
         description={
           <div className={classes.cardDescription}>
-            <Caption1>Sync between YgoMaster Data and Gate/Deck files</Caption1>
+            <Caption1>Sync between YgoMaster Data and Tool files</Caption1>
             <Caption1>
               {
                 'When creating data from files, the IDs of the chapters in the gate file are combined with the ID of the gate. (e.g. { chapterId: 1, gateId: 1 } => { chapterId: 10001 })'
@@ -120,14 +119,9 @@ const DataSyncUtility = () => {
         onChange={setDataPath}
       />
       <UtilityDirectoryInput
-        label="Gate Path"
-        value={gatePath}
-        onChange={setGatePath}
-      />
-      <UtilityDirectoryInput
-        label="Deck Path"
-        value={deckPath}
-        onChange={setDeckPath}
+        label="Files Path"
+        value={filesPath}
+        onChange={setFilesPath}
       />
       <Toaster toasterId={toasterId} />
       <CardFooter>
@@ -137,8 +131,7 @@ const DataSyncUtility = () => {
             setLoading(true);
             await withToast(() =>
               window.electron.importData({
-                gatePath,
-                deckPath,
+                filesPath,
                 dataPath,
               }),
             );
@@ -147,7 +140,7 @@ const DataSyncUtility = () => {
           }}
           disabled={loading}
         >
-          {'Import (Data -> Gate/Deck)'}
+          {'Import (Data -> Files)'}
         </Button>
         <Button
           appearance="primary"
@@ -155,8 +148,7 @@ const DataSyncUtility = () => {
             setLoading(true);
             await withToast(() =>
               window.electron.exportData({
-                gatePath,
-                deckPath,
+                filesPath,
                 dataPath,
               }),
             );
@@ -164,7 +156,7 @@ const DataSyncUtility = () => {
           }}
           disabled={loading}
         >
-          {'Export (Gate/Deck -> Data)'}
+          {'Export (Files -> Data)'}
         </Button>
       </CardFooter>
     </Card>
@@ -181,7 +173,7 @@ const DeckSyncUtility = () => {
 
   const [loading, setLoading] = useState(false);
   const [dataPath, setDataPath] = useState(settings.dataPath);
-  const [deckPath, setDeckPath] = useState(settings.deckPath);
+  const [filesPath, setFilesPath] = useState(settings.filesPath);
 
   return (
     <Card className={classes.card}>
@@ -197,9 +189,9 @@ const DeckSyncUtility = () => {
         onChange={setDataPath}
       />
       <UtilityDirectoryInput
-        label="Deck Path"
-        value={deckPath}
-        onChange={setDeckPath}
+        label="Files Path"
+        value={filesPath}
+        onChange={setFilesPath}
       />
       <Toaster toasterId={toasterId} />
       <CardFooter>
@@ -209,7 +201,7 @@ const DeckSyncUtility = () => {
             setLoading(true);
             await withToast(() =>
               window.electron.importDeck({
-                deckPath,
+                filesPath,
                 dataPath,
               }),
             );
@@ -225,7 +217,7 @@ const DeckSyncUtility = () => {
             setLoading(true);
             await withToast(() =>
               window.electron.exportDeck({
-                deckPath,
+                filesPath,
                 dataPath,
               }),
             );

@@ -20,11 +20,11 @@ const meta = {
       { id: 5, name: 'chapter-5' },
     ],
     gates: [
-      { id: 1, parent_id: 0, name: 'gate-1', path: '1.json', priority: 1 },
-      { id: 2, parent_id: 0, name: 'gate-2', path: '2.json', priority: 2 },
-      { id: 3, parent_id: 0, name: 'gate-3', path: '3.json', priority: 3 },
-      { id: 4, parent_id: 0, name: 'gate-4', path: '4.json', priority: 4 },
-      { id: 5, parent_id: 0, name: 'gate-5', path: '5.json', priority: 5 },
+      { id: 1, parent_id: 0, name: 'gate-1', priority: 1 },
+      { id: 2, parent_id: 0, name: 'gate-2', priority: 2 },
+      { id: 3, parent_id: 0, name: 'gate-3', priority: 3 },
+      { id: 4, parent_id: 0, name: 'gate-4', priority: 4 },
+      { id: 5, parent_id: 0, name: 'gate-5', priority: 5 },
     ],
   },
 } satisfies Meta<typeof GateDetailView>;

@@ -6,6 +6,7 @@ import {
   ExportDeckRequest,
   ImportDataRequest,
   ImportDeckRequest,
+  LoadSettingsResponse,
   ReadGateRequest,
   ReadGateResponse,
   ReadGatesRequest,
@@ -13,6 +14,7 @@ import {
   Settings,
   ShowMessageBoxRequest,
   UpdateGateRequest,
+  UpdateGateResponse,
 } from '../common/type';
 
 export interface ElectronAPI {
@@ -20,7 +22,7 @@ export interface ElectronAPI {
   openFile: (path?: string) => Promise<string | undefined>;
   showMessageBox: (request: ShowMessageBoxRequest) => Promise<number>;
   saveSettings: (settings: Settings) => Promise<void>;
-  loadSettings: () => Promise<Settings | undefined>;
+  loadSettings: () => Promise<LoadSettingsResponse>;
   openSettingsFile: () => Promise<string>;
   openLogFile: () => Promise<string>;
   importData: (request: ImportDataRequest) => Promise<void>;
@@ -28,7 +30,7 @@ export interface ElectronAPI {
   readGates: (request: ReadGatesRequest) => Promise<ReadGatesResponse>;
   readGate: (request: ReadGateRequest) => Promise<ReadGateResponse>;
   createGate: (request: CreateGateRequest) => Promise<CreateGateResponse>;
-  updateGate: (request: UpdateGateRequest) => Promise<void>;
+  updateGate: (request: UpdateGateRequest) => Promise<UpdateGateResponse>;
   deleteGate: (request: DeleteGateRequest) => Promise<void>;
   importDeck: (request: ImportDeckRequest) => Promise<void>;
   exportDeck: (request: ExportDeckRequest) => Promise<void>;

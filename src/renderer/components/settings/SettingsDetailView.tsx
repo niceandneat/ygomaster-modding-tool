@@ -22,8 +22,7 @@ import { useWarnNavigation } from '../../hooks/useWarnNavigation';
 import { FileInput } from '../input/FileInput';
 
 const defaultSettings: Partial<Settings> = {
-  gatePath: '',
-  deckPath: '',
+  filesPath: undefined,
   dataPath: '',
   language: 'English',
 };
@@ -106,9 +105,11 @@ export const SettingsDetailView = ({
               </Button>
             </div>
           </div>
-          <FileNameInput name="dataPath" />
-          <FileNameInput name="gatePath" />
-          <FileNameInput name="deckPath" />
+          <FileNameInput name="dataPath" required />
+          <FileNameInput
+            name="filesPath"
+            placeholder="The `files` directory located in the same directory as the app's executable"
+          />
           <LanguageInput />
         </form>
       </FormProvider>
@@ -118,9 +119,11 @@ export const SettingsDetailView = ({
 
 interface FileInputProps {
   name: Path<Settings>;
+  required?: boolean;
+  placeholder?: string;
 }
 
-const FileNameInput = ({ name }: FileInputProps) => {
+const FileNameInput = ({ name, required, placeholder }: FileInputProps) => {
   const classes = useStyles();
   const { control } = useFormContext<Settings>();
 
@@ -129,12 +132,13 @@ const FileNameInput = ({ name }: FileInputProps) => {
       <Controller
         control={control}
         name={name}
+        rules={{ required }}
         render={({ field }) => (
-          <Field label={name} required>
+          <Field label={name} required={required}>
             <FileInput
               onChange={field.onChange}
-              value={field.value?.toString()}
-              placeholder="Select a directory"
+              value={field.value?.toString() ?? ''}
+              placeholder={placeholder || 'Select a directory'}
               directory
             />
           </Field>

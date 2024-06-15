@@ -1,5 +1,4 @@
 import log from 'electron-log/main';
-import { glob } from 'glob';
 import path from 'node:path';
 
 import {
@@ -29,10 +28,10 @@ import {
   batchPromiseAll,
   dataChapterIdToFileChapterId,
   dataChapterIdToFileGateId,
+  getChildJsonPaths,
   readJson,
   readLines,
   saveJson,
-  toPosix,
 } from '../utils';
 
 export const dataToFiles = async (paths: {
@@ -71,8 +70,8 @@ const loadGateData = async (dataPath: string): Promise<GateData> => {
 const loadDuelDataList = async (
   dataPath: string,
 ): Promise<Map<number, DuelData>> => {
-  const duelPaths = await glob(
-    toPosix(path.resolve(dataPath, 'SoloDuels/*.json')),
+  const duelPaths = await getChildJsonPaths(
+    path.resolve(dataPath, 'SoloDuels'),
   );
   const rawData = await batchPromiseAll(duelPaths, readJson<DuelDataFile>);
 
@@ -502,7 +501,7 @@ const saveFiles = async (data: {
   log.info('Copied original files to backup folder');
 
   await batchPromiseAll(gates, (gate) =>
-    saveJson(path.resolve(gatePath, `${gate.name}.json`), gate),
+    saveJson(path.resolve(gatePath, `${gate.id}.json`), gate),
   );
   log.info('Created gate files');
 
