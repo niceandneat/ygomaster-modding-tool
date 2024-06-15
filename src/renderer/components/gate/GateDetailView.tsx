@@ -144,6 +144,7 @@ const extractOnlyRelevantFields = (chapter: Chapter): Chapter => {
     rental_deck: chapter.rental_deck,
     mydeck_reward: chapter.mydeck_reward,
     rental_reward: chapter.rental_reward,
+    difficulty: chapter.difficulty,
     cpu_name: chapter.cpu_name,
     cpu_flag: chapter.cpu_flag,
     cpu_value: chapter.cpu_value,

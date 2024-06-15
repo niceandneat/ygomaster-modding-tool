@@ -45,6 +45,7 @@ export type DuelChapter = BaseChapter & {
   rental_deck?: string; // Needs to be set to enable rental deck match
   mydeck_reward: Reward[];
   rental_reward?: Reward[];
+  difficulty: number;
   cpu_name: string; // Opponent name
   cpu_flag: string; // cpuflag (ai relative)
   cpu_value: number; // cpu performance
@@ -176,6 +177,7 @@ export const defaultDuelChapter: DuelChapter = {
   rental_deck: '',
   mydeck_reward: [],
   rental_reward: [],
+  difficulty: 0,
   cpu_name: 'CPU',
   cpu_flag: 'None',
   cpu_value: 98,

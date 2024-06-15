@@ -4,6 +4,7 @@ import {
   Dropdown,
   Field,
   Option,
+  Rating,
   Text,
   Tooltip,
   makeStyles,
@@ -12,6 +13,7 @@ import {
 import {
   Add16Regular,
   ArrowShuffle16Regular,
+  StarOffRegular,
   Subtract16Regular,
 } from '@fluentui/react-icons';
 import { useCallback, useEffect } from 'react';
@@ -52,13 +54,13 @@ const useStyles = makeStyles({
   stack: {
     display: 'flex',
     flexDirection: 'column',
-    rowGap: tokens.spacingVerticalL,
+    gap: tokens.spacingVerticalL,
     marginBottom: '128px',
   },
   split: {
     display: 'flex',
     alignItems: 'center',
-    columnGap: tokens.spacingHorizontalM,
+    gap: tokens.spacingHorizontalM,
     '& > *': {
       flexGrow: '1',
     },
@@ -66,9 +68,14 @@ const useStyles = makeStyles({
   title: {
     marginBottom: tokens.spacingVerticalL,
   },
+  difficultyContainer: {
+    display: 'flex',
+    justifyItems: 'center',
+    gap: tokens.spacingHorizontalXS,
+  },
 });
 
-const useListStyle = makeStyles({
+const useListStyles = makeStyles({
   label: {
     display: 'block',
     marginBottom: tokens.spacingVerticalS,
@@ -197,6 +204,7 @@ export const ChapterDetailView = ({
         <UnlockPackInput />
         {type === 'Duel' && (
           <>
+            <DifficultyInput />
             <FileNameInput
               name="cpu_deck"
               path={deckPath}
@@ -342,7 +350,7 @@ interface ItemInputProps {
 }
 
 const ItemListInput = ({ name, categories, disabled }: ItemInputProps) => {
-  const classes = useListStyle();
+  const classes = useListStyles();
   const { control } = useFormContext<Chapter>();
   const { fields, append, remove } = useFieldArray<Chapter>({ name });
 
@@ -407,7 +415,7 @@ const RewardInput = () => {
 };
 
 const UnlockPackInput = () => {
-  const classes = useListStyle();
+  const classes = useListStyles();
   const { setValue, getValues } = useFormContext<Chapter>();
   const fields = useWatch<Chapter, 'unlock_pack'>({ name: 'unlock_pack' });
 
@@ -457,6 +465,33 @@ const UnlockPackInput = () => {
         Add Pack
       </Button>
     </div>
+  );
+};
+
+const DifficultyInput = () => {
+  const classes = useStyles();
+  const { control } = useFormContext<DuelChapter>();
+
+  return (
+    <Controller
+      control={control}
+      name="difficulty"
+      render={({ field }) => (
+        <Field label="difficulty">
+          <div className={classes.difficultyContainer}>
+            <Rating
+              value={field.value}
+              onChange={(_, data) => field.onChange(data.value)}
+            />
+            <Button
+              aria-label="Delete"
+              icon={<StarOffRegular />}
+              onClick={() => field.onChange(0)}
+            />
+          </div>
+        </Field>
+      )}
+    />
   );
 };
 

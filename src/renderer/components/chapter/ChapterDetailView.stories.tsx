@@ -34,6 +34,7 @@ export const Edit: Story = {
       rental_deck: 'rental_deck.json',
       mydeck_reward: [{ category: ItemCategory.CONSUME, id: 1, counts: 100 }],
       rental_reward: [{ category: ItemCategory.CONSUME, id: 1, counts: 200 }],
+      difficulty: 0,
       cpu_name: 'CPU',
       cpu_flag: 'None',
       cpu_value: 98,

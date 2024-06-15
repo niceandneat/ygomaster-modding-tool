@@ -100,6 +100,7 @@ export interface GateData {
         unlock_id: number;
         begin_sn: string; // ''
         npc_id: number; // 0 for unlock & reward / above 0 for duels
+        difficulty?: number;
         unlock_secret?: number | number[];
       };
     };

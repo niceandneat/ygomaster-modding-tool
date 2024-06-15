@@ -421,6 +421,7 @@ const createDuelChapter = (data: {
     rental_deck: rentalDeckName && `${rentalDeckName}.json`,
     mydeck_reward: myDeckReward,
     rental_reward: rentalDeckReward,
+    difficulty: chapterData.difficulty ?? 0,
     cpu_name: duelData.name[1],
     cpu_flag: duelData.cpuflag ?? 'None',
     cpu_value: duelData.cpu ?? 98,

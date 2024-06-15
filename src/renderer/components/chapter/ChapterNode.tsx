@@ -6,7 +6,11 @@ import {
   mergeClasses,
   tokens,
 } from '@fluentui/react-components';
-import { Add16Regular } from '@fluentui/react-icons';
+import {
+  Add16Regular,
+  Star28Filled,
+  Star28Regular,
+} from '@fluentui/react-icons';
 import { Handle, Node, NodeProps, Position } from '@xyflow/react';
 import { memo } from 'react';
 
@@ -122,6 +126,7 @@ const useCardPackListStyles = makeStyles({
     display: 'flex',
     justifyContent: 'center',
     backgroundColor: tokens.colorPalettePlatinumBackground2,
+    marginBottom: tokens.spacingVerticalM,
   },
   listContainer: {
     display: 'grid',
@@ -141,6 +146,15 @@ const useCardPackListStyles = makeStyles({
   index: {
     width: '100%',
     justifyItems: 'center',
+  },
+});
+
+const useDifficultyStarsStyles = makeStyles({
+  container: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
 
@@ -201,6 +215,7 @@ const DuelChapterNodeContents = ({
       <div className={mergeClasses(classes.tag, classes.duelTag)}>Duel</div>
       <div className={classes.contents}>
         <Text align="center">{name}</Text>
+        <DifficultyStarts difficulty={data.difficulty} />
         {data.mydeck_reward.length ? (
           <NodeItemList title="mydeck reward" items={data.mydeck_reward} />
         ) : null}
@@ -350,6 +365,20 @@ const NodeCardPackList = ({
           );
         })}
       </div>
+    </div>
+  );
+};
+
+const DifficultyStarts = ({ difficulty }: { difficulty: number }) => {
+  const classes = useDifficultyStarsStyles();
+
+  return (
+    <div className={classes.container}>
+      {Array.from({ length: 5 }).map((_, index) => (
+        <div key={index}>
+          {difficulty > index ? <Star28Filled /> : <Star28Regular />}
+        </div>
+      ))}
     </div>
   );
 };

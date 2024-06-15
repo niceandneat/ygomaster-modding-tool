@@ -189,6 +189,7 @@ const createSingleGateData = (
       unlock_id: 0,
       begin_sn: '',
       npc_id: 1,
+      difficulty: 0,
       unlock_secret: getSafeUnlockSecret(chapter.unlock_pack),
     };
 
@@ -220,6 +221,7 @@ const createSingleGateData = (
       rewardField[ids.rewardId] = reward;
       ids.rewardId += 1;
       chapterData.npc_id = 1;
+      chapterData.difficulty = chapter.difficulty;
 
       if (chapter.rental_deck && chapter.rental_reward) {
         const reward = createReward(chapter.rental_reward);
