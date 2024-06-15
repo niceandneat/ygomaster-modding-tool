@@ -122,6 +122,16 @@ export type ItemUnlock = Item<ItemCategory> & {
 export type Unlock = ChapterUnlock | ItemUnlock;
 export type Reward = Item<ItemCategory>;
 
+export interface StructureDeck {
+  id: number;
+  name: string;
+  description: string;
+  deck: string;
+  focus: number[];
+  box: number;
+  sleeve: number;
+}
+
 export interface Settings {
   dataPath: string;
   filesPath?: string;
@@ -131,7 +141,12 @@ export interface Settings {
 export interface SettingsPaths {
   gatePath: string;
   deckPath: string;
+  structureDeckPath: string;
 }
+
+/**
+ * Type Guards
+ */
 
 export const isUnlockChapter = (
   chapter: BaseChapter,
@@ -156,6 +171,10 @@ export const isChapterUnlock = (unlock: Unlock): unlock is ChapterUnlock =>
   isChapterUnlockType(unlock.type);
 export const isItemUnlock = (unlock: Unlock): unlock is ItemUnlock =>
   isItemUnlockType(unlock.type);
+
+/**
+ * Type Values
+ */
 
 export const itemCategories: ItemCategory[] = Object.values(
   ItemCategory,
@@ -281,6 +300,47 @@ export interface UpdateGateResponse {
 }
 
 export interface DeleteGateRequest {
+  id: number;
+  filesPath?: string;
+}
+
+export interface ReadStructureDecksRequest {
+  filesPath?: string;
+}
+
+export interface ReadStructureDecksResponse {
+  structureDecks: StructureDeck[];
+}
+
+export interface ReadStructureDeckRequest {
+  id: number;
+  filesPath?: string;
+}
+
+export interface ReadStructureDeckResponse {
+  structureDeck: StructureDeck;
+}
+
+export interface CreateStructureDeckRequest {
+  structureDeck: StructureDeck;
+  filesPath?: string;
+}
+
+export interface CreateStructureDeckResponse {
+  structureDeck: StructureDeck;
+}
+
+export interface UpdateStructureDeckRequest {
+  structureDeck: StructureDeck;
+  prevId: number;
+  filesPath?: string;
+}
+
+export interface UpdateStructureDeckResponse {
+  structureDeck: StructureDeck;
+}
+
+export interface DeleteStructureDeckRequest {
   id: number;
   filesPath?: string;
 }

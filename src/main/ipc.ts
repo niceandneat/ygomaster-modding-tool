@@ -11,7 +11,9 @@ import path from 'node:path';
 
 import {
   CREATE_GATE,
+  CREATE_STRUCTURE_DECK,
   DELETE_GATE,
+  DELETE_STRUCTURE_DECK,
   EXPORT_DATA,
   EXPORT_DECK,
   IMPORT_DATA,
@@ -23,14 +25,20 @@ import {
   OPEN_SETTINGS_FILE,
   READ_GATE,
   READ_GATES,
+  READ_STRUCTURE_DECK,
+  READ_STRUCTURE_DECKS,
   SAVE_SETTINGS,
   SHOW_MESSAGE_BOX,
   UPDATE_GATE,
+  UPDATE_STRUCTURE_DECK,
 } from '../common/channel';
 import {
   CreateGateRequest,
   CreateGateResponse,
+  CreateStructureDeckRequest,
+  CreateStructureDeckResponse,
   DeleteGateRequest,
+  DeleteStructureDeckRequest,
   ExportDataRequest,
   Gate,
   GateSummary,
@@ -41,9 +49,15 @@ import {
   ReadGateResponse,
   ReadGatesRequest,
   ReadGatesResponse,
+  ReadStructureDeckRequest,
+  ReadStructureDeckResponse,
+  ReadStructureDecksRequest,
+  ReadStructureDecksResponse,
   Settings,
   ShowMessageBoxRequest,
+  StructureDeck,
   UpdateGateRequest,
+  UpdateStructureDeckRequest,
 } from '../common/type';
 import { dataToFiles } from './task/dataToFiles';
 import { filesToData } from './task/filesToData';
@@ -154,18 +168,18 @@ const handleImportData = async (
   _event: IpcMainInvokeEvent,
   { dataPath, filesPath }: ImportDataRequest,
 ) => {
-  const { gatePath, deckPath } = getPaths(filesPath);
+  const { gatePath, deckPath, structureDeckPath } = getPaths(filesPath);
 
-  await dataToFiles({ gatePath, deckPath, dataPath });
+  await dataToFiles({ dataPath, gatePath, deckPath, structureDeckPath });
 };
 
 const handleExportData = async (
   _event: IpcMainInvokeEvent,
   { dataPath, filesPath }: ExportDataRequest,
 ) => {
-  const { gatePath, deckPath } = getPaths(filesPath);
+  const { gatePath, deckPath, structureDeckPath } = getPaths(filesPath);
 
-  await filesToData({ gatePath, deckPath, dataPath });
+  await filesToData({ dataPath, gatePath, deckPath, structureDeckPath });
 };
 
 const handleReadGates = async (
@@ -237,6 +251,75 @@ const handleDeleteGate = async (
   await deleteFile(filePath);
 };
 
+const handleReadStructureDecks = async (
+  _event: IpcMainInvokeEvent,
+  { filesPath }: ReadStructureDecksRequest,
+): Promise<ReadStructureDecksResponse> => {
+  const { structureDeckPath } = getPaths(filesPath);
+
+  const structureDeckPaths = await getChildJsonPaths(structureDeckPath);
+  const structureDecks = await batchPromiseAll(
+    structureDeckPaths,
+    (structureDeckPath) => readJson<StructureDeck>(structureDeckPath),
+  );
+
+  return { structureDecks: structureDecks.sort((a, b) => a.id - b.id) };
+};
+
+const handleReadStructureDeck = async (
+  _event: IpcMainInvokeEvent,
+  { id, filesPath }: ReadStructureDeckRequest,
+): Promise<ReadStructureDeckResponse> => {
+  const { structureDeckPath } = getPaths(filesPath);
+  const filePath = path.resolve(structureDeckPath, `${id}.json`);
+
+  return { structureDeck: await readJson(filePath) };
+};
+
+const handleCreateStructureDeck = async (
+  _event: IpcMainInvokeEvent,
+  { structureDeck, filesPath }: CreateStructureDeckRequest,
+): Promise<CreateStructureDeckResponse> => {
+  const { structureDeckPath } = getPaths(filesPath);
+  const filePath = path.resolve(structureDeckPath, `${structureDeck.id}.json`);
+
+  await saveJson(filePath, structureDeck);
+  return { structureDeck };
+};
+
+const handleUpdateStructureDeck = async (
+  _event: IpcMainInvokeEvent,
+  { structureDeck, prevId, filesPath }: UpdateStructureDeckRequest,
+) => {
+  const { structureDeckPath } = getPaths(filesPath);
+  const prevStructureDeckPath = path.resolve(
+    structureDeckPath,
+    `${prevId}.json`,
+  );
+  const newFilePath = path.resolve(
+    structureDeckPath,
+    `${structureDeck.id}.json`,
+  );
+
+  // When ID changes, delete old file.
+  if (prevStructureDeckPath !== newFilePath) {
+    await deleteFile(prevStructureDeckPath);
+  }
+
+  await saveJson(newFilePath, structureDeck);
+  return { structureDeck };
+};
+
+const handleDeleteStructureDeck = async (
+  _event: IpcMainInvokeEvent,
+  { id, filesPath }: DeleteStructureDeckRequest,
+) => {
+  const { structureDeckPath } = getPaths(filesPath);
+  const filePath = path.resolve(structureDeckPath, `${id}.json`);
+
+  await deleteFile(filePath);
+};
+
 const handleImportDeck = async (
   _event: IpcMainInvokeEvent,
   { dataPath, filesPath }: ImportDeckRequest,
@@ -284,6 +367,12 @@ export const handleIpc = (app: App) => {
   handleWithLog(CREATE_GATE, handleCreateGate);
   handleWithLog(UPDATE_GATE, handleUpdateGate);
   handleWithLog(DELETE_GATE, handleDeleteGate);
+
+  handleWithLog(READ_STRUCTURE_DECKS, handleReadStructureDecks);
+  handleWithLog(READ_STRUCTURE_DECK, handleReadStructureDeck);
+  handleWithLog(CREATE_STRUCTURE_DECK, handleCreateStructureDeck);
+  handleWithLog(UPDATE_STRUCTURE_DECK, handleUpdateStructureDeck);
+  handleWithLog(DELETE_STRUCTURE_DECK, handleDeleteStructureDeck);
 
   handleWithLog(IMPORT_DECK, handleImportDeck);
   handleWithLog(EXPORT_DECK, handleExportDeck);

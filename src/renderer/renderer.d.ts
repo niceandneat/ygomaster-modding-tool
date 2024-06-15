@@ -1,7 +1,10 @@
 import {
   CreateGateRequest,
   CreateGateResponse,
+  CreateStructureDeckRequest,
+  CreateStructureDeckResponse,
   DeleteGateRequest,
+  DeleteStructureDeckRequest,
   ExportDataRequest,
   ExportDeckRequest,
   ImportDataRequest,
@@ -11,10 +14,16 @@ import {
   ReadGateResponse,
   ReadGatesRequest,
   ReadGatesResponse,
+  ReadStructureDeckRequest,
+  ReadStructureDeckResponse,
+  ReadStructureDecksRequest,
+  ReadStructureDecksResponse,
   Settings,
   ShowMessageBoxRequest,
   UpdateGateRequest,
   UpdateGateResponse,
+  UpdateStructureDeckRequest,
+  UpdateStructureDeckResponse,
 } from '../common/type';
 
 export interface ElectronAPI {
@@ -32,6 +41,19 @@ export interface ElectronAPI {
   createGate: (request: CreateGateRequest) => Promise<CreateGateResponse>;
   updateGate: (request: UpdateGateRequest) => Promise<UpdateGateResponse>;
   deleteGate: (request: DeleteGateRequest) => Promise<void>;
+  readStructureDecks: (
+    request: ReadStructureDecksRequest,
+  ) => Promise<ReadStructureDecksResponse>;
+  readStructureDeck: (
+    request: ReadStructureDeckRequest,
+  ) => Promise<ReadStructureDeckResponse>;
+  createStructureDeck: (
+    request: CreateStructureDeckRequest,
+  ) => Promise<CreateStructureDeckResponse>;
+  updateStructureDeck: (
+    request: UpdateStructureDeckRequest,
+  ) => Promise<UpdateStructureDeckResponse>;
+  deleteStructureDeck: (request: DeleteStructureDeckRequest) => Promise<void>;
   importDeck: (request: ImportDeckRequest) => Promise<void>;
   exportDeck: (request: ExportDeckRequest) => Promise<void>;
 }

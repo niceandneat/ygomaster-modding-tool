@@ -11,6 +11,7 @@ import {
   ItemUnlock,
   Reward,
   RewardChapter,
+  StructureDeck,
   UnlockChapter,
   chapterUnlockTypes,
   itemCategories,
@@ -22,9 +23,10 @@ import {
   DuelDataFile,
   GateData,
   GateDataFile,
+  StructureDeckData,
 } from '../type';
 import {
-  backupFiles,
+  backup,
   batchPromiseAll,
   dataChapterIdToFileChapterId,
   dataChapterIdToFileGateId,
@@ -33,21 +35,27 @@ import {
   readLines,
   saveJson,
 } from '../utils';
+import { isCustomStructureDeck } from './structure-deck';
 
 export const dataToFiles = async (paths: {
+  dataPath: string;
   gatePath: string;
   deckPath: string;
-  dataPath: string;
+  structureDeckPath: string;
 }) => {
-  const { gatePath, deckPath, dataPath } = paths;
+  const { dataPath, gatePath, deckPath, structureDeckPath } = paths;
 
   const gateData = await loadGateData(dataPath);
   const duelDataMap = await loadDuelDataList(dataPath);
+  const structureDeckDataList = await loadStructureDeckDataList(dataPath);
   const gateIllustrations = await loadIllustrations(dataPath);
   const { gateNames, gateDescriptions, duelDescriptions } =
-    await loadDescriptions(dataPath);
+    await loadGateAndDuelDescriptions(dataPath);
+  const structureDeckNames = await loadStructureDeckNames(dataPath);
+  const structureDeckDescriptions =
+    await loadStructureDeckDescriptions(dataPath);
 
-  const { gates, decks } = createGates({
+  const { gates, decks: decksFromGate } = createGates({
     gateData,
     gateNames,
     gateDescriptions,
@@ -56,7 +64,22 @@ export const dataToFiles = async (paths: {
     duelDescriptions,
   });
 
-  await saveFiles({ gatePath, deckPath, gates, decks });
+  const { structureDecks, decks: decksFromStructure } = createStructureDecks({
+    structureDeckDataList,
+    structureDeckNames,
+    structureDeckDescriptions,
+  });
+
+  const decks = mergeDecks(decksFromGate, decksFromStructure);
+
+  await saveFiles({
+    gatePath,
+    deckPath,
+    structureDeckPath,
+    gates,
+    decks,
+    structureDecks,
+  });
 };
 
 const loadGateData = async (dataPath: string): Promise<GateData> => {
@@ -76,6 +99,22 @@ const loadDuelDataList = async (
   const rawData = await batchPromiseAll(duelPaths, readJson<DuelDataFile>);
 
   return new Map(rawData.map((data) => [data.Duel.chapter, data.Duel]));
+};
+
+const loadStructureDeckDataList = async (
+  dataPath: string,
+): Promise<StructureDeckData[]> => {
+  const allStructureDeckPaths = await getChildJsonPaths(
+    path.resolve(dataPath, 'StructureDecks'),
+  );
+  const customStructureDeckPaths = allStructureDeckPaths.filter(
+    isCustomStructureDeck,
+  );
+
+  return await batchPromiseAll(
+    customStructureDeckPaths,
+    readJson<StructureDeckData>,
+  );
 };
 
 const loadIllustrations = async (dataPath: string) => {
@@ -100,7 +139,7 @@ const loadIllustrations = async (dataPath: string) => {
   return gateIllustrations;
 };
 
-const loadDescriptions = async (dataPath: string) => {
+const loadGateAndDuelDescriptions = async (dataPath: string) => {
   const lines = await readLines(
     path.resolve(dataPath, 'ClientData/IDS/IDS_SOLO.txt'),
   );
@@ -112,18 +151,18 @@ const loadDescriptions = async (dataPath: string) => {
   let state = 'IDLE';
   let gateId = 0;
   let duelId = 0;
-  let descriptions: string[] = [];
+  let contents: string[] = [];
 
   const saveToMap = () => {
-    const text = descriptions.join('\n');
-    descriptions = [];
+    const text = contents.join('\n');
+    contents = [];
 
     if (state === 'DUEL_DESCRIPTION') return duelDescriptions.set(duelId, text);
     if (state === 'GATE_NAME') return gateNames.set(gateId, text);
     if (state === 'GATE_DESCRIPTION') return gateDescriptions.set(gateId, text);
   };
 
-  lines.forEach((line) => {
+  lines.filter(Boolean).forEach((line) => {
     const duelDescMatch = line.match(/\[IDS_SOLO\.CHAPTER(\d+)_EXPLANATION]/);
     if (duelDescMatch) {
       saveToMap();
@@ -148,10 +187,82 @@ const loadDescriptions = async (dataPath: string) => {
       return;
     }
 
-    descriptions.push(line);
+    contents.push(line);
   });
 
+  saveToMap();
+
   return { gateNames, gateDescriptions, duelDescriptions };
+};
+
+const loadStructureDeckNames = async (dataPath: string) => {
+  const lines = await readLines(
+    path.resolve(dataPath, 'ClientData/IDS/IDS_ITEM.txt'),
+  );
+
+  const results = new Map<number, string>();
+
+  let state = 'IDLE';
+  let id = 0;
+  let contents: string[] = [];
+
+  const saveToMap = () => {
+    const text = contents.join('\n');
+    contents = [];
+
+    if (state === 'STRUCTURE_DECK_NAME') return results.set(id, text);
+  };
+
+  lines.filter(Boolean).forEach((line) => {
+    const match = line.match(/\[IDS_ITEM\.ID(\d+)]/);
+    if (match) {
+      saveToMap();
+      id = Number(match[1]);
+      state = 'STRUCTURE_DECK_NAME';
+      return;
+    }
+
+    contents.push(line);
+  });
+
+  saveToMap();
+
+  return results;
+};
+
+const loadStructureDeckDescriptions = async (dataPath: string) => {
+  const lines = await readLines(
+    path.resolve(dataPath, 'ClientData/IDS/IDS_ITEMDESC.txt'),
+  );
+
+  const results = new Map<number, string>();
+
+  let state = 'IDLE';
+  let id = 0;
+  let contents: string[] = [];
+
+  const saveToMap = () => {
+    const text = contents.join('\n');
+    contents = [];
+
+    if (state === 'STRUCTURE_DECK_DESCRIPTION') return results.set(id, text);
+  };
+
+  lines.filter(Boolean).forEach((line) => {
+    const match = line.match(/\[IDS_ITEMDESC\.ID(\d+)]/);
+    if (match) {
+      saveToMap();
+      id = Number(match[1]);
+      state = 'STRUCTURE_DECK_DESCRIPTION';
+      return;
+    }
+
+    contents.push(line);
+  });
+
+  saveToMap();
+
+  return results;
 };
 
 const createGates = (data: {
@@ -400,7 +511,7 @@ const createDuelChapter = (data: {
 
   const cpuDeckName = chapterData.mydeck_set_id.toString();
   const myDeckReward = createReward(gateData, chapterData.mydeck_set_id);
-  const cpuDeck = createDeck(duelData.Deck[1], cpuDeckName);
+  const cpuDeck = createDeckFromDuel(duelData.Deck[1], cpuDeckName);
   decks.push(cpuDeck);
 
   const rentalDeckName = chapterData.set_id
@@ -410,7 +521,7 @@ const createDuelChapter = (data: {
     ? createReward(gateData, chapterData.set_id)
     : undefined;
   const rentalDeck = rentalDeckName
-    ? createDeck(duelData.Deck[0], rentalDeckName)
+    ? createDeckFromDuel(duelData.Deck[0], rentalDeckName)
     : undefined;
   if (rentalDeck) decks.push(rentalDeck);
 
@@ -448,7 +559,21 @@ const createDuelChapter = (data: {
   return { chapter, decks };
 };
 
-const createDeck = (
+const createReward = (gateData: GateData, rewardId: number): Reward[] => {
+  const rewardData = gateData.reward[rewardId];
+
+  return Object.entries(rewardData).flatMap(([category, idCountsMap]) => {
+    return Object.entries(idCountsMap).map(([id, counts]) => {
+      return {
+        category: Number(category) as ItemCategory,
+        id: Number(id),
+        counts,
+      } satisfies Reward;
+    });
+  });
+};
+
+const createDeckFromDuel = (
   duelDeck: DuelData['Deck'][number],
   name: string,
 ): DeckData => {
@@ -474,37 +599,135 @@ const createDeck = (
   };
 };
 
-const createReward = (gateData: GateData, rewardId: number): Reward[] => {
-  const rewardData = gateData.reward[rewardId];
+const createDeckFromStructureDeck = (
+  structureDeck: StructureDeckData,
+  name: string,
+): DeckData => {
+  const now = Math.floor(new Date().getTime() / 1000);
 
-  return Object.entries(rewardData).flatMap(([category, idCountsMap]) => {
-    return Object.entries(idCountsMap).map(([id, counts]) => {
-      return {
-        category: Number(category) as ItemCategory,
-        id: Number(id),
-        counts,
-      } satisfies Reward;
+  return {
+    name,
+    ct: now,
+    et: now,
+    m: { ids: structureDeck.contents.m.ids, r: structureDeck.contents.m.r },
+    e: { ids: structureDeck.contents.e.ids, r: structureDeck.contents.e.r },
+    s: { ids: structureDeck.contents.s.ids, r: structureDeck.contents.s.r },
+    pick_cards: {
+      ids: {
+        1: structureDeck.focus.ids[0] ?? 0,
+        2: structureDeck.focus.ids[1] ?? 0,
+        3: structureDeck.focus.ids[2] ?? 0,
+      },
+      r: {
+        1: structureDeck.focus.r[0] ?? 1,
+        2: structureDeck.focus.r[1] ?? 1,
+        3: structureDeck.focus.r[2] ?? 1,
+      },
+    },
+    regulation_id: 1017,
+    regulation_name: 'IDS_CARDMENU_REGULATION_NORMAL',
+    accessory: {
+      box: structureDeck.accessory.box,
+      sleeve: structureDeck.accessory.sleeve,
+      field: 1090001,
+      object: 1100001,
+      av_base: 0,
+    },
+  };
+};
+
+const createStructureDecks = (data: {
+  structureDeckDataList: StructureDeckData[];
+  structureDeckNames: Map<number, string>;
+  structureDeckDescriptions: Map<number, string>;
+}): { structureDecks: StructureDeck[]; decks: DeckData[] } => {
+  const {
+    structureDeckDataList,
+    structureDeckNames,
+    structureDeckDescriptions,
+  } = data;
+
+  const structureDecks: StructureDeck[] = [];
+  const decks: DeckData[] = [];
+
+  structureDeckDataList.forEach((structureDeckData) => {
+    const deck = createDeckFromStructureDeck(
+      structureDeckData,
+      structureDeckNames.get(structureDeckData.structure_id) ??
+        `${structureDeckData.structure_id}`,
+    );
+
+    const structureDeck: StructureDeck = {
+      id: structureDeckData.structure_id,
+      name: structureDeckNames.get(structureDeckData.structure_id) ?? '',
+      description:
+        structureDeckDescriptions.get(structureDeckData.structure_id) ?? '',
+      box: structureDeckData.accessory.box,
+      sleeve: structureDeckData.accessory.sleeve,
+      deck: `${deck.name}.json`,
+      focus: structureDeckData.focus.ids,
+    };
+
+    structureDecks.push(structureDeck);
+    decks.push(deck);
+  });
+
+  return { structureDecks, decks };
+};
+
+const mergeDecks = (...decksList: DeckData[][]): DeckData[] => {
+  const results: DeckData[] = [];
+  const keys = new Set<string>();
+
+  decksList.forEach((decks) => {
+    decks.forEach((deck) => {
+      if (keys.has(deck.name)) return;
+
+      results.push(deck);
+      keys.add(deck.name);
     });
   });
+
+  return results;
 };
 
 const saveFiles = async (data: {
   gatePath: string;
   deckPath: string;
+  structureDeckPath: string;
   gates: Gate[];
   decks: DeckData[];
+  structureDecks: StructureDeck[];
 }) => {
-  const { gatePath, deckPath, gates, decks } = data;
+  const {
+    gatePath,
+    deckPath,
+    structureDeckPath,
+    gates,
+    decks,
+    structureDecks,
+  } = data;
   log.info('Start save files');
 
-  await backupFiles(gatePath);
-  await backupFiles(deckPath);
+  // backup files directory as a whole
+  await backup(path.dirname(gatePath), {
+    filePaths: [
+      path.basename(gatePath),
+      path.basename(deckPath),
+      path.basename(structureDeckPath),
+    ],
+  });
   log.info('Copied original files to backup folder');
 
   await batchPromiseAll(gates, (gate) =>
     saveJson(path.resolve(gatePath, `${gate.id}.json`), gate),
   );
   log.info('Created gate files');
+
+  await batchPromiseAll(structureDecks, (deck) =>
+    saveJson(path.resolve(structureDeckPath, `${deck.id}.json`), deck),
+  );
+  log.info('Created structure deck files');
 
   await batchPromiseAll(decks, (deck) =>
     saveJson(path.resolve(deckPath, `${deck.name}.json`), deck),

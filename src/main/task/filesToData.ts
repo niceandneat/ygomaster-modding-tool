@@ -8,15 +8,23 @@ import {
   Gate,
   ItemUnlock,
   Reward,
+  StructureDeck,
   isDuelChapter,
   isRewardChapter,
   isUnlockChapter,
 } from '../../common/type';
-import { DeckData, DuelData, GateData, ShopFile } from '../type';
 import {
-  backupFiles,
+  DeckData,
+  DuelData,
+  GateData,
+  ShopFile,
+  StructureDeckData,
+} from '../type';
+import {
+  backup,
   batchPromiseAll,
   fileChapterIdToDataChapterId,
+  getBackupDirectoryWithTime,
   getChildJsonPaths,
   readJson,
   readJsonWithCommas,
@@ -24,6 +32,7 @@ import {
   saveText,
   toPosix,
 } from '../utils';
+import { isCustomStructureDeck } from './structure-deck';
 
 interface Ids {
   unlockId: number;
@@ -32,22 +41,37 @@ interface Ids {
 }
 
 export const filesToData = async (paths: {
+  dataPath: string;
   gatePath: string;
   deckPath: string;
-  dataPath: string;
+  structureDeckPath: string;
 }) => {
-  const { gatePath, deckPath, dataPath } = paths;
+  const { dataPath, gatePath, deckPath, structureDeckPath } = paths;
   const gates = await loadGates(gatePath);
   const deckPathMap = await loadDeckPathMap(deckPath);
+  const structureDecks = await loadStructureDecks(structureDeckPath);
 
   const gateData = createGateData(gates);
   const duelDataList = await batchPromiseAll(
     gates.flatMap((gate) => gate.chapters).filter(isDuelChapter),
     (chapter) => createDuelData(chapter, deckPathMap),
   );
+  const structureDeckDataList = await batchPromiseAll(
+    structureDecks,
+    (structure) => createStructureDeckData(structure, deckPathMap),
+  );
 
-  await saveData({ gates, gateData, duelDataList, dataPath });
-  await patchData({ dataPath });
+  const backupPath = getBackupDirectoryWithTime(dataPath);
+  await saveData({
+    backupPath,
+    dataPath,
+    gates,
+    gateData,
+    duelDataList,
+    structureDecks,
+    structureDeckDataList,
+  });
+  await patchData({ backupPath, dataPath });
 };
 
 const loadGates = async (gatePath: string): Promise<Gate[]> => {
@@ -76,6 +100,18 @@ const loadDeckPathMap = async (
   return Object.fromEntries(
     deckPaths.map((deckPath) => [path.basename(deckPath), deckPath]),
   );
+};
+
+const loadStructureDecks = async (
+  structureDeckPath: string,
+): Promise<StructureDeck[]> => {
+  const structureDeckPaths = await getChildJsonPaths(structureDeckPath);
+  const structureDecks = await batchPromiseAll(
+    structureDeckPaths,
+    readJson<StructureDeck>,
+  );
+
+  return structureDecks.sort((a, b) => a.id - b.id);
 };
 
 const createDuelData = async (
@@ -287,22 +323,85 @@ const createItemUnlock = (
   return { unlock, unlockItem };
 };
 
+const createStructureDeckData = async (
+  structure: StructureDeck,
+  pathMap: Record<string, string>,
+): Promise<StructureDeckData> => {
+  const deck = await readJson<DeckData>(pathMap[structure.deck]);
+
+  return {
+    structure_id: structure.id,
+    accessory: { box: structure.box, sleeve: structure.sleeve },
+    focus: {
+      ids: structure.focus.length === 3 ? structure.focus : [0, 0, 0],
+      r: [1, 1, 1],
+    },
+    contents: { m: deck.m, e: deck.e, s: deck.s },
+  };
+};
+
+const backupStructureDecks = async (dataPath: string, backupPath: string) => {
+  const structureDeckPath = path.resolve(dataPath, 'StructureDecks');
+
+  const allStructureDeckPaths = await getChildJsonPaths(structureDeckPath);
+  const customStructureDeckPaths: string[] = [];
+  const systemStructureDeckPaths: string[] = [];
+
+  allStructureDeckPaths.forEach((name) => {
+    if (isCustomStructureDeck(name)) {
+      customStructureDeckPaths.push(name);
+    } else {
+      systemStructureDeckPaths.push(name);
+    }
+  });
+
+  await backup(dataPath, {
+    backupPath,
+    filePaths: customStructureDeckPaths.map((p) => path.relative(dataPath, p)),
+    removeExistingBackup: false,
+  });
+
+  await backup(dataPath, {
+    backupPath,
+    filePaths: systemStructureDeckPaths.map((p) => path.relative(dataPath, p)),
+    removeExistingBackup: false,
+    removeOriginal: false,
+  });
+};
+
 const saveData = async (data: {
+  backupPath: string;
+  dataPath: string;
   gates: Gate[];
   gateData: GateData;
   duelDataList: DuelData[];
-  dataPath: string;
+  structureDecks: StructureDeck[];
+  structureDeckDataList: StructureDeckData[];
 }) => {
-  const { gates, gateData, duelDataList, dataPath } = data;
+  const {
+    backupPath,
+    dataPath,
+    gates,
+    gateData,
+    duelDataList,
+    structureDecks,
+    structureDeckDataList,
+  } = data;
   log.info('Start save data');
 
-  // Backup original files
-  await backupFiles(dataPath, [
-    'SoloDuels',
-    'Solo.json',
-    'ClientData/SoloGateCards.txt',
-    'ClientData/IDS/IDS_SOLO.txt',
-  ]);
+  // Backup original data
+  await backup(dataPath, {
+    backupPath,
+    filePaths: [
+      'SoloDuels',
+      'Solo.json',
+      'ClientData/SoloGateCards.txt',
+      'ClientData/IDS/IDS_SOLO.txt',
+      'ClientData/IDS/IDS_ITEM.txt',
+      'ClientData/IDS/IDS_ITEMDESC.txt',
+    ],
+  });
+  await backupStructureDecks(dataPath, backupPath);
   log.info('Copied original files to backup folder');
 
   // Create duel files
@@ -348,10 +447,41 @@ const saveData = async (data: {
     soloDescriptions,
   );
   log.info('Created IDS_SOLO.txt');
+
+  // Create structure deck files
+  await batchPromiseAll(structureDeckDataList, (structureData) =>
+    saveJson(
+      path.resolve(
+        dataPath,
+        'StructureDecks',
+        `${structureData.structure_id}.json`,
+      ),
+      structureData,
+    ),
+  );
+  log.info('Created structure deck files');
+
+  // Create IDS_ITEM.txt & IDS_ITEMDESC.txt
+  let structureDeckName = '';
+  let structureDeckDescription = '';
+  structureDecks.forEach(({ id, name, description = '' }) => {
+    structureDeckName += `[IDS_ITEM.ID${id}]\n${name}\n`;
+    structureDeckDescription += `[IDS_ITEMDESC.ID${id}]\n${description}\n`;
+  });
+
+  await saveText(
+    path.resolve(dataPath, 'ClientData/IDS/IDS_ITEM.txt'),
+    structureDeckName,
+  );
+  await saveText(
+    path.resolve(dataPath, 'ClientData/IDS/IDS_ITEMDESC.txt'),
+    structureDeckDescription,
+  );
+  log.info('Created IDS_ITEM.txt & IDS_ITEMDESC.txt');
 };
 
-const patchData = async (data: { dataPath: string }) => {
-  const { dataPath } = data;
+const patchData = async (data: { backupPath: string; dataPath: string }) => {
+  const { backupPath, dataPath } = data;
   log.info('Start patch data');
 
   // Modify unlock condition of card packs
@@ -362,7 +492,11 @@ const patchData = async (data: { dataPath: string }) => {
     delete shop.PackShop[key].unlockSecrets;
   });
 
-  await backupFiles(dataPath, ['Shop.json']);
+  await backup(dataPath, {
+    backupPath,
+    filePaths: ['Shop.json'],
+    removeExistingBackup: false,
+  });
   await saveJson(path.resolve(dataPath, 'Shop.json'), shop);
   log.info('Created Shop.json');
 };

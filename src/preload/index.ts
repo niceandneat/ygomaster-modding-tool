@@ -4,7 +4,9 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 import {
   CREATE_GATE,
+  CREATE_STRUCTURE_DECK,
   DELETE_GATE,
+  DELETE_STRUCTURE_DECK,
   EXPORT_DATA,
   EXPORT_DECK,
   IMPORT_DATA,
@@ -16,22 +18,30 @@ import {
   OPEN_SETTINGS_FILE,
   READ_GATE,
   READ_GATES,
+  READ_STRUCTURE_DECK,
+  READ_STRUCTURE_DECKS,
   SAVE_SETTINGS,
   SHOW_MESSAGE_BOX,
   UPDATE_GATE,
+  UPDATE_STRUCTURE_DECK,
 } from '../common/channel';
 import {
   CreateGateRequest,
+  CreateStructureDeckRequest,
   DeleteGateRequest,
+  DeleteStructureDeckRequest,
   ExportDataRequest,
   ExportDeckRequest,
   ImportDataRequest,
   ImportDeckRequest,
   ReadGateRequest,
   ReadGatesRequest,
+  ReadStructureDeckRequest,
+  ReadStructureDecksRequest,
   Settings,
   ShowMessageBoxRequest,
   UpdateGateRequest,
+  UpdateStructureDeckRequest,
 } from '../common/type';
 
 // prettier-ignore
@@ -50,6 +60,11 @@ contextBridge.exposeInMainWorld('electron', {
   createGate: (request: CreateGateRequest) => ipcRenderer.invoke(CREATE_GATE, request),
   updateGate: (request: UpdateGateRequest) => ipcRenderer.invoke(UPDATE_GATE, request),
   deleteGate: (request: DeleteGateRequest) => ipcRenderer.invoke(DELETE_GATE, request),
+  readStructureDecks: (request: ReadStructureDecksRequest) => ipcRenderer.invoke(READ_STRUCTURE_DECKS, request),
+  readStructureDeck: (request: ReadStructureDeckRequest) => ipcRenderer.invoke(READ_STRUCTURE_DECK, request),
+  createStructureDeck: (request: CreateStructureDeckRequest) => ipcRenderer.invoke(CREATE_STRUCTURE_DECK, request),
+  updateStructureDeck: (request: UpdateStructureDeckRequest) => ipcRenderer.invoke(UPDATE_STRUCTURE_DECK, request),
+  deleteStructureDeck: (request: DeleteStructureDeckRequest) => ipcRenderer.invoke(DELETE_STRUCTURE_DECK, request),
   importDeck: (request: ImportDeckRequest) => ipcRenderer.invoke(IMPORT_DECK, request),
   exportDeck: (request: ExportDeckRequest) => ipcRenderer.invoke(EXPORT_DECK, request),
 });

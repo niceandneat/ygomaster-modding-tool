@@ -41,7 +41,7 @@ export const deleteFile = async (filePath: string) => {
 };
 
 export const copyDirectory = async (fromPath: string, toPath: string) => {
-  await backupFiles(toPath);
+  await backup(toPath);
   await fs.rm(toPath, { recursive: true, force: true });
   return await fs.cp(fromPath, toPath, { recursive: true });
 };
@@ -53,10 +53,9 @@ export const getChildJsonPaths = async (dirPath: string) => {
   return childJsonNames.map((name) => path.resolve(dirPath, name));
 };
 
-export const backupFiles = async (
+export const getBackupDirectoryWithTime = (
   baseDir: string,
-  filePaths?: string[],
-  backupDirPostfix = '_backup',
+  postFix = '_backup_',
 ) => {
   const timePostfix = new Date()
     .toISOString()
@@ -64,23 +63,42 @@ export const backupFiles = async (
     .replace('T', '_')
     .slice(0, 15);
 
-  const backupTargets = filePaths || [''];
-  const backupDir = `${baseDir}${backupDirPostfix}_${timePostfix}`;
+  return `${baseDir}${postFix}${timePostfix}`;
+};
 
-  await fs.rm(backupDir, { recursive: true, force: true });
-  await fs.mkdir(backupDir, { recursive: true });
-  return await batchPromiseAll(backupTargets, async (filePath) => {
+export const backup = async (
+  baseDir: string,
+  option: {
+    filePaths?: string[];
+    backupPath?: string;
+    removeExistingBackup?: boolean;
+    removeOriginal?: boolean;
+  } = {},
+) => {
+  const {
+    filePaths,
+    backupPath,
+    removeExistingBackup = true,
+    removeOriginal = true,
+  } = option;
+
+  const backupTargets = filePaths ?? [''];
+  const backupDir = backupPath ?? getBackupDirectoryWithTime(baseDir);
+
+  if (removeExistingBackup) {
+    await fs.rm(backupDir, { recursive: true, force: true });
+    await fs.mkdir(backupDir, { recursive: true });
+  }
+
+  await batchPromiseAll(backupTargets, async (filePath) => {
     const absoluteFilePath = path.resolve(baseDir, filePath);
     const newPath = path.resolve(backupDir, filePath);
 
     try {
-      if (path.extname(filePath) === '') {
-        // directory
-        await fs.cp(absoluteFilePath, newPath, { recursive: true });
+      await fs.cp(absoluteFilePath, newPath, { recursive: true });
+
+      if (removeOriginal) {
         await fs.rm(absoluteFilePath, { recursive: true, force: true });
-      } else {
-        await fs.mkdir(path.dirname(newPath), { recursive: true });
-        await fs.rename(absoluteFilePath, newPath);
       }
     } catch {
       // ignore file missing error.

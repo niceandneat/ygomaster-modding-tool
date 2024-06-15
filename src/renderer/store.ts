@@ -21,6 +21,7 @@ export const useAppStore = create<State>()((set, get) => ({
   paths: {
     deckPath: '',
     gatePath: '',
+    structureDeckPath: '',
   },
   saveSettings: async (settings) => {
     await window.electron.saveSettings(settings);

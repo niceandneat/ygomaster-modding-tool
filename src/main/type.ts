@@ -31,6 +31,32 @@ export interface DeckData {
   };
 }
 
+export interface StructureDeckData {
+  structure_id: number;
+  accessory: {
+    box: number;
+    sleeve: number;
+  };
+  focus: {
+    ids: number[];
+    r: (1 | 2 | 3)[];
+  };
+  contents: {
+    m: {
+      ids: number[];
+      r: (1 | 2 | 3)[];
+    };
+    e: {
+      ids: number[];
+      r: (1 | 2 | 3)[];
+    };
+    s: {
+      ids: number[];
+      r: (1 | 2 | 3)[];
+    };
+  };
+}
+
 export interface DuelData {
   chapter: number;
   name: [string, string]; // [player, cpu]
