@@ -1,3 +1,4 @@
+import { app } from 'electron';
 import * as fs from 'node:fs/promises';
 import path from 'node:path';
 
@@ -51,6 +52,18 @@ export const getChildJsonPaths = async (dirPath: string) => {
   const childJsonNames = childNames.filter((name) => name.endsWith('.json'));
 
   return childJsonNames.map((name) => path.resolve(dirPath, name));
+};
+
+// https://stackoverflow.com/a/44445384
+// It is hacky but I couldn't find other solutions
+export const getAppRoot = () => {
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    return app.getAppPath();
+  } else if (process.platform === 'win32') {
+    return path.dirname(app.getPath('exe'));
+  } else {
+    return path.join(app.getAppPath(), '/../../../../');
+  }
 };
 
 export const getBackupDirectoryWithTime = (

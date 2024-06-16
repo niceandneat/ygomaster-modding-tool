@@ -3,8 +3,9 @@ import * as fs from 'node:fs/promises';
 import path from 'node:path';
 
 import { SettingsPaths } from '../../common/type';
+import { getAppRoot } from '../utils';
 
-const DEFAULT_FILES_PATH = path.join(app.getAppPath(), 'files');
+const DEFAULT_FILES_PATH = path.join(getAppRoot(), 'files');
 
 const getGatePath = (filesPath: string) => path.join(filesPath, 'gate');
 const getDeckPath = (filesPath: string) => path.join(filesPath, 'deck');
