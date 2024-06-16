@@ -17,17 +17,14 @@ export const SettingsDetail = () => {
   const classes = useStyles();
   const settings = useAppStore((s) => s.settings);
   const saveSettings = useAppStore((s) => s.saveSettings);
-  const loadGates = useAppStore((s) => s.loadGates);
   const { toasterId, withToast } = useToast('Success Save', 'Fail Save');
 
   const handleSubmit = useCallback(
     (settings: Settings) =>
       withToast(async () => {
         await saveSettings(settings);
-        // TODO needs global loading(status) indicator?
-        await loadGates();
       }),
-    [loadGates, saveSettings, withToast],
+    [saveSettings, withToast],
   );
 
   const handleClickOpenSettingsFile = useCallback(

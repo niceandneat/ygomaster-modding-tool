@@ -1,15 +1,22 @@
 import { create } from 'zustand';
 
-import { GateSummary, Settings, SettingsPaths } from '../common/type';
+import {
+  GateSummary,
+  Settings,
+  SettingsPaths,
+  StructureDeck,
+} from '../common/type';
 import { dataStore } from './data';
 
 interface State {
   settings: Settings;
   paths: SettingsPaths;
   gates?: GateSummary[];
+  structureDecks?: StructureDeck[];
   saveSettings: (settings: Settings) => Promise<void>;
   loadSettings: () => Promise<void>;
   loadGates: () => Promise<GateSummary[]>;
+  loadStructureDecks: () => Promise<StructureDeck[]>;
 }
 
 export const useAppStore = create<State>()((set, get) => ({
@@ -35,7 +42,13 @@ export const useAppStore = create<State>()((set, get) => ({
       paths: { ...state.paths, ...paths },
     }));
 
-    dataStore.setOption({ language: get().settings.language });
+    await get().loadGates();
+    await get().loadStructureDecks();
+
+    dataStore.setOption({
+      language: get().settings.language,
+      structureDecks: get().structureDecks,
+    });
   },
   loadGates: async () => {
     const { filesPath } = get().settings;
@@ -44,5 +57,15 @@ export const useAppStore = create<State>()((set, get) => ({
     set({ gates });
 
     return gates;
+  },
+  loadStructureDecks: async () => {
+    const { filesPath } = get().settings;
+
+    const { structureDecks } = await window.electron.readStructureDecks({
+      filesPath,
+    });
+    set({ structureDecks });
+
+    return structureDecks;
   },
 }));

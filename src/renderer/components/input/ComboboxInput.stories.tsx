@@ -11,6 +11,7 @@ const meta = {
   tags: ['autodocs'],
   args: {
     onChange: fn(),
+    onChangeHighlight: fn(),
   },
   argTypes: {
     value: {

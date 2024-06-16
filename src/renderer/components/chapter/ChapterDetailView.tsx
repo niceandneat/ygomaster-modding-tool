@@ -308,7 +308,6 @@ interface FileInputProps {
   optional?: boolean;
   onChange?: (fileName?: string) => void;
 }
-const getFileName = (path: string) => path.split('\\').pop()?.split('/').pop();
 
 const FileNameInput = ({ name, path, optional, onChange }: FileInputProps) => {
   const { control, formState } = useFormContext<DuelChapter>();
@@ -329,7 +328,7 @@ const FileNameInput = ({ name, path, optional, onChange }: FileInputProps) => {
         >
           <FileInput
             onChange={(filePath) => {
-              const fileName = getFileName(filePath);
+              const fileName = filePath.split('\\').pop()?.split('/').pop();
               field.onChange(fileName);
               onChange?.(fileName);
             }}

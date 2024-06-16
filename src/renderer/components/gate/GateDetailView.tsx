@@ -256,12 +256,17 @@ export const GateDetailView = ({
           </Button>
         </div>
         <div className={classes.stack}>
-          <PlainInput<Gate>
+          <PlainInput<Gate, 'id'>
             name="id"
             number
             integer
             rules={{
               min: { value: 101, message: 'id should be larger than 100' },
+              validate: {
+                unique: (inputId: number) =>
+                  gates.every(({ id }) => id !== inputId) ||
+                  'id should be unique',
+              },
             }}
           />
           <ParentIdInput gates={gates} />

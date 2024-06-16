@@ -4,6 +4,7 @@ import {
   ControllerProps,
   FieldValues,
   Path,
+  PathValue,
   useFormContext,
 } from 'react-hook-form';
 
@@ -17,17 +18,23 @@ const useStyles = makeStyles({
   },
 });
 
-interface PlainInputProps<T extends FieldValues> {
-  name: Path<T>;
+interface PlainInputProps<
+  T extends FieldValues,
+  Name extends Path<T> = Path<T>,
+> {
+  name: Name;
   label?: string;
   optional?: boolean;
   number?: boolean;
   integer?: boolean;
   multiline?: boolean;
-  rules?: ControllerProps<T>['rules'];
+  rules?: ControllerProps<T, Name>['rules'];
 }
 
-export const PlainInput = <T extends FieldValues>({
+export const PlainInput = <
+  T extends FieldValues,
+  Name extends Path<T> = Path<T>,
+>({
   name,
   label: labelInput,
   optional,
@@ -35,7 +42,7 @@ export const PlainInput = <T extends FieldValues>({
   integer,
   multiline,
   rules,
-}: PlainInputProps<T>) => {
+}: PlainInputProps<T, Name>) => {
   const classes = useStyles();
   const { control, formState } = useFormContext<T>();
 
@@ -49,10 +56,16 @@ export const PlainInput = <T extends FieldValues>({
       name={name}
       rules={{
         required: !optional && 'This field is required',
-        validate: integer
-          ? (v) => Number.isInteger(v) || 'Only integers are allowed'
-          : undefined,
         ...rules,
+        validate: {
+          ...(integer
+            ? {
+                integer: (v: PathValue<T, Name>) =>
+                  Number.isInteger(v) || 'Only integers are allowed',
+              }
+            : undefined),
+          ...rules?.validate,
+        },
       }}
       render={({ field }) => (
         <Field

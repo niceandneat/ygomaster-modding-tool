@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
+import { withRouter } from 'storybook-addon-remix-react-router';
 
 import { GateDetailView } from './GateDetailView';
 
@@ -7,6 +8,7 @@ const meta = {
   title: 'Components/Gate/GateDetailView',
   component: GateDetailView,
   tags: ['autodocs'],
+  decorators: [withRouter],
   parameters: {
     layout: 'fullscreen',
   },
@@ -20,11 +22,11 @@ const meta = {
       { id: 5, name: 'chapter-5' },
     ],
     gates: [
-      { id: 1, parent_id: 0, name: 'gate-1', priority: 1 },
-      { id: 2, parent_id: 0, name: 'gate-2', priority: 2 },
-      { id: 3, parent_id: 0, name: 'gate-3', priority: 3 },
-      { id: 4, parent_id: 0, name: 'gate-4', priority: 4 },
-      { id: 5, parent_id: 0, name: 'gate-5', priority: 5 },
+      { id: 101, parent_id: 0, name: 'gate-1', priority: 1 },
+      { id: 102, parent_id: 0, name: 'gate-2', priority: 2 },
+      { id: 103, parent_id: 0, name: 'gate-3', priority: 3 },
+      { id: 104, parent_id: 0, name: 'gate-4', priority: 4 },
+      { id: 105, parent_id: 0, name: 'gate-5', priority: 5 },
     ],
   },
 } satisfies Meta<typeof GateDetailView>;
@@ -42,7 +44,7 @@ export const Edit: Story = {
   args: {
     title: 'Title',
     gate: {
-      id: 1,
+      id: 101,
       parent_id: 0,
       name: 'name-1',
       description: 'description',

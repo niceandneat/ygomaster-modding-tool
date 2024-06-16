@@ -18,29 +18,25 @@ interface InitGuardProps {
 
 export const InitGuard = ({ children }: InitGuardProps) => {
   const classes = useStyles();
-  const [loading, setLoading] = useState<string | undefined>('Start');
+  const [loading, setLoading] = useState<boolean>(true);
 
   const loadSettings = useAppStore((s) => s.loadSettings);
-  const loadGates = useAppStore((s) => s.loadGates);
 
   useEffect(() => {
     const run = async () => {
       try {
-        setLoading('Settings');
+        setLoading(true);
         await loadSettings();
-
-        setLoading('Gates');
-        await loadGates();
       } finally {
-        setLoading(undefined);
+        setLoading(false);
       }
     };
 
     run();
-  }, [loadSettings, loadGates]);
+  }, [loadSettings]);
 
   if (loading) {
-    return <div className={classes.container}>{`Loading ${loading}`}</div>;
+    return <div className={classes.container}>Loading</div>;
   }
 
   return <>{children}</>;

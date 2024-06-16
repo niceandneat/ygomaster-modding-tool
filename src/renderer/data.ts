@@ -1,4 +1,4 @@
-import { ItemCategory } from '../common/type';
+import { ItemCategory, StructureDeck } from '../common/type';
 import cardPacksData from '../data/card-packs.json';
 import cardsData from '../data/cards.json';
 import itemsData from '../data/items.json';
@@ -22,6 +22,7 @@ interface PackData {
 
 interface DataStoreOption {
   language: string;
+  structureDecks: StructureDeck[];
 }
 
 class DataStore {
@@ -32,16 +33,22 @@ class DataStore {
   private packMap!: Map<number, PackData>;
   private packs!: PackData[];
 
+  private option: DataStoreOption = {
+    language: 'English',
+    structureDecks: [],
+  };
+
   constructor(option?: Partial<DataStoreOption>) {
-    this.setItemData();
     this.setOption(option);
   }
 
   setOption(inputOption?: Partial<DataStoreOption>) {
-    const option = this.applyDefault(inputOption, { language: 'English' });
+    const newOption = this.applyDefault(inputOption, this.option);
 
-    this.setCardData(option);
-    this.setPackData(option);
+    this.option = newOption;
+    this.setItemData(newOption);
+    this.setCardData(newOption);
+    this.setPackData(newOption);
   }
 
   getItem(category: ItemCategory, id: number): ItemData | undefined {
@@ -70,7 +77,7 @@ class DataStore {
     return this.packs;
   }
 
-  private setItemData() {
+  private setItemData(option: DataStoreOption) {
     this.itemMapByCategory = new Map<ItemCategory, Map<number, ItemData>>([
       ...Object.entries(itemsData).map(
         ([category, items]) =>
@@ -85,6 +92,14 @@ class DataStore {
           ] as const,
       ),
     ]);
+
+    // Add custom structure decks
+    const structureDeckMap = this.itemMapByCategory.get(ItemCategory.STRUCTURE);
+    if (structureDeckMap) {
+      option.structureDecks.forEach(({ id, name }) => {
+        structureDeckMap.set(id, { id, name });
+      });
+    }
 
     this.itemsByCategory = new Map<ItemCategory, ItemData[]>(
       [...this.itemMapByCategory.entries()].map(([category, itemsMap]) => [
@@ -141,10 +156,12 @@ class DataStore {
 
     if (!inputOption) return option;
 
-    Object.keys(defaultOption).forEach((key) => {
-      const value = inputOption[key as keyof DataStoreOption];
+    Object.keys(defaultOption).forEach((field) => {
+      const key = field as keyof DataStoreOption;
+      const value = inputOption[key];
+
       if (value) {
-        option[key as keyof DataStoreOption] = value;
+        option[key] = value as never;
       }
     });
 
