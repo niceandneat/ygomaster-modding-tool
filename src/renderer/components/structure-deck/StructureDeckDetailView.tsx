@@ -83,6 +83,7 @@ export const StructureDeckDetailView = ({
     defaultValues: { ...defaultValuesForCreation, ...structureDeck },
   });
   const { handleSubmit, reset, getValues, formState } = methods;
+  const [initialId] = useState(getValues('id'));
 
   const [succeed, setSucceed] = useState(false);
   useWarnNavigation(formState.isDirty);
@@ -126,8 +127,9 @@ export const StructureDeckDetailView = ({
               },
               validate: {
                 unique: (inputId: number) =>
-                  structureDecks.every(({ id }) => id !== inputId) ||
-                  'id should be unique',
+                  structureDecks.every(
+                    ({ id }) => id !== inputId || id == initialId,
+                  ) || 'id should be unique',
               },
             }}
           />

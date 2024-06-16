@@ -200,7 +200,7 @@ export const GateDetailView = ({
   });
   const { handleSubmit, reset, getValues, setValue, watch, formState } =
     methods;
-  const [initialGateId] = useState(getValues('id'));
+  const [initialId] = useState(getValues('id'));
 
   const [succeed, setSucceed] = useState(false);
   useWarnNavigation(formState.isDirty);
@@ -228,7 +228,7 @@ export const GateDetailView = ({
 
   // Reset self clear_chapter when id gets changed
   useEffect(() => {
-    let prevId = initialGateId;
+    let prevId = initialId;
 
     const subscription = watch((value, { name }) => {
       if (name === 'id' && value.id !== undefined) {
@@ -244,7 +244,7 @@ export const GateDetailView = ({
     });
 
     return () => subscription.unsubscribe();
-  }, [getValues, initialGateId, setValue, watch]);
+  }, [getValues, initialId, setValue, watch]);
 
   return (
     <FormProvider {...methods}>
@@ -264,7 +264,7 @@ export const GateDetailView = ({
               min: { value: 101, message: 'id should be larger than 100' },
               validate: {
                 unique: (inputId: number) =>
-                  gates.every(({ id }) => id !== inputId) ||
+                  gates.every(({ id }) => id !== inputId || id === initialId) ||
                   'id should be unique',
               },
             }}
