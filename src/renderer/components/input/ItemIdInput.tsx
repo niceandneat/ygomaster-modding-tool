@@ -1,9 +1,10 @@
 import { Portal, Text, makeStyles, tokens } from '@fluentui/react-components';
 import { IFuseOptions } from 'fuse.js';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { ItemCategory } from '../../../common/type';
 import { dataStore } from '../../data';
+import { useHighlightElement } from '../../hooks/useHighlightElement';
 import { ItemImage } from '../common/ItemImage';
 import { ComboboxInput } from './ComboboxInput';
 
@@ -65,45 +66,8 @@ export const ItemIdInput = <T extends ItemCategory>({
   onChange,
 }: ItemIdInputProps<T>) => {
   const classes = useStyles();
-
-  const highlightImageRef = useRef<HTMLImageElement>(null);
-  const [highlightedId, setHighlightedId] = useState<number>();
-  const [highlightedPosition, setHighlightedPosition] = useState<{
-    x: number;
-    y: number;
-  }>();
-
-  const handleHighlightChange = useCallback(
-    (change?: { value: ItemIdOption; node: HTMLDivElement }) => {
-      if (!change) {
-        setHighlightedId(undefined);
-        setHighlightedPosition(undefined);
-        return;
-      }
-
-      const { x, y } = change.node.getBoundingClientRect();
-
-      setHighlightedId(change.value.id);
-      setHighlightedPosition({ x, y });
-    },
-    [],
-  );
-
-  // TODO Fix delay of getting size when highlightedId changes too fast
-  useEffect(() => {
-    if (!highlightImageRef.current || !highlightedPosition) return;
-
-    const rect = highlightImageRef.current.getBoundingClientRect();
-
-    const xOffset = highlightedPosition.x - 12;
-    // Prevent images from being cropped when the option position is too low
-    const yOffset =
-      highlightedPosition.y + rect.height > window.innerHeight - 12
-        ? window.innerHeight - rect.height - 12
-        : highlightedPosition.y;
-
-    highlightImageRef.current.style.transform = `translate(calc(${xOffset}px - 100%), ${yOffset}px)`;
-  }, [highlightedPosition]);
+  const { highlightImageRef, highlightedId, handleHighlightChange } =
+    useHighlightElement();
 
   const handleChange = useCallback(
     ({ id }: ItemIdOption) => onChange(id),
