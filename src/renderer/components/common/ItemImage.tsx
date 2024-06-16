@@ -2,13 +2,7 @@ import { Image, ImageProps } from '@fluentui/react-components';
 import { ReactEventHandler, forwardRef } from 'react';
 
 import { ItemCategory } from '../../../common/type';
-
-type GetSrc = (category: string, item: number) => string;
-
-const getThumbnailSrc: GetSrc = (category, item) =>
-  `static://thumbnails/${category}/${item}.webp`;
-const getImageSrc: GetSrc = (category, item) =>
-  `static://images/${category}/${item}.webp`;
+import { getImageSrc, getThumbnailSrc } from '../../utils/getSrc';
 
 // Show empty image for missing assets
 const handleImageError: ReactEventHandler<HTMLImageElement> = (e) => {
@@ -34,22 +28,12 @@ const getValidItemInfo = (
 interface ItemImageProps extends ImageProps {
   category: ItemCategory;
   item: number;
-  getSrc?: GetSrc;
   thumbnail?: boolean;
 }
 
 export const ItemImage = forwardRef<HTMLImageElement, ItemImageProps>(
-  (
-    {
-      category: categoryProps,
-      item: itemProps,
-      getSrc: getSrcProps,
-      thumbnail,
-      ...props
-    },
-    ref,
-  ) => {
-    const getSrc = getSrcProps || (thumbnail ? getThumbnailSrc : getImageSrc);
+  ({ category: categoryProps, item: itemProps, thumbnail, ...props }, ref) => {
+    const getSrc = thumbnail ? getThumbnailSrc : getImageSrc;
     const { category, item } = getValidItemInfo(categoryProps, itemProps);
 
     return (

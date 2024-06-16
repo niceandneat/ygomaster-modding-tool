@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import {
   CreateGateRequest,
   CreateGateResponse,

@@ -84,8 +84,6 @@ interface CardPackInputProps {
   label: string;
   required?: boolean;
   onChange: (value: number) => void;
-  getThumbnailSrc?: (category: string, id: number) => string;
-  getImageSrc?: (category: string, id: number) => string;
 }
 
 export const CardPackInput = ({
@@ -93,8 +91,6 @@ export const CardPackInput = ({
   label,
   required,
   onChange,
-  getThumbnailSrc,
-  getImageSrc,
 }: CardPackInputProps) => {
   const classes = useStyles();
 
@@ -177,7 +173,6 @@ export const CardPackInput = ({
               className={classes.inputIcon}
               category={AssetCategory.CARD_PACK}
               item={value}
-              getSrc={getThumbnailSrc}
             />
           </div>
         }
@@ -196,7 +191,6 @@ export const CardPackInput = ({
               className={classes.menuitemThumbnail}
               category={AssetCategory.CARD_PACK}
               item={value.id}
-              getSrc={getThumbnailSrc}
             />
           </div>
         )}
@@ -208,7 +202,6 @@ export const CardPackInput = ({
             className={classes.menuitemImage}
             category={AssetCategory.CARD_PACK}
             item={highlightedId}
-            getSrc={getImageSrc}
           />
         </Portal>
       )}

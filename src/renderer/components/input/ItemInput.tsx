@@ -56,8 +56,6 @@ interface ItemInputProps<T extends ItemCategory> {
   value: Item<T>;
   categories?: T[];
   onChange: (item: Item<T>) => void;
-  getThumbnailSrc?: (category: string, id: number) => string;
-  getImageSrc?: (category: string, id: number) => string;
 }
 
 const defaultCategories = itemCategories.filter((c) => c !== ItemCategory.NONE);
@@ -82,8 +80,6 @@ export const ItemInput = <T extends ItemCategory>({
   value,
   categories = defaultCategories as T[],
   onChange,
-  getThumbnailSrc,
-  getImageSrc,
 }: ItemInputProps<T>) => {
   const classes = useStyles();
 
@@ -157,8 +153,6 @@ export const ItemInput = <T extends ItemCategory>({
           category={value.category}
           value={value.id}
           onChange={handleIdChange}
-          getImageSrc={getImageSrc}
-          getThumbnailSrc={getThumbnailSrc}
         />
       </div>
       <Field label="counts">

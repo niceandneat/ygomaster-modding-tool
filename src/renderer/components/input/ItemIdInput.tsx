@@ -54,8 +54,6 @@ interface ItemIdInputProps<T extends ItemCategory> {
   required?: boolean;
   includeNone?: boolean;
   onChange: (value: number) => void;
-  getThumbnailSrc?: (category: string, id: number) => string;
-  getImageSrc?: (category: string, id: number) => string;
 }
 
 export const ItemIdInput = <T extends ItemCategory>({
@@ -65,8 +63,6 @@ export const ItemIdInput = <T extends ItemCategory>({
   required,
   includeNone,
   onChange,
-  getThumbnailSrc,
-  getImageSrc,
 }: ItemIdInputProps<T>) => {
   const classes = useStyles();
 
@@ -162,7 +158,6 @@ export const ItemIdInput = <T extends ItemCategory>({
               className={classes.inputIcon}
               category={category}
               item={getValidIdForImage(category, value)}
-              getSrc={getThumbnailSrc}
             />
           )
         }
@@ -176,7 +171,6 @@ export const ItemIdInput = <T extends ItemCategory>({
                 className={classes.menuitemThumbnail}
                 category={category}
                 item={getValidIdForImage(category, value.id)}
-                getSrc={getThumbnailSrc}
               />
             )}
           </div>
@@ -189,7 +183,6 @@ export const ItemIdInput = <T extends ItemCategory>({
             className={classes.menuitemImage}
             category={category}
             item={getValidIdForImage(category, highlightedId)}
-            getSrc={getImageSrc}
           />
         </Portal>
       )}

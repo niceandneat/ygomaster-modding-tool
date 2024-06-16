@@ -12,9 +12,6 @@ const meta = {
   tags: ['autodocs'],
   args: {
     onChange: fn(),
-    getThumbnailSrc: (category, item) =>
-      `/item-thumbnails/${category}/${item}.webp`,
-    getImageSrc: (category, item) => `/item-images/${category}/${item}.webp`,
   },
 } satisfies Meta<typeof ItemInput>;
 
