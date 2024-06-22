@@ -3,6 +3,7 @@ import { ArrowSwapRegular, ArrowUploadRegular } from '@fluentui/react-icons';
 import { useMemo } from 'react';
 
 interface FileInputProps {
+  className?: string;
   value?: string;
   placeholder?: string;
   directory?: boolean;
@@ -11,6 +12,7 @@ interface FileInputProps {
 }
 
 export const FileInput = ({
+  className,
   value,
   placeholder,
   directory,
@@ -33,6 +35,7 @@ export const FileInput = ({
 
   return (
     <Button
+      className={className}
       icon={value ? <ArrowSwapRegular /> : <ArrowUploadRegular />}
       onClick={handleClick}
     >

@@ -13,6 +13,7 @@ import {
 import {
   Add16Regular,
   ArrowShuffle16Regular,
+  EraserRegular,
   StarOffRegular,
   Subtract16Regular,
 } from '@fluentui/react-icons';
@@ -67,6 +68,14 @@ const useStyles = makeStyles({
   },
   title: {
     marginBottom: tokens.spacingVerticalL,
+  },
+  deckFileContainer: {
+    display: 'flex',
+    justifyItems: 'center',
+    gap: tokens.spacingHorizontalM,
+  },
+  deckFile: {
+    flex: '1',
   },
   difficultyContainer: {
     display: 'flex',
@@ -310,6 +319,7 @@ interface FileInputProps {
 }
 
 const FileNameInput = ({ name, path, optional, onChange }: FileInputProps) => {
+  const classes = useStyles();
   const { control, formState } = useFormContext<DuelChapter>();
 
   const label = name.replaceAll('_', ' ');
@@ -326,16 +336,26 @@ const FileNameInput = ({ name, path, optional, onChange }: FileInputProps) => {
           required={!optional}
           validationMessage={error?.message}
         >
-          <FileInput
-            onChange={(filePath) => {
-              const fileName = filePath.split('\\').pop()?.split('/').pop();
-              field.onChange(fileName);
-              onChange?.(fileName);
-            }}
-            value={field.value?.toString()}
-            path={path}
-            placeholder="Select deck file"
-          />
+          <div className={classes.deckFileContainer}>
+            <FileInput
+              className={classes.deckFile}
+              onChange={(filePath) => {
+                const fileName = filePath.split('\\').pop()?.split('/').pop();
+                field.onChange(fileName);
+                onChange?.(fileName);
+              }}
+              value={field.value?.toString()}
+              path={path}
+              placeholder="Select deck file"
+            />
+            {optional && (
+              <Button
+                aria-label="Clear"
+                icon={<EraserRegular />}
+                onClick={() => field.onChange('')}
+              />
+            )}
+          </div>
         </Field>
       )}
     />
