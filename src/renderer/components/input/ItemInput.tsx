@@ -65,6 +65,16 @@ const categoryDefaultIdMap = {
   ),
   [ItemCategory.CARD]: 4007, // Blue-Eyes White Dragon
 } as Record<ItemCategory, number>;
+const getCategoryDefaultCounts = (category: ItemCategory) => {
+  switch (category) {
+    case ItemCategory.CONSUME:
+      return 100;
+    case ItemCategory.CARD:
+      return 3;
+    default:
+      return 1;
+  }
+};
 
 const categoryOptionToString = (option?: CategoryOption<ItemCategory>) =>
   option?.name ?? '';
@@ -93,6 +103,7 @@ export const ItemInput = <T extends ItemCategory>({
         ...valueRef.current,
         category,
         id: categoryDefaultIdMap[category],
+        counts: getCategoryDefaultCounts(category),
       });
     },
     [onChange],
