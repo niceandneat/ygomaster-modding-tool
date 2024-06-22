@@ -1,6 +1,6 @@
 import { Field, Input, makeStyles, tokens } from '@fluentui/react-components';
 import { IFuseOptions } from 'fuse.js';
-import { useCallback, useMemo, useRef } from 'react';
+import { forwardRef, useCallback, useMemo, useRef } from 'react';
 
 import { Item, ItemCategory, itemCategories } from '../../../common/type';
 import { dataStore } from '../../data';
@@ -47,15 +47,15 @@ const useStyles = makeStyles({
   },
 });
 
-interface CategoryOption<T extends ItemCategory> {
-  category: T;
+interface CategoryOption {
+  category: ItemCategory;
   name: string;
 }
 
-interface ItemInputProps<T extends ItemCategory> {
-  value: Item<T>;
-  categories?: T[];
-  onChange: (item: Item<T>) => void;
+interface ItemInputProps {
+  value: Item<ItemCategory>;
+  categories?: ItemCategory[];
+  onChange: (item: Item<ItemCategory>) => void;
 }
 
 const defaultCategories = itemCategories.filter((c) => c !== ItemCategory.NONE);
@@ -76,104 +76,103 @@ const getCategoryDefaultCounts = (category: ItemCategory) => {
   }
 };
 
-const categoryOptionToString = (option?: CategoryOption<ItemCategory>) =>
-  option?.name ?? '';
-const categoryCompareValues = (
-  a?: CategoryOption<ItemCategory>,
-  b?: CategoryOption<ItemCategory>,
-) => Boolean(a && b && a.category === b.category);
-const categoryFuseOptions: IFuseOptions<CategoryOption<ItemCategory>> = {
+const categoryOptionToString = (option?: CategoryOption) => option?.name ?? '';
+const categoryCompareValues = (a?: CategoryOption, b?: CategoryOption) =>
+  Boolean(a && b && a.category === b.category);
+const categoryFuseOptions: IFuseOptions<CategoryOption> = {
   keys: ['name'],
 };
 
-export const ItemInput = <T extends ItemCategory>({
-  value,
-  categories = defaultCategories as T[],
-  onChange,
-}: ItemInputProps<T>) => {
-  const classes = useStyles();
+export const ItemInput = forwardRef<HTMLDivElement, ItemInputProps>(
+  ({ value, categories = defaultCategories, onChange }, ref) => {
+    const classes = useStyles();
 
-  const valueRef = useRef<Item<T>>(value);
-  valueRef.current = value;
+    const valueRef = useRef<Item<ItemCategory>>(value);
+    valueRef.current = value;
 
-  const handleCategoryOptionChange = useCallback(
-    ({ category }: CategoryOption<T>) => {
-      if (valueRef.current.category === category) return;
-      onChange({
-        ...valueRef.current,
-        category,
-        id: categoryDefaultIdMap[category],
-        counts: getCategoryDefaultCounts(category),
-      });
-    },
-    [onChange],
-  );
+    const handleCategoryOptionChange = useCallback(
+      ({ category }: CategoryOption) => {
+        if (valueRef.current.category === category) return;
+        onChange({
+          ...valueRef.current,
+          category,
+          id: categoryDefaultIdMap[category],
+          counts: getCategoryDefaultCounts(category),
+        });
+      },
+      [onChange],
+    );
 
-  const handleIdChange = useCallback(
-    (id: number) => {
-      if (valueRef.current.id === id) return;
-      onChange({ ...valueRef.current, id });
-    },
-    [onChange],
-  );
+    const handleIdChange = useCallback(
+      (id: number) => {
+        if (valueRef.current.id === id) return;
+        onChange({ ...valueRef.current, id });
+      },
+      [onChange],
+    );
 
-  const handleCountsChange = useMemo(
-    () =>
-      handleNumberInput((counts: number) =>
-        onChange({ ...valueRef.current, counts }),
-      ),
-    [onChange],
-  );
-
-  const categoryValue = useMemo<CategoryOption<T>>(
-    () => ({
-      category: value.category,
-      name: ItemCategory[value.category],
-    }),
-    [value.category],
-  );
-
-  const categoryOptions = useMemo<CategoryOption<T>[]>(
-    () =>
-      Object.entries(ItemCategory)
-        .map(([name, category]) => ({ category, name }))
-        .filter((option): option is CategoryOption<T> =>
-          categories.includes(option.category as T),
+    const handleCountsChange = useMemo(
+      () =>
+        handleNumberInput((counts: number) =>
+          onChange({ ...valueRef.current, counts }),
         ),
-    [categories],
-  );
+      [onChange],
+    );
 
-  return (
-    <div className={classes.container}>
-      <div className={classes.categoryInput}>
-        <ComboboxInput
-          label="category"
-          value={categoryValue}
-          options={categoryOptions}
-          fuseOptions={categoryFuseOptions}
-          onChange={handleCategoryOptionChange}
-          valueToString={categoryOptionToString}
-          compareValues={categoryCompareValues}
-        >
-          {({ value }) => <div className={classes.menuitem}>{value.name}</div>}
-        </ComboboxInput>
+    const categoryValue = useMemo<CategoryOption>(
+      () => ({
+        category: value.category,
+        name: ItemCategory[value.category],
+      }),
+      [value.category],
+    );
+
+    const categoryOptions = useMemo<CategoryOption[]>(
+      () =>
+        Object.entries(ItemCategory)
+          .map(([name, category]) => ({ category, name }))
+          .filter((option): option is CategoryOption =>
+            categories.includes(option.category as ItemCategory),
+          ),
+      [categories],
+    );
+
+    return (
+      <div ref={ref} className={classes.container}>
+        <div className={classes.categoryInput}>
+          <ComboboxInput
+            label="category"
+            value={categoryValue}
+            options={categoryOptions}
+            fuseOptions={categoryFuseOptions}
+            onChange={handleCategoryOptionChange}
+            valueToString={categoryOptionToString}
+            compareValues={categoryCompareValues}
+          >
+            {({ value }) => (
+              <div className={classes.menuitem}>{value.name}</div>
+            )}
+          </ComboboxInput>
+        </div>
+        <div className={classes.idInput}>
+          <ItemIdInput
+            label="id"
+            category={value.category}
+            value={value.id}
+            onChange={handleIdChange}
+          />
+        </div>
+        <Field label="counts">
+          <Input
+            className={classes.countsInput}
+            type="number"
+            value={value.counts.toString()}
+            onChange={handleCountsChange}
+          />
+        </Field>
       </div>
-      <div className={classes.idInput}>
-        <ItemIdInput
-          label="id"
-          category={value.category}
-          value={value.id}
-          onChange={handleIdChange}
-        />
-      </div>
-      <Field label="counts">
-        <Input
-          className={classes.countsInput}
-          type="number"
-          value={value.counts.toString()}
-          onChange={handleCountsChange}
-        />
-      </Field>
-    </div>
-  );
-};
+    );
+  },
+);
+
+ItemInput.displayName = 'ItemInput';

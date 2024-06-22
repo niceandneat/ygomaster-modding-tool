@@ -6,7 +6,7 @@ import {
   tokens,
 } from '@fluentui/react-components';
 import { IFuseOptions } from 'fuse.js';
-import { useCallback, useMemo } from 'react';
+import { forwardRef, useCallback, useMemo } from 'react';
 
 import { AssetCategory } from '../../../common/type';
 import { dataStore } from '../../data';
@@ -87,88 +87,87 @@ interface CardPackInputProps {
   onChange: (value: number) => void;
 }
 
-export const CardPackInput = ({
-  value,
-  label,
-  required,
-  onChange,
-}: CardPackInputProps) => {
-  const classes = useStyles();
-  const { highlightImageRef, highlightedId, handleHighlightChange } =
-    useHighlightElement();
+export const CardPackInput = forwardRef<HTMLDivElement, CardPackInputProps>(
+  ({ value, label, required, onChange }, ref) => {
+    const classes = useStyles();
+    const { highlightImageRef, highlightedId, handleHighlightChange } =
+      useHighlightElement();
 
-  const handleChange = useCallback(
-    ({ id }: CardPackOption) => onChange(id),
-    [onChange],
-  );
+    const handleChange = useCallback(
+      ({ id }: CardPackOption) => onChange(id),
+      [onChange],
+    );
 
-  const inputValue = useMemo<CardPackOption>(() => {
-    const pack = dataStore.getPack(value);
+    const inputValue = useMemo<CardPackOption>(() => {
+      const pack = dataStore.getPack(value);
 
-    return {
-      id: value,
-      name: pack?.name ?? '',
-      index: pack?.index,
-      release: pack?.release,
-    };
-  }, [value]);
+      return {
+        id: value,
+        name: pack?.name ?? '',
+        index: pack?.index,
+        release: pack?.release,
+      };
+    }, [value]);
 
-  const inputOptions = dataStore.getPacks();
+    const inputOptions = dataStore.getPacks();
 
-  return (
-    <>
-      <ComboboxInput
-        label={label}
-        required={required}
-        value={inputValue}
-        options={inputOptions}
-        fuseOptions={fuseOptions}
-        onChange={handleChange}
-        onChangeHighlight={handleHighlightChange}
-        valueToString={optionToString}
-        compareValues={compareValues}
-        icon={
-          <div className={classes.inputIconContainer}>
-            <Tag className={classes.menuItemIndex} size="extra-small">
-              {inputValue.index}
-            </Tag>
+    return (
+      <div ref={ref}>
+        <ComboboxInput
+          label={label}
+          required={required}
+          value={inputValue}
+          options={inputOptions}
+          fuseOptions={fuseOptions}
+          onChange={handleChange}
+          onChangeHighlight={handleHighlightChange}
+          valueToString={optionToString}
+          compareValues={compareValues}
+          icon={
+            <div className={classes.inputIconContainer}>
+              <Tag className={classes.menuItemIndex} size="extra-small">
+                {inputValue.index}
+              </Tag>
+              <AssetImage
+                thumbnail
+                className={classes.inputIcon}
+                category={AssetCategory.CARD_PACK}
+                item={value}
+              />
+            </div>
+          }
+        >
+          {({ value }) => (
+            <div className={classes.menuitem}>
+              <Tag className={classes.menuItemIndex} size="small">
+                {value.index}
+              </Tag>
+              <Text className={classes.menuItemText}>{value.name}</Text>
+              <Tag className={classes.menuItemRelease} size="small">
+                {releaseDateString(value.release)}
+              </Tag>
+              <AssetImage
+                thumbnail
+                className={classes.menuitemThumbnail}
+                category={AssetCategory.CARD_PACK}
+                item={value.id}
+              />
+            </div>
+          )}
+        </ComboboxInput>
+        {highlightedId !== undefined && (
+          <Portal mountNode={{ className: classes.menuitemPortal }}>
             <AssetImage
-              thumbnail
-              className={classes.inputIcon}
+              ref={highlightImageRef}
+              className={classes.menuitemImage}
               category={AssetCategory.CARD_PACK}
-              item={value}
+              item={highlightedId}
             />
-          </div>
-        }
-      >
-        {({ value }) => (
-          <div className={classes.menuitem}>
-            <Tag className={classes.menuItemIndex} size="small">
-              {value.index}
-            </Tag>
-            <Text className={classes.menuItemText}>{value.name}</Text>
-            <Tag className={classes.menuItemRelease} size="small">
-              {releaseDateString(value.release)}
-            </Tag>
-            <AssetImage
-              thumbnail
-              className={classes.menuitemThumbnail}
-              category={AssetCategory.CARD_PACK}
-              item={value.id}
-            />
-          </div>
+          </Portal>
         )}
-      </ComboboxInput>
-      {highlightedId !== undefined && (
-        <Portal mountNode={{ className: classes.menuitemPortal }}>
-          <AssetImage
-            ref={highlightImageRef}
-            className={classes.menuitemImage}
-            category={AssetCategory.CARD_PACK}
-            item={highlightedId}
-          />
-        </Portal>
-      )}
-    </>
-  );
-};
+      </div>
+    );
+  },
+);
+
+CardPackInput.displayName = 'CardPackInput';

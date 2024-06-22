@@ -16,7 +16,7 @@ import {
   StarOffRegular,
   Subtract16Regular,
 } from '@fluentui/react-icons';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import {
   Controller,
   FieldArrayPath,
@@ -352,6 +352,7 @@ const ItemListInput = ({ name, categories, disabled }: ItemInputProps) => {
   const classes = useListStyles();
   const { control } = useFormContext<Chapter>();
   const { fields, append, remove } = useFieldArray<Chapter>({ name });
+  const inputRef = useRef<HTMLDivElement>(null);
 
   const label = name.replaceAll('_', ' ');
 
@@ -365,6 +366,7 @@ const ItemListInput = ({ name, categories, disabled }: ItemInputProps) => {
             name={`${name}.${index}`}
             render={({ field }) => (
               <ItemInput
+                ref={index === fields.length - 1 ? inputRef : undefined}
                 value={field.value}
                 categories={categories}
                 onChange={field.onChange}
@@ -382,9 +384,12 @@ const ItemListInput = ({ name, categories, disabled }: ItemInputProps) => {
       <Button
         icon={<Add16Regular />}
         disabled={disabled}
-        onClick={() =>
-          append({ category: ItemCategory.CONSUME, id: 1, counts: 100 })
-        }
+        onClick={() => {
+          append({ category: ItemCategory.CONSUME, id: 1, counts: 100 });
+          queueMicrotask(() =>
+            inputRef.current?.querySelector('input')?.focus(),
+          );
+        }}
       >
         Add Item
       </Button>
@@ -417,6 +422,7 @@ const UnlockPackInput = () => {
   const classes = useListStyles();
   const { setValue, getValues } = useFormContext<Chapter>();
   const fields = useWatch<Chapter, 'unlock_pack'>({ name: 'unlock_pack' });
+  const inputRef = useRef<HTMLDivElement>(null);
 
   const append = useCallback(
     (packId: number) =>
@@ -446,6 +452,7 @@ const UnlockPackInput = () => {
         <Card key={index} className={classes.card}>
           <div className={classes.fullWidth}>
             <CardPackInput
+              ref={index === fields.length - 1 ? inputRef : undefined}
               required
               label="pack"
               value={packId}
@@ -460,7 +467,15 @@ const UnlockPackInput = () => {
           </Tooltip>
         </Card>
       ))}
-      <Button icon={<Add16Regular />} onClick={() => append(9001)}>
+      <Button
+        icon={<Add16Regular />}
+        onClick={() => {
+          append(9001);
+          queueMicrotask(() =>
+            inputRef.current?.querySelector('input')?.focus(),
+          );
+        }}
+      >
         Add Pack
       </Button>
     </div>

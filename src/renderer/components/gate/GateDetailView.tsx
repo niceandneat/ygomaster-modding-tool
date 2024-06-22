@@ -13,7 +13,7 @@ import {
   Subtract16Regular,
 } from '@fluentui/react-icons';
 import { IFuseOptions } from 'fuse.js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Controller,
   FormProvider,
@@ -441,6 +441,7 @@ const ChaptersForUnlockInput = ({
   const { fields, append, remove } = useFieldArray<Gate, 'unlock'>({
     name: 'unlock',
   });
+  const inputRef = useRef<HTMLDivElement>(null);
 
   const [initialGateId] = useState(getValues('id'));
   const externalGates = useMemo(
@@ -466,6 +467,7 @@ const ChaptersForUnlockInput = ({
             }}
             render={({ field }) => (
               <GateChapterInput
+                ref={index === fields.length - 1 ? inputRef : undefined}
                 value={field.value}
                 gates={externalGates}
                 validationMessage={error?.[index]?.message}
@@ -484,13 +486,16 @@ const ChaptersForUnlockInput = ({
       ))}
       <Button
         icon={<Add16Regular />}
-        onClick={() =>
+        onClick={() => {
           append({
             type: UnlockType.CHAPTER_AND,
             gateId: externalGates[0].id,
             chapterId: 0,
-          })
-        }
+          });
+          queueMicrotask(() =>
+            inputRef.current?.querySelector('input')?.focus(),
+          );
+        }}
       >
         Add a chapter for unlock
       </Button>
