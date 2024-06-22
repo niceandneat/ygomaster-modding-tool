@@ -14,6 +14,9 @@ const useStyles = makeStyles({
   },
   menuitem: {
     padding: tokens.spacingVerticalM,
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
   },
 });
 
