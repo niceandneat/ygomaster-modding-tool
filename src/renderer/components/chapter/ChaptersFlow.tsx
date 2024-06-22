@@ -95,8 +95,8 @@ const ChaptersFlowComponent = ({
     addChapter,
     onNodesChange,
     onEdgesChange,
-    onEdgeUpdate,
     onBeforeDelete,
+    onReconnect,
     onConnect,
     onConnectStart,
     onConnectEnd,
@@ -128,7 +128,7 @@ const ChaptersFlowComponent = ({
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onEdgeUpdate={onEdgeUpdate}
+        onReconnect={onReconnect}
         onConnect={onConnect}
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}

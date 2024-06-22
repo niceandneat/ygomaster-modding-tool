@@ -7,15 +7,15 @@ import {
   OnConnect,
   OnConnectEnd,
   OnConnectStart,
-  OnEdgeUpdateFunc,
   OnEdgesChange,
   OnNodesChange,
+  OnReconnect,
   OnSelectionChangeFunc,
   Position,
   addEdge,
   applyEdgeChanges,
   applyNodeChanges,
-  updateEdge,
+  reconnectEdge,
   useReactFlow,
 } from '@xyflow/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -208,9 +208,21 @@ export const useChaptersFlow = ({
     [getEdges, getNodes, onChangeChapters],
   );
 
-  const onEdgeUpdate = useCallback<OnEdgeUpdateFunc<EdgeType>>(
+  const onBeforeDelete = useCallback<
+    OnBeforeDelete<NodeType, EdgeType>
+  >(async () => {
+    const response = await window.electron.showMessageBox({
+      message: 'Are you sure?',
+      buttons: ['yes', 'no'],
+      cancelId: 1,
+    });
+
+    return response === 0;
+  }, []);
+
+  const onReconnect = useCallback<OnReconnect<EdgeType>>(
     (oldEdge, connection) => {
-      const newEdges = updateEdge(oldEdge, connection, getEdges());
+      const newEdges = reconnectEdge(oldEdge, connection, getEdges());
       setEdges(newEdges);
 
       if (connection.target) {
@@ -234,18 +246,6 @@ export const useChaptersFlow = ({
     },
     [getEdges, getNodes, onChangeChapters],
   );
-
-  const onBeforeDelete = useCallback<
-    OnBeforeDelete<NodeType, EdgeType>
-  >(async () => {
-    const response = await window.electron.showMessageBox({
-      message: 'Are you sure?',
-      buttons: ['yes', 'no'],
-      cancelId: 1,
-    });
-
-    return response === 0;
-  }, []);
 
   const onConnect = useCallback<OnConnect>(
     (connection) => {
@@ -343,8 +343,8 @@ export const useChaptersFlow = ({
     addChapter,
     onNodesChange,
     onEdgesChange,
-    onEdgeUpdate,
     onBeforeDelete,
+    onReconnect,
     onConnect,
     onConnectStart,
     onConnectEnd,
