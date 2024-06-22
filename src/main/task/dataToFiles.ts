@@ -35,7 +35,7 @@ import {
   readLines,
   saveJson,
 } from '../utils';
-import { isCustomStructureDeck } from './structure-deck';
+import { isCustomStructureDeckPath } from './structure-deck';
 
 export const dataToFiles = async (paths: {
   dataPath: string;
@@ -108,7 +108,7 @@ const loadStructureDeckDataList = async (
     path.resolve(dataPath, 'StructureDecks'),
   );
   const customStructureDeckPaths = allStructureDeckPaths.filter(
-    isCustomStructureDeck,
+    isCustomStructureDeckPath,
   );
 
   return await batchPromiseAll(
@@ -195,7 +195,7 @@ const loadGateAndDuelDescriptions = async (dataPath: string) => {
   return { gateNames, gateDescriptions, duelDescriptions };
 };
 
-const loadStructureDeckNames = async (dataPath: string) => {
+export const loadStructureDeckNames = async (dataPath: string) => {
   const lines = await readLines(
     path.resolve(dataPath, 'ClientData/IDS/IDS_ITEM.txt'),
   );
@@ -230,7 +230,7 @@ const loadStructureDeckNames = async (dataPath: string) => {
   return results;
 };
 
-const loadStructureDeckDescriptions = async (dataPath: string) => {
+export const loadStructureDeckDescriptions = async (dataPath: string) => {
   const lines = await readLines(
     path.resolve(dataPath, 'ClientData/IDS/IDS_ITEMDESC.txt'),
   );

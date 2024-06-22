@@ -32,7 +32,14 @@ import {
   saveText,
   toPosix,
 } from '../utils';
-import { isCustomStructureDeck } from './structure-deck';
+import {
+  loadStructureDeckDescriptions,
+  loadStructureDeckNames,
+} from './dataToFiles';
+import {
+  isCustomStructureDeckId,
+  isCustomStructureDeckPath,
+} from './structure-deck';
 
 interface Ids {
   unlockId: number;
@@ -348,7 +355,7 @@ const backupStructureDecks = async (dataPath: string, backupPath: string) => {
   const systemStructureDeckPaths: string[] = [];
 
   allStructureDeckPaths.forEach((name) => {
-    if (isCustomStructureDeck(name)) {
+    if (isCustomStructureDeckPath(name)) {
       customStructureDeckPaths.push(name);
     } else {
       systemStructureDeckPaths.push(name);
@@ -397,8 +404,6 @@ const saveData = async (data: {
       'Solo.json',
       'ClientData/SoloGateCards.txt',
       'ClientData/IDS/IDS_SOLO.txt',
-      'ClientData/IDS/IDS_ITEM.txt',
-      'ClientData/IDS/IDS_ITEMDESC.txt',
     ],
   });
   await backupStructureDecks(dataPath, backupPath);
@@ -462,12 +467,36 @@ const saveData = async (data: {
   log.info('Created structure deck files');
 
   // Create IDS_ITEM.txt & IDS_ITEMDESC.txt
+  await backup(dataPath, {
+    backupPath,
+    filePaths: [
+      'ClientData/IDS/IDS_ITEM.txt',
+      'ClientData/IDS/IDS_ITEMDESC.txt',
+    ],
+    removeExistingBackup: false,
+    removeOriginal: false,
+  });
+
+  const [structureDeckNames, structureDeckDescriptions] = await Promise.all([
+    loadStructureDeckNames(dataPath),
+    loadStructureDeckDescriptions(dataPath),
+  ]);
+
+  const existingStructureDecksInfo = Array.from(structureDeckNames.entries())
+    .filter(([id]) => !isCustomStructureDeckId(id))
+    .map(([id, name]) => {
+      return { id, name, description: structureDeckDescriptions.get(id) };
+    });
+
   let structureDeckName = '';
   let structureDeckDescription = '';
-  structureDecks.forEach(({ id, name, description = '' }) => {
-    structureDeckName += `[IDS_ITEM.ID${id}]\n${name}\n`;
-    structureDeckDescription += `[IDS_ITEMDESC.ID${id}]\n${description}\n`;
-  });
+
+  [...existingStructureDecksInfo, ...structureDecks].forEach(
+    ({ id, name, description = '' }) => {
+      structureDeckName += `[IDS_ITEM.ID${id}]\n${name}\n`;
+      structureDeckDescription += `[IDS_ITEMDESC.ID${id}]\n${description}\n`;
+    },
+  );
 
   await saveText(
     path.resolve(dataPath, 'ClientData/IDS/IDS_ITEM.txt'),
