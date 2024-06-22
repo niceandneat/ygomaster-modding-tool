@@ -104,6 +104,9 @@ const useItemListStyles = makeStyles({
     justifyContent: 'space-between',
     marginTop: tokens.spacingVerticalS,
   },
+  itemName: {
+    marginTop: tokens.spacingVerticalXXS,
+  },
   iconContainer: {
     width: '24px',
     height: '24px',
@@ -286,41 +289,63 @@ const NodeItemList = ({ items, title }: { items: Item[]; title: string }) => {
       <div className={classes.title}>
         <Text>{title}</Text>
       </div>
-      {items.map((item, index) => {
-        const shouldShowText = [
-          ItemCategory.NONE,
-          ItemCategory.PROFILE_TAG,
-        ].includes(item.category);
+      {items.map((item, index) => (
+        <NodeItemListItem key={index} item={item} />
+      ))}
+    </div>
+  );
+};
 
-        const name = String(
-          dataStore.getItem(item.category, item.id)?.name ?? item.id,
-        );
+const NodeItemListItem = ({ item }: { item: Item<ItemCategory> }) => {
+  const classes = useItemListStyles();
 
-        return (
-          <div key={index} className={classes.listItem}>
-            {shouldShowText ? (
-              <Text>{ItemCategory[item.category]}</Text>
-            ) : (
-              <div className={classes.iconContainer}>
-                <Tooltip
-                  content={name}
-                  relationship="description"
-                  positioning="before"
-                >
-                  <ItemImage
-                    thumbnail
-                    alt={name}
-                    className={classes.icon}
-                    category={item.category}
-                    item={item.id}
-                  />
-                </Tooltip>
-              </div>
-            )}
-            <Text>{item.counts}</Text>
-          </div>
-        );
-      })}
+  const name = String(
+    dataStore.getItem(item.category, item.id)?.name ?? item.id,
+  );
+
+  if ([ItemCategory.NONE, ItemCategory.PROFILE_TAG].includes(item.category)) {
+    return (
+      <div className={classes.listItem}>
+        <Text>{ItemCategory[item.category]}</Text>
+        <Text>{item.counts}</Text>
+      </div>
+    );
+  }
+
+  if ([ItemCategory.CARD, ItemCategory.STRUCTURE].includes(item.category)) {
+    return (
+      <div>
+        <div className={classes.listItem}>
+          <ItemImage
+            thumbnail
+            alt={name}
+            className={classes.icon}
+            category={item.category}
+            item={item.id}
+          />
+          <Text>{item.counts}</Text>
+        </div>
+        <div className={classes.itemName}>
+          <Text>{name}</Text>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={classes.listItem}>
+      <div className={classes.iconContainer}>
+        <Tooltip content={name} relationship="description" positioning="before">
+          <ItemImage
+            thumbnail
+            alt={name}
+            className={classes.icon}
+            category={item.category}
+            item={item.id}
+          />
+        </Tooltip>
+      </div>
+      <Text>{item.counts}</Text>
     </div>
   );
 };
