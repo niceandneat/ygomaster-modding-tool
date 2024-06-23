@@ -17,6 +17,7 @@ import {
   DeckData,
   DuelData,
   GateData,
+  SettingsFile,
   ShopFile,
   StructureDeckData,
 } from '../type';
@@ -27,7 +28,7 @@ import {
   getBackupDirectoryWithTime,
   getChildJsonPaths,
   readJson,
-  readJsonWithCommas,
+  readJsonc,
   saveJson,
   saveText,
   toPosix,
@@ -517,9 +518,7 @@ const patchData = async (data: { backupPath: string; dataPath: string }) => {
   log.info('Start patch data');
 
   // Modify unlock condition of card packs
-  const shop = await readJsonWithCommas<ShopFile>(
-    path.resolve(dataPath, 'Shop.json'),
-  );
+  const shop = await readJsonc<ShopFile>(path.resolve(dataPath, 'Shop.json'));
   Object.keys(shop.PackShop).map((key) => {
     delete shop.PackShop[key].unlockSecrets;
   });
@@ -531,4 +530,22 @@ const patchData = async (data: { backupPath: string; dataPath: string }) => {
   });
   await saveJson(path.resolve(dataPath, 'Shop.json'), shop);
   log.info('Created Shop.json');
+
+  // Modify general game settings
+  const settings = await readJsonc<SettingsFile>(
+    path.resolve(dataPath, 'Settings.json'),
+  );
+  settings.DefaultGems = 1100;
+  settings.Craft.Craft.SuperRare.Normal = 50;
+  settings.Craft.Craft.UltraRare.Normal = 50;
+  settings.DuelRewards.win = [{ type: 'Gem', min: 100, max: 150, rate: 100 }];
+  settings.DuelRewards.lose = [{ type: 'Gem', min: 10, max: 100, rate: 100 }];
+
+  await backup(dataPath, {
+    backupPath,
+    filePaths: ['Settings.json'],
+    removeExistingBackup: false,
+  });
+  await saveJson(path.resolve(dataPath, 'Settings.json'), settings);
+  log.info('Created Settings.json');
 };

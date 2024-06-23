@@ -164,3 +164,19 @@ export interface ShopFile {
     };
   };
 }
+
+export interface SettingsFile {
+  DefaultGems: number;
+  Craft: {
+    Craft: {
+      Normal: { Normal: number; Shine: number };
+      Rare: { Normal: number; Shine: number };
+      SuperRare: { Normal: number; Shine: number; Royal: number };
+      UltraRare: { Normal: number; Shine: number; Royal: number };
+    };
+  };
+  DuelRewards: {
+    win: [{ type: 'Gem'; min: number; max: number; rate: number }];
+    lose: [{ type: 'Gem'; min: number; max: number; rate: number }];
+  };
+}

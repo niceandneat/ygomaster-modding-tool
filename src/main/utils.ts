@@ -1,4 +1,5 @@
 import { app } from 'electron';
+import { parse } from 'jsonc-parser';
 import * as fs from 'node:fs/promises';
 import path from 'node:path';
 
@@ -12,14 +13,9 @@ export const readJson = async <T>(filePath: string): Promise<T> => {
   return JSON.parse(data);
 };
 
-export const readJsonWithCommas = async <T>(filePath: string): Promise<T> => {
+export const readJsonc = async <T>(filePath: string): Promise<T> => {
   const data = await fs.readFile(filePath, 'utf-8');
-  const dataWithoutCommas = data.replace(
-    /(?<=(true|false|null|["\d}\]])\s*)\s*,(?=\s*[}\]])/g,
-    '',
-  );
-
-  return JSON.parse(dataWithoutCommas);
+  return parse(data);
 };
 
 export const saveJson = async (
