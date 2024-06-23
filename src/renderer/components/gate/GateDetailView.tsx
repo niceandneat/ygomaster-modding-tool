@@ -1,7 +1,7 @@
 import {
   Button,
   Card,
-  Text,
+  Label,
   Title1,
   Tooltip,
   makeStyles,
@@ -99,7 +99,8 @@ const useStyles = makeStyles({
 const useGateChapterListStyle = makeStyles({
   label: {
     display: 'block',
-    marginBottom: tokens.spacingVerticalS,
+    marginBottom: tokens.spacingVerticalXXS,
+    paddingBottom: tokens.spacingVerticalXXS,
   },
   card: {
     display: 'flex',
@@ -391,7 +392,9 @@ const ClearChapterInput = ({ gates, loadChapters }: ClearChapterInputProps) => {
 
   return (
     <div>
-      <Text className={classes.label}>clear chapter</Text>
+      <Label className={classes.label} required>
+        clear chapter
+      </Label>
       <Card className={classes.card}>
         <Controller
           control={control}
@@ -453,7 +456,7 @@ const ChaptersForUnlockInput = ({
 
   return (
     <div>
-      <Text className={classes.label}>unlock</Text>
+      <Label className={classes.label}>unlock</Label>
       {fields.map((item, index) => (
         <Card key={item.id} className={classes.card}>
           <Controller

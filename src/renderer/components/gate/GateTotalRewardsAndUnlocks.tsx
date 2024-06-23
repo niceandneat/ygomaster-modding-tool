@@ -65,7 +65,7 @@ const getTotalRewardsAndUnlocks = (chapters: Chapter[]) => {
 
   chapters.forEach((chapter) => {
     if (isDuelChapter(chapter)) {
-      rewards.push(...chapter.mydeck_reward);
+      chapter.mydeck_reward && rewards.push(...chapter.mydeck_reward);
       chapter.rental_reward && rewards.push(...chapter.rental_reward);
     } else if (isUnlockChapter(chapter)) {
       unlocks.push(...chapter.unlock);

@@ -1,4 +1,4 @@
-import { InfoLabel, makeStyles, tokens } from '@fluentui/react-components';
+import { Label, makeStyles, tokens } from '@fluentui/react-components';
 import { ReactFlowProvider, useStore as useFlowStore } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useCallback, useMemo } from 'react';
@@ -14,7 +14,8 @@ import { ChaptersFlow } from './ChaptersFlow';
 const useStyles = makeStyles({
   label: {
     display: 'block',
-    marginBottom: tokens.spacingVerticalS,
+    marginBottom: tokens.spacingVerticalXXS,
+    paddingBottom: tokens.spacingVerticalXXS,
   },
 });
 
@@ -70,12 +71,7 @@ const ChaptersInputComponent = () => {
 
   return (
     <div>
-      <InfoLabel
-        className={classes.label}
-        info="Click right mouse button to add a node."
-      >
-        chapters
-      </InfoLabel>
+      <Label className={classes.label}>chapters</Label>
       <ChaptersFlow
         onChangeChapters={handleChangeFlow}
         onChangeSelection={handleChangeSelection}

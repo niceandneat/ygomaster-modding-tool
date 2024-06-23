@@ -219,7 +219,7 @@ const DuelChapterNodeContents = ({
       <div className={classes.contents}>
         <Text align="center">{name}</Text>
         <DifficultyStarts difficulty={data.difficulty} />
-        {data.mydeck_reward.length ? (
+        {data.mydeck_reward?.length ? (
           <NodeItemList title="mydeck reward" items={data.mydeck_reward} />
         ) : null}
         {data.rental_reward?.length ? (

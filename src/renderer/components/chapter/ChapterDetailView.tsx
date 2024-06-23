@@ -3,6 +3,10 @@ import {
   Card,
   Dropdown,
   Field,
+  Label,
+  MessageBar,
+  MessageBarBody,
+  MessageBarTitle,
   Option,
   Rating,
   Text,
@@ -14,13 +18,21 @@ import {
   Add16Regular,
   ArrowShuffle16Regular,
   EraserRegular,
+  ErrorCircleFilled,
   StarOffRegular,
   Subtract16Regular,
 } from '@fluentui/react-icons';
-import { useCallback, useEffect, useRef } from 'react';
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from 'react';
 import {
   Controller,
   FieldArrayPath,
+  FieldErrors,
   FormProvider,
   Path,
   useFieldArray,
@@ -87,7 +99,8 @@ const useStyles = makeStyles({
 const useListStyles = makeStyles({
   label: {
     display: 'block',
-    marginBottom: tokens.spacingVerticalS,
+    marginBottom: tokens.spacingVerticalXXS,
+    paddingBottom: tokens.spacingVerticalXXS,
   },
   card: {
     display: 'flex',
@@ -98,6 +111,17 @@ const useListStyles = makeStyles({
   },
   fullWidth: {
     flex: '1',
+  },
+  buttonInfo: {
+    minHeight: '32px',
+    marginBottom: tokens.spacingVerticalM,
+  },
+  error: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: tokens.spacingHorizontalXS,
+    marginTop: tokens.spacingVerticalXXS,
+    color: tokens.colorPaletteRedForeground1,
   },
 });
 
@@ -222,7 +246,15 @@ export const ChapterDetailView = ({
                 setValue('cpu_name', cpuName);
               }}
             />
-            <FileNameInput name="rental_deck" path={deckPath} optional />
+            <FileNameInput
+              name="rental_deck"
+              path={deckPath}
+              optional
+              onChange={(fileName) => {
+                if (fileName) return;
+                setValue('rental_reward', []);
+              }}
+            />
             <MydeckRewardInput />
             <RentalRewardInput />
             <PlainInput<Chapter> name="cpu_name" />
@@ -352,7 +384,10 @@ const FileNameInput = ({ name, path, optional, onChange }: FileInputProps) => {
               <Button
                 aria-label="Clear"
                 icon={<EraserRegular />}
-                onClick={() => field.onChange('')}
+                onClick={() => {
+                  field.onChange('');
+                  onChange?.('');
+                }}
               />
             )}
           </div>
@@ -366,19 +401,43 @@ interface ItemInputProps {
   name: FieldArrayPath<Chapter>;
   categories?: ItemCategory[];
   disabled?: boolean;
+  required?: boolean;
+  info?: ReactNode;
 }
 
-const ItemListInput = ({ name, categories, disabled }: ItemInputProps) => {
+const ItemListInput = ({
+  name,
+  categories,
+  disabled,
+  required,
+  info,
+}: ItemInputProps) => {
   const classes = useListStyles();
-  const { control } = useFormContext<Chapter>();
+  const { control, formState, setError, clearErrors } =
+    useFormContext<Chapter>();
   const { fields, append, remove } = useFieldArray<Chapter>({ name });
   const inputRef = useRef<HTMLDivElement>(null);
 
   const label = name.replaceAll('_', ' ');
+  const error = formState.errors[name as keyof FieldErrors<Chapter>];
+
+  useLayoutEffect(() => {
+    if (required && !fields.length) {
+      return setError(name, {
+        type: 'required',
+        message: 'This field is required',
+      });
+    }
+
+    return clearErrors(name);
+  }, [fields.length, name, required, setError, clearErrors]);
 
   return (
     <div>
-      <Text className={classes.label}>{label}</Text>
+      <Label className={classes.label} required={required}>
+        {label}
+      </Label>
+      {info}
       {fields.map((item, index) => (
         <Card key={item.id} className={classes.card}>
           <Controller
@@ -413,19 +472,68 @@ const ItemListInput = ({ name, categories, disabled }: ItemInputProps) => {
       >
         Add Item
       </Button>
+      {error?.message && (
+        <div className={classes.error}>
+          <ErrorCircleFilled fontSize="12px" />
+          <Text size={200}>{error?.message}</Text>
+        </div>
+      )}
     </div>
   );
 };
 
+const DuelActiveInfo = ({
+  name,
+}: {
+  name: Extract<FieldArrayPath<DuelChapter>, 'mydeck_reward' | 'rental_reward'>;
+}) => {
+  const classes = useListStyles();
+  const { control } = useFormContext<Chapter>();
+  const reward = useWatch({ control, name });
+
+  const kind = name.split('_')[0];
+  const isActive = Boolean(reward?.length);
+  const intent = isActive ? 'success' : 'info';
+  const title = isActive ? `${kind} duel active` : `${kind} duel inactive`;
+  const description = isActive
+    ? null
+    : `Add rewards to activate a ${kind} duel.`;
+
+  return (
+    <MessageBar className={classes.buttonInfo} intent={intent}>
+      <MessageBarBody>
+        <MessageBarTitle>{title}</MessageBarTitle>
+        {description}
+      </MessageBarBody>
+    </MessageBar>
+  );
+};
+
 const MydeckRewardInput = () => {
-  return <ItemListInput name="mydeck_reward" />;
+  const { control } = useFormContext<Chapter>();
+  const rentalDeck = useWatch({ control, name: 'rental_deck' });
+
+  return (
+    <ItemListInput
+      name="mydeck_reward"
+      required={!rentalDeck}
+      info={<DuelActiveInfo name="mydeck_reward" />}
+    />
+  );
 };
 
 const RentalRewardInput = () => {
   const { control } = useFormContext<Chapter>();
   const rentalDeck = useWatch({ control, name: 'rental_deck' });
 
-  return <ItemListInput name="rental_reward" disabled={Boolean(!rentalDeck)} />;
+  return (
+    <ItemListInput
+      name="rental_reward"
+      required={Boolean(rentalDeck)}
+      disabled={!rentalDeck}
+      info={<DuelActiveInfo name="rental_reward" />}
+    />
+  );
 };
 
 const unlockCategories = [ItemCategory.CONSUME];
@@ -467,7 +575,7 @@ const UnlockPackInput = () => {
 
   return (
     <div>
-      <Text className={classes.label}>unlock pack</Text>
+      <Label className={classes.label}>unlock pack</Label>
       {fields?.map((packId, index) => (
         <Card key={index} className={classes.card}>
           <div className={classes.fullWidth}>

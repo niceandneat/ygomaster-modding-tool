@@ -43,7 +43,7 @@ export type DuelChapter = BaseChapter & {
   type: 'Duel';
   cpu_deck: string; // Opponent deck. Search every deck files in /data/solo directory recursively
   rental_deck?: string; // Needs to be set to enable rental deck match
-  mydeck_reward: Reward[];
+  mydeck_reward?: Reward[];
   rental_reward?: Reward[];
   difficulty: number;
   cpu_name: string; // Opponent name

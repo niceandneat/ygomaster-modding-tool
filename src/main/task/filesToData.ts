@@ -259,14 +259,17 @@ const createSingleGateData = (
     }
 
     if (isDuelChapter(chapter)) {
-      const reward = createReward(chapter.mydeck_reward);
-      chapterData.mydeck_set_id = ids.rewardId;
-      rewardField[ids.rewardId] = reward;
-      ids.rewardId += 1;
       chapterData.npc_id = 1;
       chapterData.difficulty = chapter.difficulty;
 
-      if (chapter.rental_deck && chapter.rental_reward) {
+      if (chapter.mydeck_reward?.length) {
+        const reward = createReward(chapter.mydeck_reward);
+        chapterData.mydeck_set_id = ids.rewardId;
+        rewardField[ids.rewardId] = reward;
+        ids.rewardId += 1;
+      }
+
+      if (chapter.rental_deck && chapter.rental_reward?.length) {
         const reward = createReward(chapter.rental_reward);
         chapterData.set_id = ids.rewardId;
         rewardField[ids.rewardId] = reward;

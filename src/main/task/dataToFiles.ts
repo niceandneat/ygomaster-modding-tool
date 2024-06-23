@@ -510,20 +510,23 @@ const createDuelChapter = (data: {
   const decks: DeckData[] = [];
 
   const cpuDeckName = chapterData.mydeck_set_id.toString();
-  const myDeckReward = createReward(gateData, chapterData.mydeck_set_id);
   const cpuDeck = createDeckFromDuel(duelData.Deck[1], cpuDeckName);
   decks.push(cpuDeck);
 
   const rentalDeckName = chapterData.set_id
     ? chapterData.set_id.toString()
     : undefined;
-  const rentalDeckReward = chapterData.set_id
-    ? createReward(gateData, chapterData.set_id)
-    : undefined;
   const rentalDeck = rentalDeckName
     ? createDeckFromDuel(duelData.Deck[0], rentalDeckName)
     : undefined;
   if (rentalDeck) decks.push(rentalDeck);
+
+  const myDeckReward = chapterData.mydeck_set_id
+    ? createReward(gateData, chapterData.mydeck_set_id)
+    : undefined;
+  const rentalDeckReward = chapterData.set_id
+    ? createReward(gateData, chapterData.set_id)
+    : undefined;
 
   const chapter: DuelChapter = {
     ...createBaseChapter({ gateData, gateId, chapterId, duelDescriptions }),
